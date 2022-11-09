@@ -1,38 +1,130 @@
-.App {
-  text-align: center;
+ReactMapGL {
+  z-index: 1;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.card {
+  width: 250px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+label {
+  width: max-content;
+  color: #6247aa;
+  font-size: 13px;
+  border-bottom: 1.5px solid #6247aa;
+  margin: 3px 0;
+  font-weight: bold;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.desc {
+  font-size: 12px;
+}
+
+.star {
+  color: gold;
+  filter: drop-shadow(0 0 0.5px black);
+  margin: 0px 2px 0px 2px;
+}
+
+.username {
+  font-size: 14px;
+}
+
+.date {
+  font-size: 10px;
+  align-self: flex-end;
+  margin-right: 4vw;
+}
+
+form {
+  height: 30vh;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+textarea {
+  resize: none;
+  height: 400px;
+}
+
+input {
+  border: none;
+  border-bottom: 1px solid gray;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-size: 14px;
+  color: lightgray;
+}
+
+input:focus,
+textarea:focus {
+  border: 3px solid #d5bbe6;
+}
+
+.submitButton {
+  border: none;
+  display: block;
+  margin: 0 auto;
+  background-color: #a06cd5;
+  color: white;
+  font-size: 11px;
+  border-radius: 5px;
+  padding: 5px;
+  width: 60%;
+  cursor: pointer;
+}
+
+.startLoginContainer {
+  position: absolute;
+  width: 300px;
+  height: 400px;
+  padding: 20px;
+  border-radius: 5px;
+  border: 1px dotted #a06cd5;
+  background-color: white;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  justify-content: space-between;
+}
+
+.button {
+  border: none;
+  display: block;
+  margin: 0 auto;
+  background-color: #a06cd5;
   color: white;
+  font-size: 11px;
+  border-radius: 5px;
+  padding: 8px;
+  width: 100px;
+  cursor: pointer;
 }
 
-.App-link {
-  color: #61dafb;
+.logout {
+  background-color: #6247aa;
+  margin: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.login {
+  background-color: #6247aa;
+  margin: 5px;
+}
+
+.register {
+  background-color: #6247aa;
+  margin: 5px;
 }
