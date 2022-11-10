@@ -2,6 +2,11 @@ ReactMapGL {
   z-index: 1;
 }
 
+.mapContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
 .card {
   width: 250px;
   height: 250px;
@@ -39,14 +44,6 @@ label {
   margin-right: 4vw;
 }
 
-form {
-  height: 30vh;
-  width: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
 textarea {
   resize: none;
   height: 400px;
@@ -68,7 +65,7 @@ textarea:focus {
   border: 3px solid #d5bbe6;
 }
 
-.submitButton {
+/* .submitButton {
   border: none;
   display: block;
   margin: 0 auto;
@@ -79,32 +76,12 @@ textarea:focus {
   padding: 5px;
   width: 60%;
   cursor: pointer;
-}
+} */
 
-.startLoginContainer {
-  position: absolute;
-  width: 300px;
-  height: 400px;
-  padding: 20px;
-  border-radius: 5px;
-  border: 1px dotted #a06cd5;
-  background-color: white;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.button {
+.btnPrimary {
   border: none;
   display: block;
-  margin: 0 auto;
+  margin: 5px auto;
   background-color: #a06cd5;
   color: white;
   font-size: 11px;
@@ -112,19 +89,15 @@ textarea:focus {
   padding: 8px;
   width: 100px;
   cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.4s ease-in-out;
 }
 
-.logout {
+.btnPrimary:hover {
+  transform: scale(1.05);
   background-color: #6247aa;
-  margin: 5px;
 }
 
-.login {
-  background-color: #6247aa;
-  margin: 5px;
-}
-
-.register {
-  background-color: #6247aa;
-  margin: 5px;
+form {
+  pointer-events: auto;
 }

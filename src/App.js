@@ -4,26 +4,27 @@ import React, { useState, useEffect } from "react";
 import "./app.css";
 import { format } from "timeago.js";
 import axios from "axios";
-import Register from "./components/register/Register";
-import Login from "./components/login/Login";
+import LoginContainer from "./components/loginContainer/LoginContainer";
+import ProfilePanel from "./components/profilePanel/ProfilePanel";
 
 function App() {
   const myStorage = window.localStorage;
-  const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
+
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
   const [pins, setPins] = useState([]);
+  const [currentUser, setCurrentUser] = useState(localStorage.getItem("user"));
   const [currentPlaceId, setCurrentPlaceId] = useState(" ");
   const [newPlace, setNewPlace] = useState(null);
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
   const [rating, setRating] = useState(0);
-  const [showRegister, setShowRegister] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
   const [nrTaps, setNrTaps] = useState(0);
   const [startDate, setStartDate] = useState(Date.now());
   const [viewport] = useState({
     latitude: 47.040182,
     longitude: 17.071727,
-    zoom: 4,
+    zoom: 1,
   });
 
   useEffect(() => {
@@ -90,46 +91,9 @@ function App() {
 
   return (
     <div className="App">
-      <div
-        className="startLoginContainer"
-        style={{
-          marginTop: currentUser !== null ? "5px" : "auto",
-          marginRight: currentUser !== null ? "5px" : "auto",
-          height: currentUser !== null ? "40px" : "400px",
-          width: currentUser !== null ? "120px" : "300px",
-          justifyContent: currentUser !== null ? "center" : "space-between",
-        }}
-      >
-        {currentUser ? (
-          <button className="button logout" onClick={handleLogout}>
-            Log out
-          </button>
-        ) : (
-          <div className="loginRegisterContainer">
-            <button className="button login" onClick={() => setShowLogin(true)}>
-              Login
-            </button>
-            <button
-              className="button register"
-              onClick={() => setShowRegister(true)}
-            >
-              Register
-            </button>
-          </div>
-        )}
-      </div>
-
-      {showRegister && <Register setShowRegister={setShowRegister} />}
-      {showLogin && (
-        <Login
-          setShowLogin={setShowLogin}
-          myStorage={myStorage}
-          setCurrentUser={setCurrentUser}
-        />
-      )}
-
       <ReactMapGL
         style={{ width: "100vw", height: "100vh" }}
+        className="loginContainer"
         mapStyle="mapbox://styles/phillisb/cla869nb9000115qt5z8yfwyw"
         transitionDuration="500"
         mapboxAccessToken={process.env.REACT_APP_MAPBOX}
@@ -151,6 +115,28 @@ function App() {
         }}
         onClick={handleAddClick}
       >
+        {/* Login Container */}
+        {!currentUser && (
+          <LoginContainer
+            setCurrentUser={setCurrentUser}
+            currentUser={currentUser}
+            success={success}
+            setSuccess={setSuccess}
+            error={error}
+            setError={setError}
+            handleLogout={handleLogout}
+          ></LoginContainer>
+        )}
+
+        {/* Profile Panel */}
+        {currentUser && (
+          <ProfilePanel
+            myStorage={myStorage}
+            setCurrentUser={setCurrentUser}
+          ></ProfilePanel>
+        )}
+
+        {/* Render Pins */}
         {pins.map((p) => (
           <React.Fragment key={p.long}>
             <Marker
@@ -168,6 +154,8 @@ function App() {
                 }}
               />
             </Marker>
+
+            {/* Cliked on Pin Popup */}
             {p._id === currentPlaceId && (
               <Popup
                 longitude={p.long}
@@ -195,6 +183,8 @@ function App() {
             )}
           </React.Fragment>
         ))}
+
+        {/* Add Pin Popup */}
         {newPlace && (
           <Popup
             latitude={newPlace.long}

@@ -1,0 +1,38 @@
+.LoginContainer {
+  position: relative;
+  width: 300px;
+  padding: 20px;
+  border-radius: 5px;
+  border: 1px dotted #a06cd5;
+  background-color: white;
+  margin: 200px auto 300px auto;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.LoginContainer > div {
+  position: relative;
+  text-align: center;
+  pointer-events: none;
+}
+
+.loginRegisterContainer > button {
+  margin-top: 1rem !important;
+}
+
+.logoText {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 70px auto -200px auto;
+  z-index: 3;
+  font-size: 40px;
+  font-weight: 900;
+  text-shadow: 2px 2px #fff, -2px 2px #fff, 2px -2px #fff, -2px -2px #fff,
+    2px 2px 10px #555;
+}
