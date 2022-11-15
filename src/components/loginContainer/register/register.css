@@ -7,7 +7,7 @@
 }
 
 .registerForm > form {
-  height: 30vh;
+  height: 22rem;
   width: 200px;
   display: flex;
   flex-direction: column;

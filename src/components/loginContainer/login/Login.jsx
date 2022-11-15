@@ -3,7 +3,6 @@ import { useState, useRef } from "react";
 import axios from "axios";
 
 export default function Login({ setShowLogin, setSuccess, setCurrentUser }) {
-  // const [currentUser, setCurrentUser] = useState(myStorage.getItem("user"));
   const [error, setError] = useState(false);
   const usernameRef = useRef();
   const passwordRef = useRef();
@@ -16,11 +15,12 @@ export default function Login({ setShowLogin, setSuccess, setCurrentUser }) {
     };
 
     try {
+      console.log(user);
       const res = await axios.post(
         "http://localhost:8800/api/users/login",
         user
       );
-      setCurrentUser(res.data.username);
+      setCurrentUser(res.data);
       window.localStorage.setItem("user", res.data.username);
       setShowLogin(false);
       setError(false);
@@ -30,6 +30,22 @@ export default function Login({ setShowLogin, setSuccess, setCurrentUser }) {
       console.log(err);
       setError(true);
     }
+
+    //   console.log(user);
+    //   const res = await axios.post(
+    //     "http://localhost:8800/api/users/login",
+    //     user
+    //   );
+    //   setCurrentUser(res.data.username);
+    //   window.localStorage.setItem("user", res.data.username);
+    //   setShowLogin(false);
+    //   setError(false);
+    //   setSuccess(true);
+    //   console.log("success");
+    // } catch (err) {
+    //   console.log(err);
+    //   setError(true);
+    // }
   };
 
   return (

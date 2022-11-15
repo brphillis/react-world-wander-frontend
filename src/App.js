@@ -27,6 +27,18 @@ function App() {
     zoom: 1,
   });
 
+  const controlTrue = {
+    width: "100vw",
+    height: "100vh",
+    pointerEvents: "none",
+  };
+
+  const controlFalse = {
+    width: "100vw",
+    height: "100vh",
+    pointerEvents: "auto",
+  };
+
   useEffect(() => {
     const getPins = async () => {
       try {
@@ -38,6 +50,8 @@ function App() {
     };
     getPins();
   }, []);
+
+  useEffect(() => {}, [currentUser]);
 
   //click to view pin
   const handleMarkerClick = (id) => {
@@ -92,18 +106,21 @@ function App() {
   return (
     <div className="App">
       <ReactMapGL
-        style={{ width: "100vw", height: "100vh" }}
+        style={
+          currentUser || currentUser === "guest" ? controlFalse : controlTrue
+        }
         className="loginContainer"
         mapStyle="mapbox://styles/phillisb/cla869nb9000115qt5z8yfwyw"
         transitionDuration="500"
         mapboxAccessToken={process.env.REACT_APP_MAPBOX}
         initialViewState={{
-          latitude: -19.36,
-          longitude: 130.13,
+          latitude: 42.6,
+          longitude: 71.7,
           doubleClickZoom: false,
           projection: "globe",
           center: [30, 50],
-          zoom: 1.9,
+          zoom: 2.4,
+          pitch: 90,
         }}
         fog={{
           range: [0.8, 8],
@@ -133,6 +150,11 @@ function App() {
           <ProfilePanel
             myStorage={myStorage}
             setCurrentUser={setCurrentUser}
+            currentUser={currentUser}
+            setSuccess={setSuccess}
+            success={success}
+            setError={setError}
+            error={error}
           ></ProfilePanel>
         )}
 
@@ -148,14 +170,14 @@ function App() {
               <FaMapMarkerAlt
                 onClick={() => handleMarkerClick(p._id, p.lat, p.long)}
                 style={{
-                  fontSize: viewport.zoom * 7,
+                  fontSize: viewport.zoom * 25,
                   color: p.username === currentUser ? "green" : "deepskyblue",
                   cursor: "pointer",
                 }}
               />
             </Marker>
 
-            {/* Cliked on Pin Popup */}
+            {/* Selected Pin Popup */}
             {p._id === currentPlaceId && (
               <Popup
                 longitude={p.long}

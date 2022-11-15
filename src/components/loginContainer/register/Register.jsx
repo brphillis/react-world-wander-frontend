@@ -8,6 +8,8 @@ export default function Register({ setShowRegister }) {
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
+  const confirmPasswordRef = useRef();
+  const errorMessage = useRef();
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
@@ -18,10 +20,17 @@ export default function Register({ setShowRegister }) {
     };
 
     try {
-      console.log("submitting");
-      await axios.post("http://localhost:8800/api/users/register", newUser);
-      setError(false);
-      setSuccess(true);
+      //submit register and check passwords match
+      if (passwordRef.current.value === confirmPasswordRef.current.value) {
+        console.log("submitting");
+        setError(false);
+        await axios.post("http://localhost:8800/api/users/register", newUser);
+        setSuccess(true);
+      } else {
+        console.log("error");
+        errorMessage.current.innerHTML = "Passwords do not match.";
+        setError(true);
+      }
     } catch (err) {
       setError(true);
     }
@@ -35,13 +44,20 @@ export default function Register({ setShowRegister }) {
         <input type="text" placeholder="username" ref={nameRef} />
         <input type="email" placeholder="email" ref={emailRef} />
         <input type="password" placeholder="password" ref={passwordRef} />
+        <input
+          type="password"
+          placeholder="confirm password"
+          ref={confirmPasswordRef}
+        />
         {success && (
           <span className="registerSuccess">
             Successfull. You can login now!
           </span>
         )}{" "}
         {error && (
-          <span className="registerError">Error. You can login now!</span>
+          <span className="registerError" ref={errorMessage}>
+            error
+          </span>
         )}
         <button type="submit" className="btnPrimary">
           Register

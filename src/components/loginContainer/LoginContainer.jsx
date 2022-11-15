@@ -1,6 +1,6 @@
 import "./loginContainer.css";
-import Register from "./register/Register";
-import Login from "../login/Login";
+import Register from "../loginContainer/register/Register";
+import Login from "../loginContainer/login/Login";
 import { useState } from "react";
 import Lottie from "lottie-react";
 import logoAnimation from "./logoAnimation.json";
@@ -40,6 +40,13 @@ export default function LoginContainer({
               onClick={() => setShowRegister(true)}
             >
               Register
+            </button>
+            <button
+              type="button"
+              className="btnPrimary"
+              onClick={() => setCurrentUser("guest")}
+            >
+              Guest
             </button>
           </div>
         )}
