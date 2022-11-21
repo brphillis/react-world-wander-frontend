@@ -1,6 +1,7 @@
 import "./login.css";
 import { useState, useRef } from "react";
 import axios from "axios";
+import setGlobals from "react-map-gl/dist/esm/utils/set-globals";
 
 export default function Login({ setShowLogin, setSuccess, setCurrentUser }) {
   const [error, setError] = useState(false);
@@ -21,11 +22,11 @@ export default function Login({ setShowLogin, setSuccess, setCurrentUser }) {
         user
       );
       setCurrentUser(res.data);
-      window.localStorage.setItem("user", res.data.username);
+      window.localStorage.setItem("token", JSON.stringify(res.data));
+
       setShowLogin(false);
       setError(false);
       setSuccess(true);
-      console.log("success");
     } catch (err) {
       console.log(err);
       setError(true);

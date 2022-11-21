@@ -41,6 +41,12 @@
   width: 150px;
   border: 2px solid #a06cd5;
   border-radius: 5px;
+  cursor: pointer;
+}
+
+.placeholderProfilePicture {
+  font-size: 80px;
+  color: white;
 }
 
 figcaption {
@@ -79,4 +85,79 @@ figcaption {
   top: 5px;
   right: 5px;
   cursor: pointer;
+}
+
+.profilePictureUpload {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: auto;
+  padding: 10px 5px 10px 5px;
+  border-radius: 10px;
+  border: 1px dotted #a06cd5;
+  background-color: white;
+  z-index: 1;
+  text-align: center;
+}
+
+.fileUploadInput {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+.fileUploadLabel {
+  cursor: pointer;
+}
+
+.previewPicture {
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  width: 150px;
+  border: 2px solid #a06cd5;
+  background-color: #a06cd5;
+  border-radius: 5px;
+}
+
+.previewPicture > img {
+  background-color: #a06cd5;
+  position: absolute;
+  height: 150px;
+  width: 150px;
+  z-index: 1;
+}
+
+.uploadPlaceholder {
+  position: absolute;
+  transition: all 0.5s ease-in-out;
+  color: white;
+  border: 1px solid white;
+  background-color: #a06cd5;
+  border-radius: 100%;
+  padding: 7px;
+  cursor: pointer;
+  font-size: 20px;
+  z-index: 5;
+  opacity: 0;
+}
+
+.fileUploadLabel > .previewPicture > .uploadPlaceholder {
+  opacity: 1;
+}
+
+.previewPicture:hover .uploadPlaceholder {
+  transform: scale(1.3);
+  opacity: 0.8;
 }

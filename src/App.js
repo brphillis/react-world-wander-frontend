@@ -15,7 +15,7 @@ function App() {
   const [error, setError] = useState(false);
   const [pins, setPins] = useState([]);
   const [currentPins, setCurrentPins] = useState([]);
-  const [currentUser, setCurrentUser] = useState(localStorage.getItem("user"));
+  const [currentUser, setCurrentUser] = useState(null);
   const [currentPlaceId, setCurrentPlaceId] = useState(" ");
   const [newPlace, setNewPlace] = useState(null);
   const [title, setTitle] = useState(null);
@@ -55,9 +55,18 @@ function App() {
     getPins();
   }, []);
 
+  useEffect(() => {
+    const token = window.localStorage.getItem("token");
+    if (token) {
+      setCurrentUser(JSON.parse(token));
+    }
+    console.log(currentUser);
+  }, []);
+
   //click to view pin
   const handleMarkerClick = (id) => {
     setCurrentPlaceId(id);
+    console.log(currentUser);
   };
 
   //double click to add pin

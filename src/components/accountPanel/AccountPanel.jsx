@@ -3,8 +3,10 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { BsFillGearFill } from "react-icons/bs";
 import { BsFillPersonLinesFill } from "react-icons/bs";
+import { BsPersonPlusFill } from "react-icons/bs";
 import { ImPowerCord } from "react-icons/im";
 import { RiCloseCircleFill } from "react-icons/ri";
+import { RiUpload2Fill } from "react-icons/ri";
 import { useState, useEffect } from "react";
 
 export default function AccountPanel({
@@ -16,6 +18,9 @@ export default function AccountPanel({
   pins,
   setCurrentPins,
 }) {
+  const [profilePictureUpload, setProfilePictureUpload] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [image, setImage] = useState("");
   const [displayOptionsPanel, setDisplayOptionsPanel] = useState(false);
   const [confirmDeleteAccount, setConfirmDeleteAccount] = useState(false);
   const [showMyPins, setShowMyPins] = useState(true);
@@ -26,24 +31,6 @@ export default function AccountPanel({
   const [othersPins] = useState(
     pins.filter((p) => p.username !== currentUser.username)
   );
-
-  useEffect(() => {
-    if (showMyPins && showOthersPins) {
-      setCurrentPins(pins);
-    }
-
-    if (!showMyPins && !showOthersPins) {
-      setCurrentPins([]);
-    }
-
-    if (showMyPins && !showOthersPins) {
-      setCurrentPins(myPins);
-    }
-
-    if (!showMyPins && showOthersPins) {
-      setCurrentPins(othersPins);
-    }
-  }, [showMyPins, showOthersPins, myPins, othersPins, pins, setCurrentPins]);
 
   const refreshToken = async () => {
     try {
@@ -61,8 +48,8 @@ export default function AccountPanel({
     }
   };
 
-  const axiosJWT = axios.create();
   //automatically refresh token
+  const axiosJWT = axios.create();
   axiosJWT.interceptors.request.use(
     async (config) => {
       let currentDate = new Date();
@@ -83,7 +70,7 @@ export default function AccountPanel({
     setCurrentUser(null);
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteAccount = async (id) => {
     setSuccess(false);
     setError(false);
     try {
@@ -95,6 +82,72 @@ export default function AccountPanel({
       setError(true);
     }
   };
+
+  //Profile Picture Upload and Set
+  const convert2base64 = async (e) => {
+    const file = await e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setImage(reader.result.toString());
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleChangeProfilePicture = async (e) => {
+    e.preventDefault();
+    const newPicture = {
+      id: currentUser._id,
+      profilePicture: image,
+    };
+
+    try {
+      const res = await axios.put(
+        "http://localhost:8800/api/users/updateProfilePicture/",
+        newPicture
+      );
+      setCurrentUser({
+        ...currentUser,
+        profilePicture: image,
+      });
+
+      if (setProfilePictureUpload) {
+        setProfilePictureUpload(false);
+      }
+
+      return res.data;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    window.localStorage.setItem("token", JSON.stringify(currentUser));
+  }, [currentUser]);
+
+  useEffect(() => {
+    setProfilePicture(currentUser.profilePicture);
+  }, [currentUser.profilePicture]);
+
+  const handleProfilePictureUpload = function () {
+    setProfilePictureUpload(true);
+  };
+
+  //Handles currently selected pins
+  useEffect(() => {
+    if (showMyPins && showOthersPins) {
+      setCurrentPins(pins);
+    }
+    if (!showMyPins && !showOthersPins) {
+      setCurrentPins([]);
+    }
+    if (showMyPins && !showOthersPins) {
+      setCurrentPins(myPins);
+    }
+    if (!showMyPins && showOthersPins) {
+      setCurrentPins(othersPins);
+    }
+  }, [showMyPins, showOthersPins, myPins, othersPins, pins, setCurrentPins]);
 
   const handleShowMyPins = function () {
     if (showMyPins) {
@@ -115,12 +168,20 @@ export default function AccountPanel({
   return (
     <div className="accountPanelContainer">
       <div className="accountPanel">
-        <figure>
-          <img
-            src="https://i.ibb.co/ZKZ66w3/profilepic.png"
-            alt="profilepic"
-            className="profilePicture"
-          />
+        <figure onClick={() => handleProfilePictureUpload()}>
+          <div className="previewPicture">
+            <RiUpload2Fill className="uploadPlaceholder" />
+            {profilePicture ? (
+              <img
+                src={profilePicture}
+                alt="profilepic"
+                className="profilePicture"
+              />
+            ) : (
+              <BsPersonPlusFill className="placeholderProfilePicture" />
+            )}
+          </div>
+
           <figcaption>{currentUser.username}</figcaption>
         </figure>
 
@@ -188,7 +249,7 @@ export default function AccountPanel({
       {confirmDeleteAccount && (
         <div className="optionsPanel" style={{ padding: "20px" }}>
           <h1>Are you sure you want to delete your account?</h1>
-          <button className="btnPrimary" onClick={() => handleDelete(0)}>
+          <button className="btnPrimary" onClick={() => handleDeleteAccount(0)}>
             Yes
           </button>
           <button
@@ -197,6 +258,34 @@ export default function AccountPanel({
           >
             No
           </button>
+        </div>
+      )}
+
+      {profilePictureUpload && (
+        <div className="profilePictureUpload">
+          <RiCloseCircleFill
+            onClick={() => setProfilePictureUpload(false)}
+            className="xCloseButton"
+          />
+          <h1>Upload a profile picture</h1>
+          <form onSubmit={handleChangeProfilePicture}>
+            <label className="fileUploadLabel" htmlFor="fileUpload">
+              <div className="previewPicture">
+                <RiUpload2Fill className="uploadPlaceholder" />
+                {image && <img src={image} />}
+              </div>
+            </label>
+
+            <input
+              id="fileUpload"
+              className="fileUploadInput"
+              type="file"
+              onChange={(e) => convert2base64(e)}
+            />
+            <button className="btnPrimary" type="submit">
+              Submit
+            </button>
+          </form>
         </div>
       )}
     </div>
