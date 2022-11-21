@@ -1,0 +1,42 @@
+.newPinForm {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+}
+
+.newPinForm > label {
+  width: max-content;
+  color: #6247aa !important;
+  font-size: 13px;
+  border-bottom: 1.5px solid #6247aa;
+  margin: 3px 0;
+  font-weight: bold;
+}
+
+textarea {
+  resize: none;
+  height: 100px;
+  border: 1px solid #6247aa;
+}
+
+input {
+  border: none;
+  border-bottom: 1px solid gray;
+  border: 1px solid #6247aa;
+}
+
+select {
+  border: 1px solid #6247aa;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-size: 14px;
+  color: lightgray;
+}
+
+input:focus,
+textarea:focus {
+  border: 3px solid #d5bbe6;
+}

@@ -30,22 +30,6 @@ export default function Login({ setShowLogin, setSuccess, setCurrentUser }) {
       console.log(err);
       setError(true);
     }
-
-    //   console.log(user);
-    //   const res = await axios.post(
-    //     "http://localhost:8800/api/users/login",
-    //     user
-    //   );
-    //   setCurrentUser(res.data.username);
-    //   window.localStorage.setItem("user", res.data.username);
-    //   setShowLogin(false);
-    //   setError(false);
-    //   setSuccess(true);
-    //   console.log("success");
-    // } catch (err) {
-    //   console.log(err);
-    //   setError(true);
-    // }
   };
 
   return (
@@ -64,7 +48,9 @@ export default function Login({ setShowLogin, setSuccess, setCurrentUser }) {
       <button
         type="button"
         className="btnPrimary"
-        onClick={() => setShowLogin(false)}
+        onClick={() => {
+          setShowLogin(false);
+        }}
       >
         Back
       </button>

@@ -5,7 +5,8 @@ import "./app.css";
 import { format } from "timeago.js";
 import axios from "axios";
 import LoginContainer from "./components/loginContainer/LoginContainer";
-import ProfilePanel from "./components/profilePanel/ProfilePanel";
+import AccountPanel from "./components/accountPanel/AccountPanel";
+import NewPinForm from "./components/newPinForm/NewPinForm";
 
 function App() {
   const myStorage = window.localStorage;
@@ -13,11 +14,14 @@ function App() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [pins, setPins] = useState([]);
+  const [currentPins, setCurrentPins] = useState([]);
   const [currentUser, setCurrentUser] = useState(localStorage.getItem("user"));
   const [currentPlaceId, setCurrentPlaceId] = useState(" ");
   const [newPlace, setNewPlace] = useState(null);
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
+  const [pinType, setPinType] = useState(null);
+  const [pinColor, setPinColor] = useState(null);
   const [rating, setRating] = useState(0);
   const [nrTaps, setNrTaps] = useState(0);
   const [startDate, setStartDate] = useState(Date.now());
@@ -51,8 +55,6 @@ function App() {
     getPins();
   }, []);
 
-  useEffect(() => {}, [currentUser]);
-
   //click to view pin
   const handleMarkerClick = (id) => {
     setCurrentPlaceId(id);
@@ -60,7 +62,11 @@ function App() {
 
   //double click to add pin
   const handleAddClick = (e) => {
-    if (nrTaps >= 1 && Date.now() - startDate < 500) {
+    if (
+      nrTaps >= 1 &&
+      Date.now() - startDate < 500 &&
+      currentUser !== "guest"
+    ) {
       setStartDate(Date.now());
       setNrTaps(0);
       // double tap
@@ -86,9 +92,12 @@ function App() {
       title,
       desc,
       rating,
+      pinType,
+      pinColor,
       lat: newPlace.long,
       long: newPlace.lat,
     };
+
     try {
       const res = await axios.post("http://localhost:8800/api/pins", newPin);
       setPins([...pins, res.data]);
@@ -142,12 +151,15 @@ function App() {
             error={error}
             setError={setError}
             handleLogout={handleLogout}
+            pins={pins}
+            currentPins={currentPins}
+            setCurrentPins={setCurrentPins}
           ></LoginContainer>
         )}
 
         {/* Profile Panel */}
         {currentUser && (
-          <ProfilePanel
+          <AccountPanel
             myStorage={myStorage}
             setCurrentUser={setCurrentUser}
             currentUser={currentUser}
@@ -155,11 +167,15 @@ function App() {
             success={success}
             setError={setError}
             error={error}
-          ></ProfilePanel>
+            pins={pins}
+            setPins={setPins}
+            currentPins={currentPins}
+            setCurrentPins={setCurrentPins}
+          ></AccountPanel>
         )}
 
         {/* Render Pins */}
-        {pins.map((p) => (
+        {currentPins.map((p) => (
           <React.Fragment key={p.long}>
             <Marker
               longitude={p.long}
@@ -171,7 +187,7 @@ function App() {
                 onClick={() => handleMarkerClick(p._id, p.lat, p.long)}
                 style={{
                   fontSize: viewport.zoom * 25,
-                  color: p.username === currentUser ? "green" : "deepskyblue",
+                  color: p.pinColor,
                   cursor: "pointer",
                 }}
               />
@@ -193,8 +209,24 @@ function App() {
                   <p className="desc">{p.desc}</p>
                   <label>Rating</label>
                   <div className="stars">
-                    {Array(p.rating).fill(<FaStar className="star" />)}
+                    <React.Fragment>
+                      {(() => {
+                        const arr = [];
+                        for (let i = 0; i < p.rating; i++) {
+                          arr.push(
+                            <FaStar
+                              className="star"
+                              key={Math.floor(parseInt(p._id) + i)}
+                            />
+                          );
+                        }
+                        return arr;
+                      })()}
+                    </React.Fragment>
+
+                    {/* {Array(p.rating).fill(<FaStar className="star" />)} */}
                   </div>
+
                   <label>Information</label>
                   <span className="username">
                     created By <b>{p.username}</b>
@@ -215,32 +247,18 @@ function App() {
             closeOnClick={false}
             onClose={() => setNewPlace(null)}
           >
-            <div>
-              <form onSubmit={handleSubmit}>
-                <label>title</label>
-                <input
-                  placeholder="add title"
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-                <label>Review</label>
-                <textarea
-                  placeholder="what did you think..."
-                  onChange={(e) => setDesc(e.target.value)}
-                />
-                <label>Rating</label>
-                <select onChange={(e) => setRating(e.target.value)}>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-                <br />
-                <button className="submitButton" type="submit">
-                  Add Pin
-                </button>
-              </form>
-            </div>
+            <NewPinForm
+              setTitle={setTitle}
+              setDesc={setDesc}
+              setRating={setRating}
+              newPlace={newPlace}
+              setNewPlace={setNewPlace}
+              handleSubmit={handleSubmit}
+              pinType={pinType}
+              setPinType={setPinType}
+              pinColor={pinColor}
+              setPinColor={setPinColor}
+            />
           </Popup>
         )}
       </ReactMapGL>

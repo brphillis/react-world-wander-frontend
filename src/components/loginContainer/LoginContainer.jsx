@@ -13,6 +13,9 @@ export default function LoginContainer({
   setCurrentUser,
   myStorage,
   currentUser,
+  pins,
+  currentPins,
+  setCurrentPins,
 }) {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -70,6 +73,8 @@ export default function LoginContainer({
           setError={setError}
           setShowLogin={setShowLogin}
           myStorage={myStorage}
+          pins={pins}
+          setCurrentPins={setCurrentPins}
         />
       )}
     </div>
