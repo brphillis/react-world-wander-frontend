@@ -14,7 +14,6 @@ export default function LoginContainer({
   myStorage,
   currentUser,
   pins,
-  currentPins,
   setCurrentPins,
 }) {
   const [showRegister, setShowRegister] = useState(false);

@@ -7,10 +7,8 @@ export default function NewPinForm({
   setRating,
   handleSubmit,
   setPinType,
-  pinType,
   pinColor,
   setPinColor,
-  setNewPlace,
 }) {
   const pinFormSelector = useRef(" ");
 

@@ -1,7 +1,6 @@
 import "./login.css";
 import { useState, useRef } from "react";
 import axios from "axios";
-import setGlobals from "react-map-gl/dist/esm/utils/set-globals";
 
 export default function Login({ setShowLogin, setSuccess, setCurrentUser }) {
   const [error, setError] = useState(false);

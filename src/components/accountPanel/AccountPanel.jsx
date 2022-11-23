@@ -25,12 +25,17 @@ export default function AccountPanel({
   const [confirmDeleteAccount, setConfirmDeleteAccount] = useState(false);
   const [showMyPins, setShowMyPins] = useState(true);
   const [showOthersPins, setShowOthersPins] = useState(true);
-  const [myPins] = useState(
+  const [myPins, setMyPins] = useState(
     pins.filter((p) => p.username === currentUser.username)
   );
-  const [othersPins] = useState(
+  const [othersPins, setOthersPins] = useState(
     pins.filter((p) => p.username !== currentUser.username)
   );
+
+  useEffect(() => {
+    setMyPins(pins.filter((p) => p.username === currentUser.username));
+    setOthersPins(pins.filter((p) => p.username !== currentUser.username));
+  }, [currentUser.username, pins, displayOptionsPanel]);
 
   const refreshToken = async () => {
     try {
@@ -147,7 +152,15 @@ export default function AccountPanel({
     if (!showMyPins && showOthersPins) {
       setCurrentPins(othersPins);
     }
-  }, [showMyPins, showOthersPins, myPins, othersPins, pins, setCurrentPins]);
+  }, [
+    showMyPins,
+    showOthersPins,
+    myPins,
+    othersPins,
+    pins,
+    setCurrentPins,
+    displayOptionsPanel,
+  ]);
 
   const handleShowMyPins = function () {
     if (showMyPins) {
@@ -272,7 +285,7 @@ export default function AccountPanel({
             <label className="fileUploadLabel" htmlFor="fileUpload">
               <div className="previewPicture">
                 <RiUpload2Fill className="uploadPlaceholder" />
-                {image && <img src={image} />}
+                {image && <img alt="uploadPlaceholder" src={image} />}
               </div>
             </label>
 
