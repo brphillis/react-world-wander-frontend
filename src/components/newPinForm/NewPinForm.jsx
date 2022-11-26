@@ -1,20 +1,109 @@
 import { React, useRef } from "react";
+import { RiUpload2Fill } from "react-icons/ri";
+import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import "./newPinForm.css";
+import axios from "axios";
 
 export default function NewPinForm({
+  currentUser,
+  title,
   setTitle,
+  desc,
   setDesc,
+  rating,
   setRating,
-  handleSubmit,
   setPinType,
   pinColor,
+  pinType,
   setPinColor,
+  newPlace,
+  setNewPlace,
+  setPins,
+  pins,
 }) {
+  const [images, setImages] = useState([]);
   const pinFormSelector = useRef(" ");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newPin = {
+      lat: newPlace.long,
+      long: newPlace.lat,
+      pinType,
+      pinColor,
+      review: [
+        {
+          username: currentUser.username,
+          title,
+          desc,
+          rating,
+          pictures: [...images],
+        },
+      ],
+    };
+    console.log(newPin);
+
+    try {
+      const res = await axios.post("http://localhost:8800/api/pins", newPin);
+      setPins([...pins, res.data]);
+      setNewPlace(null);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const pinFormHandler = (e) => {
     pinFormSelector.current = e;
-    console.log(pinColor);
+  };
+
+  useEffect(() => {
+    console.log(images);
+  }, [images]);
+
+  const fileToDataUri = (image) => {
+    return new Promise((res) => {
+      const reader = new FileReader();
+      const { type, name, size } = image;
+      reader.addEventListener("load", () => {
+        res({
+          base64: reader.result,
+          name: name,
+          type,
+          size: size,
+        });
+      });
+      reader.readAsDataURL(image);
+    });
+  };
+
+  const uploadImage = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const newImagesPromises = [];
+      for (let i = 0; i < e.target.files.length; i++) {
+        newImagesPromises.push(fileToDataUri(e.target.files[i]));
+      }
+      const newImages = await Promise.all(newImagesPromises);
+      setImages([...images, ...newImages]);
+    }
+    e.target.value = "";
+  };
+
+  const handleDisplayImage = (e, i) => {
+    Swal.fire({
+      imageUrl: e.base64,
+      imageAlt: "Custom image",
+      showCancelButton: true,
+      padding: "10px",
+      confirmButtonColor: "#e84338",
+      confirmButtonText: "Delete",
+      cancelButtonColor: "#a06cd5",
+      backdrop: `#23232380`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setImages(images.filter((picture) => picture.base64 !== e.base64));
+      }
+    });
   };
 
   return (
@@ -54,6 +143,45 @@ export default function NewPinForm({
             <option value="4">4</option>
             <option value="5">5</option>
           </select>
+
+          <label
+            style={{ borderBottom: "none" }}
+            className="reviewUploadImageLabel"
+            htmlFor="fileUpload"
+          >
+            <div className="previewImageContainer">
+              <RiUpload2Fill className="previewPlaceholder" />
+              <p>Upload up to 4 images</p>
+              {images.length > 0 && (
+                <img
+                  className="previewImage"
+                  alt={`uploadNum`}
+                  src={images[0].base64}
+                />
+              )}
+            </div>
+          </label>
+          <div className="previewThumbnailContainer">
+            {images.slice(1).map((e, i) => {
+              return (
+                <div key={i}>
+                  <img
+                    className="previewThumbnail"
+                    alt={`uploadNum${i}`}
+                    src={e.base64}
+                    onClick={() => handleDisplayImage(e, i)}
+                  />
+                </div>
+              );
+            })}
+          </div>
+          <input
+            id={images.length < 4 && "fileUpload"}
+            className="fileUploadInput"
+            type="file"
+            onChange={uploadImage}
+            multiple
+          />
         </>
       )}
 

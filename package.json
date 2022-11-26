@@ -16,6 +16,8 @@
     "react-icons": "^4.6.0",
     "react-map-gl": "^7.0.19",
     "react-scripts": "5.0.1",
+    "sweetalert2": "^11.6.11",
+    "sweetalert2-react-content": "^5.0.7",
     "timeago.js": "^4.0.2",
     "web-vitals": "^2.1.4"
   },

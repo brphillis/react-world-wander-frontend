@@ -1,0 +1,48 @@
+.mapboxgl-popup-content {
+  width: 500px;
+  padding: 20px;
+}
+
+.selectedPin > label {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* .pinImageContainer:first-child {
+  min-height: 150px;
+  min-width: 150px;
+} */
+
+.pinImage0 {
+  height: auto;
+  width: 300px;
+}
+
+.pinImage1 {
+  height: auto;
+  width: 100px;
+}
+
+.pinImage2 {
+  height: auto;
+  width: 100px;
+}
+
+.pinImage3 {
+  height: auto;
+  width: 100px;
+}
+
+.pinImageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.pinImageThumbnails {
+  display: flex;
+  flex-direction: row;
+  gap: 2.5px;
+}

@@ -2,16 +2,19 @@ import { Marker, Popup } from "react-map-gl";
 import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { format } from "timeago.js";
 import "./renderPins.css";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import axios from "axios";
 
 export default function RenderPins({
   currentPins,
   currentUser,
-  viewport,
   currentPlaceId,
   setCurrentPlaceId,
   setPins,
+  viewport,
+  setViewport,
+  Map,
+  mapRef,
 }) {
   useEffect(() => {
     const getPins = async () => {
@@ -23,16 +26,16 @@ export default function RenderPins({
       }
     };
     getPins();
+    console.log(mapRef);
   }, [setPins]);
 
   const handleMarkerClick = (id) => {
     setCurrentPlaceId(id);
-    console.log(currentUser);
   };
 
   return (
     <div>
-      {currentPins.map((p) => (
+      {currentPins.map((p, i) => (
         <React.Fragment key={p.long}>
           <Marker
             longitude={p.long}
@@ -53,23 +56,55 @@ export default function RenderPins({
           {/* Selected Pin Popup */}
           {p._id === currentPlaceId && (
             <Popup
+              // closeOnMove={true}
               longitude={p.long}
               latitude={p.lat}
               anchor="bottom"
               closeOnClick={false}
+              onOpen={() => {
+                mapRef.current.easeTo({ lng: p.long, lat: p.lat });
+                console.log(p);
+              }}
               onClose={() => setCurrentPlaceId(null)}
             >
-              <div className="card">
-                <label>Place</label>
-                <h4 className="place">{p.title}</h4>
-                <label>Review</label>
-                <p className="desc">{p.desc}</p>
-                <label>Rating</label>
+              <div className="selectedPin">
+                <div className="pinImageContainer">
+                  <img
+                    className={"pinImage0"}
+                    alt={`uploadNum0`}
+                    src={p.review[0].pictures[0].base64}
+                    //  onClick={() => handleDisplayImage(e, i)}
+                  />
+
+                  <div className="pinImageThumbnails">
+                    {p.review[0].pictures.map((e, i) => {
+                      if (i > 0 && i <= 3)
+                        return (
+                          <img
+                            className={"pinImage" + [i]}
+                            key={p.review[0].pictures[i].name + `${i}`}
+                            alt={`uploadNum${i}`}
+                            src={e.base64}
+                            //  onClick={() => handleDisplayImage(e, i)}
+                          />
+                        );
+                    })}
+                  </div>
+                </div>
+
+                {/* <img
+                  className="previewThumbnail"
+                  alt={`uploadNum${i}`}
+                  src={p.review[0].pictures[0].base64}
+                  //  onClick={() => handleDisplayImage(e, i)}
+                /> */}
+
+                <h4 className="place">{p.review[0].title}</h4>
                 <div className="stars">
                   <React.Fragment>
                     {(() => {
                       const arr = [];
-                      for (let i = 0; i < p.rating; i++) {
+                      for (let i = 0; i < p.review[0].rating; i++) {
                         arr.push(
                           <FaStar
                             className="star"
@@ -79,15 +114,17 @@ export default function RenderPins({
                       }
                       return arr;
                     })()}
+                    {/* {Array(p.review[0].rating).fill(
+                      <FaStar className="star" />
+                    )} */}
                   </React.Fragment>
-
-                  {/* {Array(p.rating).fill(<FaStar className="star" />)} */}
                 </div>
-
-                <label>Information</label>
-                <span className="username">
-                  created By <b>{p.username}</b>
-                </span>
+                <label>Popular Review</label>
+                <p className="desc">{p.review[0].desc}</p>
+                <label>Rating</label>
+                <div className="username">
+                  Created by &nbsp;<b>{p.review[0].username}&nbsp;</b>
+                </div>
                 <span className="date">{format(p.createdAt, "en_US")}</span>
               </div>
             </Popup>

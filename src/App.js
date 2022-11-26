@@ -1,11 +1,12 @@
-import ReactMapGL, { Popup } from "react-map-gl";
-import React, { useState, useEffect } from "react";
+import Map, { Popup } from "react-map-gl";
+import React, { useState, useEffect, useRef } from "react";
 import "./app.css";
 import axios from "axios";
 import LoginContainer from "./components/loginContainer/LoginContainer";
 import RenderPins from "./components/renderPins/RenderPins";
 import AccountPanel from "./components/accountPanel/AccountPanel";
 import NewPinForm from "./components/newPinForm/NewPinForm";
+import ImageGallery from "./components/imageGallery/ImageGallery";
 
 function App() {
   const myStorage = window.localStorage;
@@ -24,11 +25,12 @@ function App() {
   const [rating, setRating] = useState(0);
   const [nrTaps, setNrTaps] = useState(0);
   const [startDate, setStartDate] = useState(Date.now());
-  const [viewport] = useState({
+  const [viewport, setViewport] = useState({
     latitude: 47.040182,
     longitude: 17.071727,
-    zoom: 1,
+    zoom: 0.8,
   });
+  const mapRef = useRef();
 
   const controlTrue = {
     width: "100vw",
@@ -74,28 +76,6 @@ function App() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const newPin = {
-      username: currentUser,
-      title,
-      desc,
-      rating,
-      pinType,
-      pinColor,
-      lat: newPlace.long,
-      long: newPlace.lat,
-    };
-
-    try {
-      const res = await axios.post("http://localhost:8800/api/pins", newPin);
-      setPins([...pins, res.data]);
-      setNewPlace(null);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   const handleLogout = () => {
     myStorage.removeItem("user");
     setCurrentUser(null);
@@ -103,7 +83,8 @@ function App() {
 
   return (
     <div className="App">
-      <ReactMapGL
+      <Map
+        ref={mapRef}
         style={
           currentUser || currentUser === "guest" ? controlFalse : controlTrue
         }
@@ -112,12 +93,12 @@ function App() {
         transitionDuration="500"
         mapboxAccessToken={process.env.REACT_APP_MAPBOX}
         initialViewState={{
-          latitude: 42.6,
-          longitude: 71.7,
+          latitude: viewport.lat,
+          longitude: viewport.long,
           doubleClickZoom: false,
           projection: "globe",
-          center: [30, 50],
-          zoom: 2.4,
+          center: [1, 1],
+          zoom: 2,
           pitch: 90,
         }}
         fog={{
@@ -168,10 +149,13 @@ function App() {
           currentPins={currentPins}
           currentUser={currentUser}
           viewport={viewport}
+          setViewport={setViewport}
           currentPlaceId={currentPlaceId}
           setCurrentPlaceId={setCurrentPlaceId}
           pins={pins}
           setPins={setPins}
+          Map={Map}
+          mapRef={mapRef}
         ></RenderPins>
 
         {/* Add Pin Popup */}
@@ -181,15 +165,21 @@ function App() {
             longitude={newPlace.lat}
             closeButton={true}
             closeOnClick={false}
+            anchor={"bottom"}
             onClose={() => setNewPlace(null)}
           >
             <NewPinForm
+              currentUser={currentUser}
+              title={title}
               setTitle={setTitle}
+              desc={desc}
               setDesc={setDesc}
+              pins={pins}
+              setPins={setPins}
+              rating={rating}
               setRating={setRating}
               newPlace={newPlace}
               setNewPlace={setNewPlace}
-              handleSubmit={handleSubmit}
               pinType={pinType}
               setPinType={setPinType}
               pinColor={pinColor}
@@ -197,7 +187,10 @@ function App() {
             />
           </Popup>
         )}
-      </ReactMapGL>
+
+        {/* Image Gallery */}
+        <ImageGallery></ImageGallery>
+      </Map>
     </div>
   );
 }
