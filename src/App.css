@@ -7,26 +7,6 @@ ReactMapGL {
   grid-template-columns: 1fr;
 }
 
-.desc {
-  font-size: 12px;
-}
-
-.star {
-  color: gold;
-  filter: drop-shadow(0 0 0.5px black);
-  margin: 0px 2px 0px 2px;
-}
-
-.username {
-  font-size: 14px;
-}
-
-.date {
-  font-size: 10px;
-  align-self: flex-end;
-  margin-right: 4vw;
-}
-
 .btnPrimary {
   border: none;
   display: block;
@@ -49,4 +29,24 @@ ReactMapGL {
 
 form {
   pointer-events: auto;
+}
+
+.flexRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flexCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
 }

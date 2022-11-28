@@ -12,9 +12,11 @@ export default function RenderPins({
   setCurrentPlaceId,
   setPins,
   viewport,
-  setViewport,
-  Map,
   mapRef,
+  currentPlace,
+  setCurrentPlace,
+  addReviewForm,
+  setAddReviewForm,
 }) {
   useEffect(() => {
     const getPins = async () => {
@@ -32,6 +34,10 @@ export default function RenderPins({
   const handleMarkerClick = (id) => {
     setCurrentPlaceId(id);
   };
+
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
   return (
     <div>
@@ -63,7 +69,7 @@ export default function RenderPins({
               closeOnClick={false}
               onOpen={() => {
                 mapRef.current.easeTo({ lng: p.long, lat: p.lat });
-                console.log(p);
+                setCurrentPlace(p);
               }}
               onClose={() => setCurrentPlaceId(null)}
             >
@@ -78,7 +84,7 @@ export default function RenderPins({
 
                   <div className="pinImageThumbnails">
                     {p.review[0].pictures.map((e, i) => {
-                      if (i > 0 && i <= 3)
+                      if (i > 0 && i <= 2)
                         return (
                           <img
                             className={"pinImage" + [i]}
@@ -92,40 +98,56 @@ export default function RenderPins({
                   </div>
                 </div>
 
-                {/* <img
-                  className="previewThumbnail"
-                  alt={`uploadNum${i}`}
-                  src={p.review[0].pictures[0].base64}
-                  //  onClick={() => handleDisplayImage(e, i)}
-                /> */}
+                <h1 className="place">{capitalizeFirstLetter(p.name)}</h1>
 
-                <h4 className="place">{p.review[0].title}</h4>
-                <div className="stars">
-                  <React.Fragment>
-                    {(() => {
-                      const arr = [];
-                      for (let i = 0; i < p.review[0].rating; i++) {
-                        arr.push(
-                          <FaStar
-                            className="star"
-                            key={Math.floor(parseInt(p._id) + i)}
-                          />
-                        );
-                      }
-                      return arr;
-                    })()}
-                    {/* {Array(p.review[0].rating).fill(
-                      <FaStar className="star" />
-                    )} */}
-                  </React.Fragment>
+                <div className="reviewDesc">
+                  <div className="flexRow" style={{ gap: "10px" }}>
+                    <h4>Popular Review</h4>
+
+                    <div className="stars">
+                      <React.Fragment>
+                        {(() => {
+                          const arr = [];
+                          for (let i = 0; i < p.review[0].rating; i++) {
+                            arr.push(
+                              <FaStar
+                                className="star"
+                                key={Math.floor(parseInt(p._id) + i)}
+                              />
+                            );
+                          }
+                          return arr;
+                        })()}
+                      </React.Fragment>
+                    </div>
+                  </div>
+                  <div className="reviewTitle">"{`${p.review[0].title}`}"</div>
+                  <div className="reviewText">{p.review[0].desc}</div>
                 </div>
-                <label>Popular Review</label>
-                <p className="desc">{p.review[0].desc}</p>
-                <label>Rating</label>
                 <div className="username">
-                  Created by &nbsp;<b>{p.review[0].username}&nbsp;</b>
+                  Created by &nbsp;
+                  {p.review[0].username}&nbsp;
+                  <span className="date">{format(p.createdAt, "en_US")}</span>
                 </div>
-                <span className="date">{format(p.createdAt, "en_US")}</span>
+              </div>
+              <br />
+              <div className="RvBtnContainer">
+                <button
+                  className="btnPrimary"
+                  onClick={() => {
+                    setAddReviewForm(true);
+                    setCurrentPlaceId(null);
+                  }}
+                >
+                  Add Review
+                </button>
+                <button className="btnPrimary">See more</button>
+                <button
+                  className="btnPrimary"
+                  onClick={() => setCurrentPlaceId(null)}
+                >
+                  Close
+                </button>
               </div>
             </Popup>
           )}

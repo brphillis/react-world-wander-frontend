@@ -8,6 +8,7 @@ import { ImPowerCord } from "react-icons/im";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { RiUpload2Fill } from "react-icons/ri";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 export default function AccountPanel({
   myStorage,
@@ -213,50 +214,54 @@ export default function AccountPanel({
       </div>
 
       {displayOptionsPanel && (
-        <div className="optionsPanel">
-          <RiCloseCircleFill
-            onClick={() => setDisplayOptionsPanel(false)}
-            className="xCloseButton"
-          />
-          <h2>Options Panel</h2>
-          <hr />
+        <motion.div drag>
+          <div className="optionsPanel">
+            <RiCloseCircleFill
+              onClick={() => setDisplayOptionsPanel(false)}
+              className="xCloseButton"
+            />
+            <h2>Options Panel</h2>
+            <hr />
 
-          <button
-            type="button"
-            className="btnPrimary"
-            style={{ backgroundColor: showMyPins ? "#20b45b" : "#b8b8b8" }}
-            onClick={() => {
-              handleShowMyPins();
-            }}
-          >
-            My Pins
-          </button>
+            <button
+              type="button"
+              className="btnPrimary"
+              style={{ backgroundColor: showMyPins ? "#20b45b" : "#b8b8b8" }}
+              onClick={() => {
+                handleShowMyPins();
+              }}
+            >
+              My Pins
+            </button>
 
-          <button
-            className="btnPrimary"
-            style={{ backgroundColor: showOthersPins ? "#20b45b" : "#b8b8b8" }}
-            onClick={() => {
-              handleShowOthersPins();
-            }}
-          >
-            Others Pins
-          </button>
-          <hr />
-          <button
-            className="btnPrimary"
-            onClick={() => setConfirmDeleteAccount(true)}
-          >
-            Delete Account
-          </button>
+            <button
+              className="btnPrimary"
+              style={{
+                backgroundColor: showOthersPins ? "#20b45b" : "#b8b8b8",
+              }}
+              onClick={() => {
+                handleShowOthersPins();
+              }}
+            >
+              Others Pins
+            </button>
+            <hr />
+            <button
+              className="btnPrimary"
+              onClick={() => setConfirmDeleteAccount(true)}
+            >
+              Delete Account
+            </button>
 
-          <hr />
-          <button
-            className="btnPrimary"
-            onClick={() => setDisplayOptionsPanel(false)}
-          >
-            Close
-          </button>
-        </div>
+            <hr />
+            <button
+              className="btnPrimary"
+              onClick={() => setDisplayOptionsPanel(false)}
+            >
+              Close
+            </button>
+          </div>
+        </motion.div>
       )}
 
       {confirmDeleteAccount && (

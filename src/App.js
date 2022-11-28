@@ -7,6 +7,7 @@ import RenderPins from "./components/renderPins/RenderPins";
 import AccountPanel from "./components/accountPanel/AccountPanel";
 import NewPinForm from "./components/newPinForm/NewPinForm";
 import ImageGallery from "./components/imageGallery/ImageGallery";
+import AddReviewForm from "./components/addReviewForm/AddReviewForm";
 
 function App() {
   const myStorage = window.localStorage;
@@ -16,8 +17,10 @@ function App() {
   const [pins, setPins] = useState([]);
   const [currentPins, setCurrentPins] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
-  const [currentPlaceId, setCurrentPlaceId] = useState(" ");
+  const [currentPlaceId, setCurrentPlaceId] = useState(null);
+  const [currentPlace, setCurrentPlace] = useState(null);
   const [newPlace, setNewPlace] = useState(null);
+  const [pinName, setPinName] = useState(null);
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
   const [pinType, setPinType] = useState(null);
@@ -25,6 +28,7 @@ function App() {
   const [rating, setRating] = useState(0);
   const [nrTaps, setNrTaps] = useState(0);
   const [startDate, setStartDate] = useState(Date.now());
+  const [addReviewForm, setAddReviewForm] = useState(false);
   const [viewport, setViewport] = useState({
     latitude: 47.040182,
     longitude: 17.071727,
@@ -49,6 +53,7 @@ function App() {
     if (token) {
       setCurrentUser(JSON.parse(token));
     }
+    setAddReviewForm(true);
   }, []);
 
   //double click to add pin
@@ -68,7 +73,6 @@ function App() {
         long: latitude,
         lat: longitude,
       });
-      console.log(e);
     } else {
       setStartDate(Date.now());
       setNrTaps((prevNr) => prevNr + 1);
@@ -151,7 +155,11 @@ function App() {
           viewport={viewport}
           setViewport={setViewport}
           currentPlaceId={currentPlaceId}
+          currentPlace={currentPlace}
+          setCurrentPlace={setCurrentPlace}
           setCurrentPlaceId={setCurrentPlaceId}
+          addReviewForm={addReviewForm}
+          setAddReviewForm={setAddReviewForm}
           pins={pins}
           setPins={setPins}
           Map={Map}
@@ -169,27 +177,40 @@ function App() {
             onClose={() => setNewPlace(null)}
           >
             <NewPinForm
-              currentUser={currentUser}
-              title={title}
-              setTitle={setTitle}
-              desc={desc}
-              setDesc={setDesc}
-              pins={pins}
-              setPins={setPins}
-              rating={rating}
-              setRating={setRating}
-              newPlace={newPlace}
-              setNewPlace={setNewPlace}
-              pinType={pinType}
-              setPinType={setPinType}
-              pinColor={pinColor}
-              setPinColor={setPinColor}
+              addReviewForm={addReviewForm}
+              setAddReviewForm={setAddReviewForm}
             />
           </Popup>
         )}
 
         {/* Image Gallery */}
         <ImageGallery></ImageGallery>
+
+        {addReviewForm && (
+          <AddReviewForm
+            addReviewForm={addReviewForm}
+            setAddReviewForm={setAddReviewForm}
+            currentPlace={currentPlace}
+            setCurrentPlace={setCurrentPlace}
+            currentPlaceId={currentPlaceId}
+            setCurrentPlaceId={setCurrentPlaceId}
+            currentUser={currentUser}
+            pinName={pinName}
+            setPinName={setPinName}
+            title={title}
+            setTitle={setTitle}
+            desc={desc}
+            setDesc={setDesc}
+            rating={rating}
+            setRating={setRating}
+            setPins={setPins}
+            pins={pins}
+            setNewPlace={setNewPlace}
+            newPlace={newPlace}
+            pinType={pinType}
+            pinColor={pinColor}
+          ></AddReviewForm>
+        )}
       </Map>
     </div>
   );

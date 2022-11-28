@@ -1,6 +1,16 @@
 .mapboxgl-popup-content {
+  width: max-content;
+  border: 1px dotted #a06cd5;
+  position: relative;
+  padding: 5px;
+}
+
+/* .mapboxgl-popup-close-button {
+  display: none;
+} */
+
+.selectedPin {
   width: 500px;
-  padding: 20px;
 }
 
 .selectedPin > label {
@@ -8,24 +18,31 @@
   font-size: 16px;
 }
 
-/* .pinImageContainer:first-child {
-  min-height: 150px;
-  min-width: 150px;
-} */
-
 .pinImage0 {
   height: auto;
-  width: 300px;
+  width: 67.3%;
+}
+
+.pinImage0:hover {
+  cursor: pointer;
 }
 
 .pinImage1 {
   height: auto;
-  width: 100px;
+  width: 100%;
+}
+
+.pinImage1:hover {
+  cursor: pointer;
 }
 
 .pinImage2 {
   height: auto;
-  width: 100px;
+  width: 100%;
+}
+
+.pinImage2:hover {
+  cursor: pointer;
 }
 
 .pinImage3 {
@@ -33,16 +50,87 @@
   width: 100px;
 }
 
+.pinImage3:hover {
+  cursor: pointer;
+}
+
 .pinImageContainer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 2.5px;
 }
 
 .pinImageThumbnails {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 2.5px;
+}
+
+.place {
+  font-size: 22px;
+  margin: 2.5px 0 10px 0px;
+  padding: 5px 5px 5px 10px;
+  background-color: #a06cd5;
+  color: white;
+}
+
+.topRight {
+  position: absolute;
+  right: 10px;
+}
+
+.username {
+  font-size: 12px;
+  font-weight: bold;
+  position: relative;
+  float: right;
+  margin-top: -20px;
+  margin-right: 5px;
+}
+
+.star {
+  color: gold;
+  filter: drop-shadow(0 0 0.5px black);
+  margin: 0px 2px 0px 2px;
+}
+
+.date {
+  font-size: 10px;
+}
+
+.reviewTitle {
+  margin-top: 2px;
+  margin-bottom: -5px;
+  margin-left: 5px;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.reviewDesc > h4 {
+  margin-bottom: 50px;
+}
+
+.reviewDesc > p {
+  font-size: 12px;
+  padding-bottom: 25px;
+}
+
+.reviewText {
+  margin-top: 5px;
+  font-size: 12px;
+  padding-bottom: 24px;
+}
+
+.RvBtnContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 5px;
+  margin-top: -12px;
+}
+
+.RvBtnContainer > button {
+  margin: 0 !important;
 }
