@@ -1,8 +1,8 @@
 import { React, useRef } from "react";
 
-import "./newPinForm.css";
+import "./mapClickMenu.css";
 
-export default function NewPinForm({ addReviewForm, setAddReviewForm }) {
+export default function MapClickMenu({ addReviewForm, setAddReviewForm }) {
   return (
     <button className="btnPrimary" onClick={() => setAddReviewForm(true)}>
       TEST

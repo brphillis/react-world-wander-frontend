@@ -320,7 +320,7 @@ export default function AddReviewForm({
                   ></Lottie>
                 </div>
               )}
-              <p>Upload up for 4 Images</p>
+              <p>Upload up to 4 Images</p>
 
               {images.length > 0 && (
                 <img
@@ -482,7 +482,10 @@ export default function AddReviewForm({
           <button
             type="button"
             className="btnPrimary"
-            onClick={() => setAddReviewForm(false)}
+            onClick={() => {
+              setAddReviewForm(false);
+              setCurrentPlace(null);
+            }}
           >
             Close
           </button>

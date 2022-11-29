@@ -1,13 +1,13 @@
 import Map, { Popup } from "react-map-gl";
 import React, { useState, useEffect, useRef } from "react";
 import "./app.css";
-import axios from "axios";
 import LoginContainer from "./components/loginContainer/LoginContainer";
 import RenderPins from "./components/renderPins/RenderPins";
 import AccountPanel from "./components/accountPanel/AccountPanel";
-import NewPinForm from "./components/newPinForm/NewPinForm";
+import MapClickMenu from "./components/mapClickMenu/MapClickMenu";
 import ImageGallery from "./components/imageGallery/ImageGallery";
 import AddReviewForm from "./components/addReviewForm/AddReviewForm";
+import useWindowDimensions from "./hooks/useWindowDimensions";
 
 function App() {
   const myStorage = window.localStorage;
@@ -29,6 +29,9 @@ function App() {
   const [nrTaps, setNrTaps] = useState(0);
   const [startDate, setStartDate] = useState(Date.now());
   const [addReviewForm, setAddReviewForm] = useState(false);
+  const [imageGallery, setImageGallery] = useState(false);
+  const [imageGalleryPics, setImageGalleryPics] = useState([]);
+  const { height, width } = useWindowDimensions();
   const [viewport, setViewport] = useState({
     latitude: 47.040182,
     longitude: 17.071727,
@@ -53,7 +56,6 @@ function App() {
     if (token) {
       setCurrentUser(JSON.parse(token));
     }
-    setAddReviewForm(true);
   }, []);
 
   //double click to add pin
@@ -164,6 +166,7 @@ function App() {
           setPins={setPins}
           Map={Map}
           mapRef={mapRef}
+          setImageGallery={setImageGallery}
         ></RenderPins>
 
         {/* Add Pin Popup */}
@@ -176,15 +179,12 @@ function App() {
             anchor={"bottom"}
             onClose={() => setNewPlace(null)}
           >
-            <NewPinForm
+            <MapClickMenu
               addReviewForm={addReviewForm}
               setAddReviewForm={setAddReviewForm}
             />
           </Popup>
         )}
-
-        {/* Image Gallery */}
-        <ImageGallery></ImageGallery>
 
         {addReviewForm && (
           <AddReviewForm
@@ -210,6 +210,19 @@ function App() {
             pinType={pinType}
             pinColor={pinColor}
           ></AddReviewForm>
+        )}
+
+        {imageGallery && (
+          <ImageGallery
+            imageGallery={imageGallery}
+            setImageGallery={setImageGallery}
+            imageGalleryPics={imageGalleryPics}
+            setImageGalleryPics={setImageGalleryPics}
+            currentPlace={currentPlace}
+            useWindowDimensions={useWindowDimensions}
+            height={height}
+            width={width}
+          />
         )}
       </Map>
     </div>

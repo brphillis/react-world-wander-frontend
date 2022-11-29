@@ -2,7 +2,7 @@ import { Marker, Popup } from "react-map-gl";
 import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { format } from "timeago.js";
 import "./renderPins.css";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function RenderPins({
@@ -17,6 +17,7 @@ export default function RenderPins({
   setCurrentPlace,
   addReviewForm,
   setAddReviewForm,
+  setImageGallery,
 }) {
   useEffect(() => {
     const getPins = async () => {
@@ -77,9 +78,13 @@ export default function RenderPins({
                 <div className="pinImageContainer">
                   <img
                     className={"pinImage0"}
+                    style={{
+                      width:
+                        p.review[0].pictures.length === 1 ? "100%" : "67.3%",
+                    }}
                     alt={`uploadNum0`}
                     src={p.review[0].pictures[0].base64}
-                    //  onClick={() => handleDisplayImage(e, i)}
+                    onClick={() => setImageGallery(true)}
                   />
 
                   <div className="pinImageThumbnails">
@@ -91,7 +96,7 @@ export default function RenderPins({
                             key={p.review[0].pictures[i].name + `${i}`}
                             alt={`uploadNum${i}`}
                             src={e.base64}
-                            //  onClick={() => handleDisplayImage(e, i)}
+                            onClick={() => setImageGallery(true)}
                           />
                         );
                     })}
@@ -144,7 +149,10 @@ export default function RenderPins({
                 <button className="btnPrimary">See more</button>
                 <button
                   className="btnPrimary"
-                  onClick={() => setCurrentPlaceId(null)}
+                  onClick={() => {
+                    setCurrentPlaceId(null);
+                    setCurrentPlace(null);
+                  }}
                 >
                   Close
                 </button>

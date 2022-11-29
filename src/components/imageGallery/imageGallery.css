@@ -1,0 +1,79 @@
+.imageGalleryContainer {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  background-color: #000000e6;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+#mainImageContainer {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  max-width: 800px;
+  max-height: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#mainImage {
+  position: absolute;
+  max-height: 95%;
+  max-width: 95%;
+}
+
+#galleryBtnContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+  padding: 10px;
+  background-color: #a06cd5;
+  border-radius: 10px;
+  margin: 20px 0px 20px 0px;
+}
+
+#galleryBtn {
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 20px 0 20px;
+  transition: 0.2 ease-in-out;
+}
+
+#galleryBtn:hover {
+  transform: scale(1.1);
+}
+
+#galleryThumbnailContainer {
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnailArrow {
+  color: white;
+  margin-bottom: 15px;
+}
+
+.galleryThumbnail {
+  width: 50px;
+  height: 50px;
+  margin: 0px 5px 0px 5px;
+  transition: 0.4s ease-in-out;
+  cursor: pointer;
+}
+
+.enlargen {
+  transform: scale(1.15);
+}
