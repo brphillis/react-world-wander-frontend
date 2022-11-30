@@ -1,13 +1,17 @@
 import Map, { Popup } from "react-map-gl";
 import React, { useState, useEffect, useRef } from "react";
 import "./app.css";
+
 import LoginContainer from "./components/loginContainer/LoginContainer";
 import RenderPins from "./components/renderPins/RenderPins";
 import AccountPanel from "./components/accountPanel/AccountPanel";
 import MapClickMenu from "./components/mapClickMenu/MapClickMenu";
 import ImageGallery from "./components/imageGallery/ImageGallery";
 import AddReviewForm from "./components/addReviewForm/AddReviewForm";
+import ReviewViewer from "./components/reviewViewer/ReviewViewer";
+
 import useWindowDimensions from "./hooks/useWindowDimensions";
+import { AiFillCodeSandboxCircle } from "react-icons/ai";
 
 function App() {
   const myStorage = window.localStorage;
@@ -29,6 +33,7 @@ function App() {
   const [nrTaps, setNrTaps] = useState(0);
   const [startDate, setStartDate] = useState(Date.now());
   const [addReviewForm, setAddReviewForm] = useState(false);
+  const [reviewViewer, setReviewViewer] = useState(false);
   const [imageGallery, setImageGallery] = useState(false);
   const [imageGalleryPics, setImageGalleryPics] = useState([]);
   const { height, width } = useWindowDimensions();
@@ -57,6 +62,10 @@ function App() {
       setCurrentUser(JSON.parse(token));
     }
   }, []);
+
+  useEffect(() => {
+    console.log(reviewViewer);
+  });
 
   //double click to add pin
   const handleAddClick = (e) => {
@@ -120,15 +129,13 @@ function App() {
         {/* Login Container */}
         {!currentUser && (
           <LoginContainer
-            setCurrentUser={setCurrentUser}
-            currentUser={currentUser}
             success={success}
             setSuccess={setSuccess}
             error={error}
             setError={setError}
-            handleLogout={handleLogout}
+            currentUser={currentUser}
+            setCurrentUser={setCurrentUser}
             pins={pins}
-            currentPins={currentPins}
             setCurrentPins={setCurrentPins}
           ></LoginContainer>
         )}
@@ -140,12 +147,8 @@ function App() {
             setCurrentUser={setCurrentUser}
             currentUser={currentUser}
             setSuccess={setSuccess}
-            success={success}
             setError={setError}
-            error={error}
             pins={pins}
-            setPins={setPins}
-            currentPins={currentPins}
             setCurrentPins={setCurrentPins}
           ></AccountPanel>
         )}
@@ -153,20 +156,15 @@ function App() {
         {/* Render Pins */}
         <RenderPins
           currentPins={currentPins}
-          currentUser={currentUser}
-          viewport={viewport}
-          setViewport={setViewport}
           currentPlaceId={currentPlaceId}
-          currentPlace={currentPlace}
-          setCurrentPlace={setCurrentPlace}
           setCurrentPlaceId={setCurrentPlaceId}
-          addReviewForm={addReviewForm}
-          setAddReviewForm={setAddReviewForm}
-          pins={pins}
           setPins={setPins}
-          Map={Map}
+          viewport={viewport}
           mapRef={mapRef}
+          setCurrentPlace={setCurrentPlace}
+          setAddReviewForm={setAddReviewForm}
           setImageGallery={setImageGallery}
+          setReviewViewer={setReviewViewer}
         ></RenderPins>
 
         {/* Add Pin Popup */}
@@ -186,13 +184,12 @@ function App() {
           </Popup>
         )}
 
+        {/* Add a Review Form */}
         {addReviewForm && (
           <AddReviewForm
-            addReviewForm={addReviewForm}
             setAddReviewForm={setAddReviewForm}
             currentPlace={currentPlace}
             setCurrentPlace={setCurrentPlace}
-            currentPlaceId={currentPlaceId}
             setCurrentPlaceId={setCurrentPlaceId}
             currentUser={currentUser}
             pinName={pinName}
@@ -212,12 +209,28 @@ function App() {
           ></AddReviewForm>
         )}
 
+        {/* View Reviews */}
+        {reviewViewer && (
+          <ReviewViewer
+            reviewViewer={reviewViewer}
+            setReviewViewer={setReviewViewer}
+            setImageGallery={setImageGallery}
+            setImageGalleryPics={setImageGalleryPics}
+            imageGalleryPics={imageGalleryPics}
+            currentPlace={currentPlace}
+            currentUser={currentUser}
+          ></ReviewViewer>
+        )}
+
+        {/* Image Gallery */}
         {imageGallery && (
           <ImageGallery
             imageGallery={imageGallery}
             setImageGallery={setImageGallery}
             imageGalleryPics={imageGalleryPics}
             setImageGalleryPics={setImageGalleryPics}
+            reviewViewer={reviewViewer}
+            setReviewViewer={setReviewViewer}
             currentPlace={currentPlace}
             useWindowDimensions={useWindowDimensions}
             height={height}

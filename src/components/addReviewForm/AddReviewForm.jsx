@@ -1,20 +1,17 @@
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import { motion, useDragControls } from "framer-motion";
 import "./addReviewForm.css";
-import { RiUpload2Fill } from "react-icons/ri";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Lottie from "lottie-react";
 import logoAnimation from "./uploadAnimation.json";
 
 export default function AddReviewForm({
-  addReviewForm,
   setAddReviewForm,
   currentPlace,
   setCurrentPlace,
-  currentPlaceId,
   setCurrentPlaceId,
   currentUser,
   pinName,

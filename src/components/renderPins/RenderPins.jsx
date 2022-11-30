@@ -7,17 +7,15 @@ import axios from "axios";
 
 export default function RenderPins({
   currentPins,
-  currentUser,
   currentPlaceId,
   setCurrentPlaceId,
   setPins,
   viewport,
   mapRef,
-  currentPlace,
   setCurrentPlace,
-  addReviewForm,
   setAddReviewForm,
   setImageGallery,
+  setReviewViewer,
 }) {
   useEffect(() => {
     const getPins = async () => {
@@ -146,7 +144,12 @@ export default function RenderPins({
                 >
                   Add Review
                 </button>
-                <button className="btnPrimary">See more</button>
+                <button
+                  className="btnPrimary"
+                  onClick={() => setReviewViewer(true)}
+                >
+                  See more
+                </button>
                 <button
                   className="btnPrimary"
                   onClick={() => {

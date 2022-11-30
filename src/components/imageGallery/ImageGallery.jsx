@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { MdClose } from "react-icons/md";
 import { MdSkipNext } from "react-icons/md";
 import { MdSkipPrevious } from "react-icons/md";
+import Lottie from "lottie-react";
+import loadingCircle from "./loadingCircle.json";
 import axios from "axios";
 import "./imageGallery.css";
 
@@ -10,6 +12,8 @@ export default function ImageGallery({
   setImageGallery,
   imageGalleryPics,
   setImageGalleryPics,
+  reviewViewer,
+  setReviewViewer,
   height,
   width,
   currentPlace,
@@ -25,7 +29,7 @@ export default function ImageGallery({
     sixth: 5,
   });
 
-  const getAllImages = async () => {
+  const getAllPinImages = async () => {
     const currentid = { id: currentPlace._id };
     try {
       const res = await axios.post(
@@ -85,8 +89,10 @@ export default function ImageGallery({
   };
 
   useEffect(() => {
-    getAllImages();
-  }, [currentThumbnails]);
+    if (!reviewViewer) {
+      getAllPinImages();
+    }
+  }, []);
 
   useEffect(() => {
     setImageGalleryCount(imageGalleryPics.length);
@@ -109,6 +115,10 @@ export default function ImageGallery({
   return (
     <div className="imageGalleryContainer">
       <div id="mainImageContainer">
+        {imageGalleryPics.length === 0 && (
+          <Lottie animationData={loadingCircle} loop={true}></Lottie>
+        )}
+
         {imageGalleryPics.length > 0 && (
           <img id="mainImage" src={imageGalleryPics[currentPicNumber].base64} />
         )}

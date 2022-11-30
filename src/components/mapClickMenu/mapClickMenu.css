@@ -1,0 +1,18 @@
+.mapboxgl-popup-content {
+  width: max-content;
+  border: 1px dotted #a06cd5;
+  border-radius: 10px;
+  position: relative;
+  padding: 5px;
+}
+
+.mapboxgl-popup-close-button {
+  color: #a06cd5;
+  top: 2.7px;
+  right: 3.3px;
+}
+
+#clickMenuContentContainer {
+  margin-top: 25px;
+  padding: 10px 10px 5px 10px;
+}

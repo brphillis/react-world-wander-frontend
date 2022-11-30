@@ -10,9 +10,8 @@ export default function LoginContainer({
   setSuccess,
   error,
   setError,
-  setCurrentUser,
-  myStorage,
   currentUser,
+  setCurrentUser,
   pins,
   setCurrentPins,
 }) {
@@ -71,7 +70,6 @@ export default function LoginContainer({
           error={error}
           setError={setError}
           setShowLogin={setShowLogin}
-          myStorage={myStorage}
           pins={pins}
           setCurrentPins={setCurrentPins}
         />

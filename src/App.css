@@ -50,3 +50,22 @@ form {
 .justify-center {
   justify-content: center;
 }
+
+.menuTopBar {
+  position: absolute;
+  height: 20px;
+  top: 0px;
+  left: 0;
+  background-color: #a06cd5;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px 10px 0 0;
+  width: 100%;
+  text-align: center;
+  font-size: 8px;
+  padding: 5px 0 5px 0;
+}
+
+.menuTopBar > p {
+  font-size: 12px;
+}
