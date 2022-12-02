@@ -1,6 +1,5 @@
 import "./reviewViewer.css";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { HiOutlineHeart } from "react-icons/hi";
 import { motion, useDragControls } from "framer-motion";
 import { FaStar } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
@@ -8,6 +7,7 @@ import Lottie from "lottie-react";
 import loadingCircle from "./loadingCircle.json";
 import axios from "axios";
 import React from "react";
+import LikeButton from "../likeButton/LikeButton";
 
 export default function ReviewViewer({
   setReviewViewer,
@@ -18,7 +18,6 @@ export default function ReviewViewer({
 }) {
   const [reviews, setReviews] = useState([]);
   const dragControls = useDragControls();
-  const likesCounter = useRef([]);
 
   const getAllReviews = async () => {
     const currentid = { id: currentPlace._id };
@@ -34,45 +33,9 @@ export default function ReviewViewer({
     }
   };
 
-  const postLike = async (index) => {
-    let currentLikeList = null;
-    let matchingUsers = null;
-    const likeId = {
-      id: currentPlace._id,
-      index: index,
-      currentUser: currentUser.username,
-    };
-    try {
-      const res = await axios.put(
-        "http://localhost:8800/api/pins/addLike",
-        likeId
-      );
-      currentLikeList = res.data.review[index].likes;
-
-      matchingUsers = currentLikeList.filter(
-        (likes) => likes == currentUser.username
-      );
-
-      if (matchingUsers.length !== 0) {
-        console.log("liked");
-        handleAddLike(index);
-        return res.data;
-      } else {
-        return console.log("already liked");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
     getAllReviews();
   }, []);
-
-  const handleAddLike = (i) => {
-    likesCounter.current[i].innerHTML =
-      parseInt(likesCounter.current[i].innerHTML) + 1;
-  };
 
   function handleSetImageGalleryPics(e) {
     e.forEach((elem, i) => {
@@ -101,6 +64,7 @@ export default function ReviewViewer({
             loop={true}
           ></Lottie>
         )}
+
         <div
           className="menuTopBar"
           onPointerDown={(e) => {
@@ -119,25 +83,17 @@ export default function ReviewViewer({
             reviews.map((e, i) => {
               return (
                 <div className="reviewViewerContent" key={e.likes.length + 2}>
-                  <div className="reviewViewerTitle">
-                    <span>"{e.title}"&nbsp;</span>
-
-                    <div>
+                  <div className="reviewViewerTitleContainer">
+                    <div className="reviewViewerTitle">"{e.title}"&nbsp;</div>
+                    <div className="reviewViewerTitleContent">
                       by {e.username}
-                      <HiOutlineHeart
-                        className="reviewViewerLikeButton"
-                        onClick={() => {
-                          postLike(i);
-                        }}
+                      <LikeButton
+                        likesArray={e.likes}
+                        likesCount={e.likes.length}
+                        currentIndex={i}
+                        currentUser={currentUser}
+                        currentPlace={currentPlace}
                       />
-                      <span
-                        ref={(element) => {
-                          likesCounter.current[i] = element;
-                        }}
-                        id="likesLength"
-                      >
-                        {e.likes.length}
-                      </span>
                     </div>
                   </div>
 

@@ -57,7 +57,7 @@ export default function AddReviewForm({
       const newReview = {
         id: currentPlace._id,
         username: currentUser.username,
-        title: "currentPlace.title",
+        title,
         desc,
         rating: currentStars,
         pictures: [...images],
