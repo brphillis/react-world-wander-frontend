@@ -69,3 +69,7 @@ form {
 .menuTopBar > p {
   font-size: 12px;
 }
+
+.swal2-popup {
+  border: 1px dotted #a06cd5 !important;
+}

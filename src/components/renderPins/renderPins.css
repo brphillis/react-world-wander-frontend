@@ -82,10 +82,19 @@
   margin-right: 5px;
 }
 
+.stars {
+  position: absolute;
+  right: 15px;
+  color: #a06cd5;
+  margin-top: 18px;
+  font-size: 22px;
+  margin-right: 10px;
+}
+
 .star {
-  color: gold;
-  filter: drop-shadow(0 0 0.5px black);
-  margin: 0px 2px 0px 2px;
+  color: #a06cd5;
+  margin: 2px;
+  font-size: 22px;
 }
 
 .date {

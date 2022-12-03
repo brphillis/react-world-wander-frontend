@@ -41,10 +41,7 @@ export default function AddReviewForm({
 
   useEffect(() => {
     setRating(currentStars);
-    console.log(currentStars);
-    console.log(rating);
-    console.log(currentUser.username);
-  }, [currentStars]);
+  }, [currentStars, setRating]);
 
   const openNewPin = (id) => {
     setCurrentPlaceId(id);
@@ -62,7 +59,6 @@ export default function AddReviewForm({
         rating: currentStars,
         pictures: [...images],
       };
-      console.log(newReview);
 
       try {
         const res = await axios.put(
@@ -70,6 +66,20 @@ export default function AddReviewForm({
           newReview
         );
         setAddReviewForm(false);
+        Swal.fire({
+          title: "Thankyou for your Review",
+          text: "   ",
+          icon: "success",
+          padding: "10px",
+          confirmButtonColor: "#a06cd5",
+          confirmButtonText: "Okay!",
+          backdrop: `#23232380`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            openNewPin(res.data._id, res.data.lat, res.data.long);
+          }
+        });
+
         return res.data;
       } catch (err) {
         console.log(err);

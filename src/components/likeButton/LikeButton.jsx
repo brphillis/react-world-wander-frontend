@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useRef } from "react";
+import { React, useRef } from "react";
 import { HiOutlineHeart } from "react-icons/hi";
 import axios from "axios";
 
@@ -11,7 +11,6 @@ export default function LikeButton({
   currentIndex,
   likesCount,
 }) {
-  const [hasLiked, setHasLiked] = useState(false);
   const likeButtonRef = useRef([]);
   const likesCounter = useRef([]);
 
@@ -25,21 +24,26 @@ export default function LikeButton({
     };
 
     try {
-      const res = await axios.put(
+      let res = await axios.put(
         "http://localhost:8800/api/pins/addLike",
         likeId
       );
       currentLikeList = res.data.review[index].likes;
 
       matchingUsers = currentLikeList.filter(
-        (likes) => likes == currentUser.username
+        (likes) => likes === currentUser.username
       );
 
       if (matchingUsers.length < 1) {
         handleAddLike(index);
         return res.data;
       } else {
-        return;
+        res = await axios.put(
+          "http://localhost:8800/api/pins/deleteLike",
+          likeId
+        );
+        handleRemoveLike(index);
+        return res.data;
       }
     } catch (err) {
       console.log(err);
@@ -53,15 +57,12 @@ export default function LikeButton({
     likeButtonRef.current[currentIndex].firstChild.style.fill = "#a06cd5";
   };
 
-  useEffect(() => {
-    if (likesArray.includes(currentUser.username)) {
-      setHasLiked(true);
-      likeButtonRef.current[currentIndex].firstChild.style.fill = "#a06cd5";
-    }
-    if (!likesArray.includes(currentUser.username)) {
-      setHasLiked(false);
-    }
-  }, [setHasLiked, hasLiked, currentUser.username, likesArray, postLike]);
+  const handleRemoveLike = (i) => {
+    likesCounter.current[i].innerHTML =
+      parseInt(likesCounter.current[i].innerHTML) - 1;
+
+    likeButtonRef.current[currentIndex].firstChild.style.fill = "none";
+  };
 
   return (
     <div
@@ -71,9 +72,12 @@ export default function LikeButton({
       }}
     >
       <HiOutlineHeart
+        style={{
+          fill: likesArray.includes(currentUser.username) ? "#a06cd5" : "none",
+        }}
         className="reviewViewerLikeButton"
         onClick={() => {
-          postLike(currentIndex);
+          currentUser !== "guest" && postLike(currentIndex);
         }}
       />
 

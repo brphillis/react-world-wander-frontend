@@ -17,16 +17,16 @@ export default function ReviewViewer({
   currentUser,
 }) {
   const [reviews, setReviews] = useState([]);
+  const profilePicturesRef = useRef([]);
   const dragControls = useDragControls();
 
-  const getAllReviews = async () => {
-    const currentid = { id: currentPlace._id };
+  const getProfilePicture = async (user) => {
     try {
+      const currentid = { username: user };
       const res = await axios.post(
-        "http://localhost:8800/api/pins/getAllReviews",
+        "http://localhost:8800/api/users/getProfilePicture",
         currentid
       );
-      setReviews(res.data);
       return res.data;
     } catch (err) {
       console.log(err);
@@ -34,8 +34,29 @@ export default function ReviewViewer({
   };
 
   useEffect(() => {
+    const getAllReviews = async () => {
+      const currentid = { id: currentPlace._id };
+      try {
+        const res = await axios.post(
+          "http://localhost:8800/api/pins/getAllReviews",
+          currentid
+        );
+
+        setReviews(res.data);
+        res.data.forEach((e, i) => {
+          getProfilePicture(e.username).then(
+            (data) =>
+              (profilePicturesRef.current[i].src = data[0].profilePicture)
+          );
+        });
+
+        return res.data;
+      } catch (err) {
+        console.log(err);
+      }
+    };
     getAllReviews();
-  }, []);
+  }, [currentPlace._id]);
 
   function handleSetImageGalleryPics(e) {
     e.forEach((elem, i) => {
@@ -82,9 +103,17 @@ export default function ReviewViewer({
           {reviews.length > 0 &&
             reviews.map((e, i) => {
               return (
-                <div className="reviewViewerContent" key={e.likes.length + 2}>
+                <div className="reviewViewerContent" key={e.desc.length + 9}>
                   <div className="reviewViewerTitleContainer">
                     <div className="reviewViewerTitle">"{e.title}"&nbsp;</div>
+                    <img
+                      className="reviewViewerProfilePicture"
+                      alt={`${e.title + i}`}
+                      src="placeholder"
+                      ref={(element) => {
+                        profilePicturesRef.current[i] = element;
+                      }}
+                    />
                     <div className="reviewViewerTitleContent">
                       by {e.username}
                       <LikeButton
@@ -103,7 +132,8 @@ export default function ReviewViewer({
                     {e.pictures.map((elem, index) => {
                       return (
                         <img
-                          key={index + 1}
+                          key={index + 12}
+                          alt={`${e.size + e.name}`}
                           className="reviewImage"
                           src={elem.base64}
                           onClick={() => {

@@ -9,6 +9,9 @@ import { RiCloseCircleFill } from "react-icons/ri";
 import { RiUpload2Fill } from "react-icons/ri";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Lottie from "lottie-react";
+import logoAnimation from "./uploadAnimation.json";
+import Swal from "sweetalert2";
 
 export default function AccountPanel({
   myStorage,
@@ -72,8 +75,22 @@ export default function AccountPanel({
   );
 
   const handleLogout = () => {
-    myStorage.removeItem("user");
-    setCurrentUser(null);
+    Swal.fire({
+      title: "Just checking...",
+      text: "Are you sure you want to Log out?",
+      icon: "warning",
+      padding: "10px",
+      confirmButtonColor: "#d33",
+      confirmButtonText: "Log out",
+      showCancelButton: true,
+      cancelButtonColor: "#a06cd5",
+      backdrop: `#23232380`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        myStorage.removeItem("user");
+        setCurrentUser(null);
+      }
+    });
   };
 
   const handleDeleteAccount = async (id) => {
@@ -289,7 +306,13 @@ export default function AccountPanel({
           <form onSubmit={handleChangeProfilePicture}>
             <label className="fileUploadLabel" htmlFor="fileUpload">
               <div className="previewPicture">
-                <RiUpload2Fill className="uploadPlaceholder" />
+                {!image && (
+                  <Lottie
+                    className="profilePictureUploadPlaceHolder"
+                    animationData={logoAnimation}
+                    loop={true}
+                  ></Lottie>
+                )}
                 {image && <img alt="uploadPlaceholder" src={image} />}
               </div>
             </label>

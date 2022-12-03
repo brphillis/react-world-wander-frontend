@@ -49,6 +49,11 @@
   color: white;
 }
 
+.profilePictureUploadPlaceHolder {
+  height: 100px;
+  width: 100px;
+}
+
 figcaption {
   text-align: center;
   font-weight: bold;
@@ -129,6 +134,7 @@ figcaption {
   border: 2px solid #a06cd5;
   background-color: #a06cd5;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .previewPicture > img {

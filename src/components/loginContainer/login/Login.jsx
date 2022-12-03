@@ -15,14 +15,12 @@ export default function Login({ setShowLogin, setSuccess, setCurrentUser }) {
     };
 
     try {
-      console.log(user);
       const res = await axios.post(
         "http://localhost:8800/api/users/login",
         user
       );
       setCurrentUser(res.data);
       window.localStorage.setItem("token", JSON.stringify(res.data));
-
       setShowLogin(false);
       setError(false);
       setSuccess(true);

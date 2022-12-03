@@ -64,7 +64,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log(reviewViewer);
+    console.log(currentUser);
   });
 
   //double click to add pin
@@ -89,11 +89,6 @@ function App() {
       setNrTaps((prevNr) => prevNr + 1);
       // single tap;
     }
-  };
-
-  const handleLogout = () => {
-    myStorage.removeItem("user");
-    setCurrentUser(null);
   };
 
   return (
