@@ -16,6 +16,7 @@ export default function Register({ setShowRegister }) {
   });
   const [success, setSuccess] = useState(false);
   const [passMatchError, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
   const [passwordConfirm, setPasswordConfirm] = useState(null);
@@ -27,30 +28,65 @@ export default function Register({ setShowRegister }) {
       email: email,
       password: password,
     };
-
     try {
-      if (password === passwordConfirm) {
-        console.log("submitting");
-        setError(false);
-        await axios.post("http://localhost:8800/api/users/register", newUser);
-        setSuccess(true);
-        Swal.fire({
-          title: "Account Created!",
-          text: "   ",
-          icon: "success",
-          padding: "10px",
-          confirmButtonColor: "#a06cd5",
-          confirmButtonText: "Okay!",
-          backdrop: `#23232380`,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setShowRegister(false);
+      setLoading(true);
+      window.grecaptcha.ready(() => {
+        window.grecaptcha
+          .execute("6LfI3FsjAAAAABFbi2tuGXNjMAMfnSw0_SnVia_V", {
+            action: "submit",
+          })
+          .then((token) => {
+            submitData(token);
+          });
+      });
+      const submitData = async (token) => {
+        const captchaInfo = {
+          username: username,
+          email: email,
+          password: password,
+          token: token,
+        };
+        try {
+          setError(false);
+          const res = await axios.post(
+            "http://localhost:8800/api/verify/send",
+            captchaInfo
+          );
+          console.log(res.data);
+          if (res.data.google_response.score > 0.5) {
+            if (password === passwordConfirm) {
+              setError(false);
+              await axios.post(
+                "http://localhost:8800/api/users/register",
+                newUser
+              );
+              setSuccess(true);
+              Swal.fire({
+                title: "Account Created!",
+                text: "   ",
+                icon: "success",
+                padding: "10px",
+                confirmButtonColor: "#a06cd5",
+                confirmButtonText: "Okay!",
+                backdrop: `#23232380`,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  setShowRegister(false);
+                }
+              });
+            } else {
+              console.log("passwords do not match.");
+              setError(true);
+            }
+          } else {
+            console.log("You are a bot!");
           }
-        });
-      } else {
-        console.log("error");
-        setError(true);
-      }
+          setLoading(false);
+        } catch (err) {
+          setError(true);
+          setLoading(false);
+        }
+      };
     } catch (err) {
       setError(true);
     }
@@ -186,8 +222,8 @@ export default function Register({ setShowRegister }) {
             }}
           />
         </div>
-        <button type="submit" className="btnPrimary">
-          Register
+        <button type="submit" className="btnPrimary" disabled={loading}>
+          {loading ? "Submitting..." : "Submit"}
         </button>
         <button
           type="button"

@@ -63,25 +63,33 @@ function App() {
     }
   }, []);
 
-  const handleLoaded = (_) => {
-    window.grecaptcha.ready((_) => {
-      window.grecaptcha
-        .execute("6LfI3FsjAAAAABFbi2tuGXNjMAMfnSw0_SnVia_V", {
-          action: "homepage",
-        })
-        .then((token) => {
-          // ...
-        });
-    });
-  };
-
+  //load captcha
   useEffect(() => {
-    // Add reCaptcha
-    const script = document.createElement("script");
-    script.src =
-      "https://www.google.com/recaptcha/api.js?render=6LfI3FsjAAAAABFbi2tuGXNjMAMfnSw0_SnVia_V";
-    script.addEventListener("load", handleLoaded);
-    document.body.appendChild(script);
+    const loadScriptByURL = (id, url, callback) => {
+      const isScriptExist = document.getElementById(id);
+
+      if (!isScriptExist) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = url;
+        script.id = id;
+        script.onload = function () {
+          if (callback) callback();
+        };
+        document.body.appendChild(script);
+      }
+
+      if (isScriptExist && callback) callback();
+    };
+
+    // load captcha script by passing URL
+    loadScriptByURL(
+      "recaptcha-key",
+      `https://www.google.com/recaptcha/api.js?render=6LfI3FsjAAAAABFbi2tuGXNjMAMfnSw0_SnVia_V`,
+      function () {
+        console.log("captcha 3 loaded");
+      }
+    );
   }, []);
 
   //double click to add pin
