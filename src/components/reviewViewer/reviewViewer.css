@@ -36,6 +36,10 @@
   padding-bottom: 15px;
 }
 
+.reviewViewerContent > hr {
+  margin-top: 20px;
+}
+
 .reviewViewerTitleContainer {
   position: relative;
   align-self: flex-start;
@@ -63,10 +67,12 @@
 }
 
 .reviewViewerProfilePicture {
-  height: 30px;
-  width: 30px;
+  height: 36px;
+  width: 36px;
   border-radius: 200px;
   margin-top: -11px;
+  margin-left: -5px;
+  cursor: pointer;
 }
 
 #likesLength {
@@ -78,7 +84,7 @@
 
 .reviewStarsContainer {
   position: absolute;
-  right: 30px;
+  right: 10px;
   top: 3px;
 }
 
@@ -102,10 +108,16 @@
   flex-wrap: wrap;
   gap: 10px;
   background-color: white;
-  border-bottom: 15px solid #e5dded;
   width: 110%;
   padding-top: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 32px;
+}
+
+.reviewImagesContainer > div {
+  position: absolute;
+  bottom: 58px;
+  right: 5px;
+  font-size: 12px;
 }
 
 .reviewImage {
@@ -117,4 +129,32 @@
 
 .reviewImage:hover {
   transform: scale(1.025);
+}
+
+.sortButton {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.likeButtonContainer {
+  position: absolute;
+  left: 15px;
+  bottom: 38px;
+}
+
+.rvTimeAgo {
+  position: absolute;
+  font-size: 10px;
+  right: 10px;
+  bottom: 44px;
+}
+
+.rvDivider {
+  background-color: #e5dded;
+  height: 20px;
+  width: 110%;
+  margin-top: 10px;
 }

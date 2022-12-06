@@ -3,6 +3,8 @@ import { motion, useDragControls } from "framer-motion";
 import "./addReviewForm.css";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Lottie from "lottie-react";
@@ -29,6 +31,14 @@ export default function AddReviewForm({
   pinType,
   pinColor,
 }) {
+  const {
+    register,
+    watch,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    criteriaMode: "all",
+  });
   const [oneStar, setOneStar] = useState(false);
   const [twoStar, setTwoStar] = useState(false);
   const [threeStar, setThreeStar] = useState(false);
@@ -47,7 +57,7 @@ export default function AddReviewForm({
     setCurrentPlaceId(id);
   };
 
-  const handleSubmit = async (e) => {
+  const handlePost = async (e) => {
     e.preventDefault();
 
     if (currentPlace) {
@@ -298,7 +308,7 @@ export default function AddReviewForm({
       }}
     >
       <div className="addReviewFormContainer">
-        <form className="addReviewForm" onSubmit={handleSubmit}>
+        <form className="addReviewForm" onSubmit={handleSubmit(handlePost)}>
           <div
             className="topBar"
             onPointerDown={(e) => {
@@ -364,13 +374,35 @@ export default function AddReviewForm({
 
           {!currentPlace && (
             <input
+              {...register("placeNameErrorInput", {
+                required: "place name is required.",
+                minLength: {
+                  value: 3,
+                  message: "place name must exceed 3 characters",
+                },
+                maxLength: {
+                  value: 15,
+                  message: "place name must not exceed 15 characters",
+                },
+              })}
               className="reviewTitle"
               placeholder="Name of the Location"
               onChange={(e) => setPinName(e.target.value)}
-            ></input>
+            />
           )}
 
           <input
+            {...register("reveiewTitleErrorInput", {
+              required: "review title is required.",
+              minLength: {
+                value: 3,
+                message: "review title must exceed 3 characters",
+              },
+              maxLength: {
+                value: 15,
+                message: "review title must not exceed 15 characters",
+              },
+            })}
             className="reviewTitle"
             placeholder="Review Title"
             onChange={(e) => setTitle(e.target.value)}
@@ -381,12 +413,33 @@ export default function AddReviewForm({
           )}
 
           <textarea
+            {...register("reveiewDescErrorInput", {
+              required: "review desc is required.",
+              minLength: {
+                value: 3,
+                message: "review title must exceed 30 characters",
+              },
+              maxLength: {
+                value: 15,
+                message: "review title must not exceed 250 characters",
+              },
+            })}
             placeholder="what did you think..."
             onChange={(e) => setDesc(e.target.value)}
           />
           <br />
           <label>Rating: </label>
-          <div className="starContainer">
+          <div
+            {...register("starErrorInput", {
+              required: true,
+              validate: () => {
+                if (currentStars < 1) {
+                  return "dont forget to leave a rating";
+                }
+              },
+            })}
+            className="starContainer"
+          >
             {!oneStar ? (
               <motion.div
                 id="oneStar"
@@ -481,6 +534,60 @@ export default function AddReviewForm({
                 <AiFillStar id="fiveStar" className="ratingStarFill" />
               </motion.div>
             )}
+          </div>
+
+          <div className="val">
+            <ErrorMessage
+              errors={errors}
+              name="placeNameErrorInput"
+              render={({ messages }) => {
+                console.log("messages", messages);
+                return messages
+                  ? Object.entries(messages).map(([type, message]) => (
+                      <p key={type}>{message}</p>
+                    ))
+                  : null;
+              }}
+            />
+
+            <ErrorMessage
+              errors={errors}
+              name="reveiewTitleErrorInput"
+              render={({ messages }) => {
+                console.log("messages", messages);
+                return messages
+                  ? Object.entries(messages).map(([type, message]) => (
+                      <p key={type}>{message}</p>
+                    ))
+                  : null;
+              }}
+            />
+
+            <ErrorMessage
+              errors={errors}
+              name="reveiewDescErrorInput"
+              render={({ messages }) => {
+                console.log("messages", messages);
+                return messages
+                  ? Object.entries(messages).map(([type, message]) => (
+                      <p key={type}>{message}</p>
+                    ))
+                  : null;
+              }}
+            />
+
+            <ErrorMessage
+              errors={errors}
+              name="starErrorInput"
+              render={({ messages }) => {
+                console.log("messages", messages);
+                return messages
+                  ? Object.entries(messages).map(([type, message]) => (
+                      <p key={type}>{message}</p>
+                    ))
+                  : null;
+              }}
+            />
           </div>
 
           <button type="submit" className="btnPrimary">

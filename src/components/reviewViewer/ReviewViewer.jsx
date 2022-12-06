@@ -2,11 +2,13 @@ import "./reviewViewer.css";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { motion, useDragControls } from "framer-motion";
 import { FaStar } from "react-icons/fa";
+import { MdSort } from "react-icons/md";
 import { useState, useEffect, useRef } from "react";
 import Lottie from "lottie-react";
 import loadingCircle from "./loadingCircle.json";
 import axios from "axios";
 import React from "react";
+import { format } from "timeago.js";
 import LikeButton from "../likeButton/LikeButton";
 
 export default function ReviewViewer({
@@ -19,6 +21,14 @@ export default function ReviewViewer({
   const [reviews, setReviews] = useState([]);
   const profilePicturesRef = useRef([]);
   const dragControls = useDragControls();
+
+  const [sortReviews, setSortReviews] = useState({
+    reviewsByLikes: reviews.sort(function (a, b) {
+      return b.likes.length - a.likes.length;
+    }),
+
+    reviewsByRecent: reviews.reverse(),
+  });
 
   const getProfilePicture = async (user) => {
     try {
@@ -42,7 +52,11 @@ export default function ReviewViewer({
           currentid
         );
 
-        setReviews(res.data);
+        var reviewsByLikes = res.data.sort(function (a, b) {
+          return b.likes.length - a.likes.length;
+        });
+
+        setReviews(reviewsByLikes);
         res.data.forEach((e, i) => {
           getProfilePicture(e.username).then(
             (data) =>
@@ -92,6 +106,7 @@ export default function ReviewViewer({
             dragControls.start(e);
           }}
         >
+          <MdSort className="sortButton" />
           <RiCloseCircleFill
             className="xCloseButtonWhite"
             onClick={() => setReviewViewer(false)}
@@ -106,24 +121,36 @@ export default function ReviewViewer({
                 <div className="reviewViewerContent" key={e.desc.length + 9}>
                   <div className="reviewViewerTitleContainer">
                     <div className="reviewViewerTitle">"{e.title}"&nbsp;</div>
+
                     <img
                       className="reviewViewerProfilePicture"
                       alt={`${e.title + i}`}
-                      src="placeholder"
                       ref={(element) => {
                         profilePicturesRef.current[i] = element;
                       }}
+                      src="https://st3.depositphotos.com/6672868/13701/v/600/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
                     />
+
                     <div className="reviewViewerTitleContent">
                       by {e.username}
-                      <LikeButton
-                        likesArray={e.likes}
-                        likesCount={e.likes.length}
-                        currentIndex={i}
-                        currentUser={currentUser}
-                        currentPlace={currentPlace}
-                      />
                     </div>
+                  </div>
+
+                  <div className="reviewStarsContainer">
+                    <React.Fragment>
+                      {(() => {
+                        const arr = [];
+                        for (let i = 0; i < e.rating; i++) {
+                          arr.push(
+                            <FaStar
+                              className="reviewStars"
+                              key={Math.floor(parseInt(e._id) + i)}
+                            />
+                          );
+                        }
+                        return arr;
+                      })()}
+                    </React.Fragment>
                   </div>
 
                   <div className="reviewViewerDesc">{e.desc}</div>
@@ -145,24 +172,20 @@ export default function ReviewViewer({
                     })}
                   </div>
 
-                  <div className="reviewStarsContainer">
-                    <React.Fragment>
-                      {(() => {
-                        const arr = [];
-                        for (let i = 0; i < e.rating; i++) {
-                          arr.push(
-                            <FaStar
-                              className="reviewStars"
-                              key={Math.floor(parseInt(e._id) + i)}
-                            />
-                          );
-                        }
-                        return arr;
-                      })()}
-                    </React.Fragment>
+                  <LikeButton
+                    className="likeButtonContainer"
+                    likesArray={e.likes}
+                    likesCount={e.likes.length}
+                    currentIndex={i}
+                    currentUser={currentUser}
+                    currentPlace={currentPlace}
+                  />
+
+                  <div className="rvTimeAgo">
+                    {format(e.createdAt, "en_US")}
                   </div>
 
-                  <hr />
+                  <div className="rvDivider"></div>
                 </div>
               );
             })}

@@ -63,9 +63,26 @@ function App() {
     }
   }, []);
 
+  const handleLoaded = (_) => {
+    window.grecaptcha.ready((_) => {
+      window.grecaptcha
+        .execute("6LfI3FsjAAAAABFbi2tuGXNjMAMfnSw0_SnVia_V", {
+          action: "homepage",
+        })
+        .then((token) => {
+          // ...
+        });
+    });
+  };
+
   useEffect(() => {
-    console.log(currentUser);
-  });
+    // Add reCaptcha
+    const script = document.createElement("script");
+    script.src =
+      "https://www.google.com/recaptcha/api.js?render=6LfI3FsjAAAAABFbi2tuGXNjMAMfnSw0_SnVia_V";
+    script.addEventListener("load", handleLoaded);
+    document.body.appendChild(script);
+  }, []);
 
   //double click to add pin
   const handleAddClick = (e) => {

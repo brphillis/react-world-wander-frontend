@@ -73,3 +73,10 @@ form {
 .swal2-popup {
   border: 1px dotted #a06cd5 !important;
 }
+
+.val > p {
+  font-size: 12px !important;
+  color: red;
+  z-index: 99999;
+  width: 100%;
+}

@@ -1,34 +1,54 @@
 import "./register.css";
-import { useState, useRef } from "react";
+import { useForm } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
+import { useState, useRef, useEffect } from "react";
+import Swal from "sweetalert2";
 import axios from "axios";
 
 export default function Register({ setShowRegister }) {
+  const {
+    register,
+    watch,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    criteriaMode: "all",
+  });
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
-  const nameRef = useRef();
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const confirmPasswordRef = useRef();
-  const errorMessage = useRef();
+  const [passMatchError, setError] = useState(false);
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [passwordConfirm, setPasswordConfirm] = useState(null);
+  const [email, setEmail] = useState(null);
 
-  const handleRegisterSubmit = async (e) => {
-    e.preventDefault();
+  const handleRegisterSubmit = async () => {
     const newUser = {
-      username: nameRef.current.value,
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
+      username: username,
+      email: email,
+      password: password,
     };
 
     try {
-      //submit register and check passwords match
-      if (passwordRef.current.value === confirmPasswordRef.current.value) {
+      if (password === passwordConfirm) {
         console.log("submitting");
         setError(false);
         await axios.post("http://localhost:8800/api/users/register", newUser);
         setSuccess(true);
+        Swal.fire({
+          title: "Account Created!",
+          text: "   ",
+          icon: "success",
+          padding: "10px",
+          confirmButtonColor: "#a06cd5",
+          confirmButtonText: "Okay!",
+          backdrop: `#23232380`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setShowRegister(false);
+          }
+        });
       } else {
         console.log("error");
-        errorMessage.current.innerHTML = "Passwords do not match.";
         setError(true);
       }
     } catch (err) {
@@ -40,36 +60,143 @@ export default function Register({ setShowRegister }) {
     <div className="registerForm">
       <br />
       <div className="logo"></div>
-      <form onSubmit={handleRegisterSubmit}>
-        <input type="text" placeholder="username" ref={nameRef} />
-        <input type="email" placeholder="email" ref={emailRef} />
-        <input type="password" placeholder="password" ref={passwordRef} />
+      <form onSubmit={handleSubmit(handleRegisterSubmit)}>
+        <div className="val"></div>
         <input
+          {...register("usernameErrorInput", {
+            required: "username is required.",
+            minLength: {
+              value: 3,
+              message: "username must exceed 3 characters",
+            },
+            maxLength: {
+              value: 15,
+              message: "password must not exceed 15 characters",
+            },
+          })}
+          type="text"
+          placeholder="username"
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          {...register("emailErrorInput", {
+            required: "email is required.",
+            pattern: {
+              value:
+                /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+              message: "email is invalid.",
+            },
+          })}
+          type="email"
+          placeholder="email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          {...register("passwordErrorInput", {
+            required: "password is required.",
+            pattern: {
+              value:
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+              message:
+                "password must be longer than 8 chars, have 1 uppercase and a special character.",
+            },
+            minLength: {
+              value: 3,
+              message: "password must exceed 8 characters",
+            },
+            maxLength: {
+              value: 20,
+              message: "password must not exceed 20 characters",
+            },
+          })}
+          type="password"
+          placeholder="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input
+          {...register("passwordConfirmErrorInput", {
+            required: true,
+            validate: (val) => {
+              if (watch("passwordErrorInput") != val) {
+                return "Your passwords do no match";
+              }
+            },
+          })}
           type="password"
           placeholder="confirm password"
-          ref={confirmPasswordRef}
+          onChange={(e) => setPasswordConfirm(e.target.value)}
         />
-        {success && (
-          <span className="registerSuccess">
-            Successfull. You can login now!
-          </span>
-        )}{" "}
-        {error && (
-          <span className="registerError" ref={errorMessage}>
-            error
-          </span>
-        )}
+
+        <div
+          className="g-recaptcha"
+          data-sitekey={process.env.REACT_APP_SITE_KEY}
+          data-size="invisible"
+        ></div>
+
+        <div className="val">
+          <ErrorMessage
+            errors={errors}
+            name="usernameErrorInput"
+            render={({ messages }) => {
+              console.log("messages", messages);
+              return messages
+                ? Object.entries(messages).map(([type, message]) => (
+                    <p key={type}>{message}</p>
+                  ))
+                : null;
+            }}
+          />
+
+          <ErrorMessage
+            errors={errors}
+            name="emailErrorInput"
+            render={({ messages }) => {
+              console.log("messages", messages);
+              return messages
+                ? Object.entries(messages).map(([type, message]) => (
+                    <p key={type}>{message}</p>
+                  ))
+                : null;
+            }}
+          />
+
+          <ErrorMessage
+            errors={errors}
+            name="passwordErrorInput"
+            render={({ messages }) => {
+              console.log("messages", messages);
+              return messages
+                ? Object.entries(messages).map(([type, message]) => (
+                    <p key={type}>{message}</p>
+                  ))
+                : null;
+            }}
+          />
+
+          <ErrorMessage
+            errors={errors}
+            name="passwordConfirmErrorInput"
+            render={({ messages }) => {
+              console.log("messages", messages);
+              return messages
+                ? Object.entries(messages).map(([type, message]) => (
+                    <p key={type}>{message}</p>
+                  ))
+                : null;
+            }}
+          />
+        </div>
         <button type="submit" className="btnPrimary">
           Register
         </button>
+        <button
+          type="button"
+          className="btnPrimary"
+          onClick={() => setShowRegister(false)}
+        >
+          Back
+        </button>
       </form>
-      <button
-        type="button"
-        className="btnPrimary"
-        onClick={() => setShowRegister(false)}
-      >
-        Back
-      </button>
     </div>
   );
 }

@@ -7,12 +7,12 @@
 }
 
 .registerForm > form {
-  height: 22rem;
+  height: max-content;
   width: 200px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  row-gap: 50px;
+  row-gap: 10px;
 }
 
 .registerForm > button {
@@ -21,14 +21,6 @@
 
 .registerSuccess {
   color: green;
-  font-size: 12px;
-  text-align: center;
-  margin-top: -20px;
-  margin-bottom: -40px;
-}
-
-.registerError {
-  color: red;
   font-size: 12px;
   text-align: center;
   margin-top: -20px;
