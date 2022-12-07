@@ -1,11 +1,11 @@
 import { Marker, Popup } from "react-map-gl";
 import { FaMapMarkerAlt, FaStar } from "react-icons/fa";
 import { format } from "timeago.js";
-import "./renderPins.css";
+import "./pinRenderer.css";
 import React, { useEffect } from "react";
 import axios from "axios";
 
-export default function RenderPins({
+export default function PinRenderer({
   currentPins,
   currentPlaceId,
   setCurrentPlaceId,

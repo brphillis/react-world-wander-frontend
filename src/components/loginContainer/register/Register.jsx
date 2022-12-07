@@ -4,6 +4,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import { useState, useRef, useEffect } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { useCaptchaScore } from "../../../hooks/useCaptchaScore";
 
 export default function Register({ setShowRegister }) {
   const {
@@ -21,73 +22,58 @@ export default function Register({ setShowRegister }) {
   const [password, setPassword] = useState(null);
   const [passwordConfirm, setPasswordConfirm] = useState(null);
   const [email, setEmail] = useState(null);
+  const { captchaScore, getCaptchaScore, fetchCaptcha, setfetchCaptcha } =
+    useCaptchaScore(username, password, email);
+
+  //gets captcha score
+  useEffect(() => {
+    if (fetchCaptcha) {
+      getCaptchaScore(username, email, password);
+    }
+  }, [getCaptchaScore, fetchCaptcha, loading, username, email, password]);
+
+  //once we have the score, handle the submit
+  useEffect(() => {
+    if (captchaScore) {
+      handleRegisterSubmit();
+    }
+  }, [captchaScore]);
 
   const handleRegisterSubmit = async () => {
-    const newUser = {
-      username: username,
-      email: email,
-      password: password,
-    };
-    try {
+    if (password === passwordConfirm) {
       setLoading(true);
-      window.grecaptcha.ready(() => {
-        window.grecaptcha
-          .execute("6LfI3FsjAAAAABFbi2tuGXNjMAMfnSw0_SnVia_V", {
-            action: "submit",
-          })
-          .then((token) => {
-            submitData(token);
-          });
-      });
-      const submitData = async (token) => {
-        const captchaInfo = {
+      if (captchaScore >= 0.5) {
+        const newUser = {
           username: username,
           email: email,
           password: password,
-          token: token,
         };
         try {
-          setError(false);
-          const res = await axios.post(
-            "http://localhost:8800/api/verify/send",
-            captchaInfo
-          );
-          console.log(res.data);
-          if (res.data.google_response.score > 0.5) {
-            if (password === passwordConfirm) {
-              setError(false);
-              await axios.post(
-                "http://localhost:8800/api/users/register",
-                newUser
-              );
-              setSuccess(true);
-              Swal.fire({
-                title: "Account Created!",
-                text: "   ",
-                icon: "success",
-                padding: "10px",
-                confirmButtonColor: "#a06cd5",
-                confirmButtonText: "Okay!",
-                backdrop: `#23232380`,
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  setShowRegister(false);
-                }
-              });
-            } else {
-              console.log("passwords do not match.");
-              setError(true);
+          await axios.post("http://localhost:8800/api/users/register", newUser);
+          setSuccess(true);
+          console.log(captchaScore);
+          Swal.fire({
+            title: "Account Created!",
+            text: "   ",
+            icon: "success",
+            padding: "10px",
+            confirmButtonColor: "#a06cd5",
+            confirmButtonText: "Okay!",
+            backdrop: `#23232380`,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              setShowRegister(false);
+              setLoading(false);
             }
-          } else {
-            console.log("You are a bot!");
-          }
-          setLoading(false);
+          });
         } catch (err) {
-          setError(true);
+          console.log(err);
           setLoading(false);
         }
-      };
-    } catch (err) {
+      } else if (captchaScore < 0.5) {
+        console.log(`you are a bot, your captcha score is : ${captchaScore}`);
+      }
+    } else {
       setError(true);
     }
   };
@@ -96,7 +82,12 @@ export default function Register({ setShowRegister }) {
     <div className="registerForm">
       <br />
       <div className="logo"></div>
-      <form onSubmit={handleSubmit(handleRegisterSubmit)}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(setfetchCaptcha(true));
+        }}
+      >
         <div className="val"></div>
         <input
           {...register("usernameErrorInput", {

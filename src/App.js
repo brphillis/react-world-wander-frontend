@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./app.css";
 
 import LoginContainer from "./components/loginContainer/LoginContainer";
-import RenderPins from "./components/renderPins/RenderPins";
+import PinRenderer from "./components/pinRenderer/PinRenderer";
 import AccountPanel from "./components/accountPanel/AccountPanel";
 import MapClickMenu from "./components/mapClickMenu/MapClickMenu";
 import ImageGallery from "./components/imageGallery/ImageGallery";
@@ -11,7 +11,6 @@ import AddReviewForm from "./components/addReviewForm/AddReviewForm";
 import ReviewViewer from "./components/reviewViewer/ReviewViewer";
 
 import useWindowDimensions from "./hooks/useWindowDimensions";
-import { AiFillCodeSandboxCircle } from "react-icons/ai";
 
 function App() {
   const myStorage = window.localStorage;
@@ -85,7 +84,7 @@ function App() {
     // load captcha script by passing URL
     loadScriptByURL(
       "recaptcha-key",
-      `https://www.google.com/recaptcha/api.js?render=6LfI3FsjAAAAABFbi2tuGXNjMAMfnSw0_SnVia_V`,
+      `https://www.google.com/recaptcha/api.js?render=${process.env.REACT_APP_SITE_KEY}`,
       function () {
         console.log("captcha 3 loaded");
       }
@@ -174,7 +173,7 @@ function App() {
         )}
 
         {/* Render Pins */}
-        <RenderPins
+        <PinRenderer
           currentPins={currentPins}
           currentPlaceId={currentPlaceId}
           setCurrentPlaceId={setCurrentPlaceId}
@@ -185,7 +184,7 @@ function App() {
           setAddReviewForm={setAddReviewForm}
           setImageGallery={setImageGallery}
           setReviewViewer={setReviewViewer}
-        ></RenderPins>
+        ></PinRenderer>
 
         {/* Add Pin Popup */}
         {newPlace && (
