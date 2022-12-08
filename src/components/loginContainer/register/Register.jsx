@@ -25,20 +25,21 @@ export default function Register({ setShowRegister }) {
   const { captchaScore, getCaptchaScore, fetchCaptcha, setfetchCaptcha } =
     useCaptchaScore(username, password, email);
 
-  //gets captcha score
+  //once fetchaCaptcha is true, we get captcha score
   useEffect(() => {
     if (fetchCaptcha) {
       getCaptchaScore(username, email, password);
     }
   }, [getCaptchaScore, fetchCaptcha, loading, username, email, password]);
 
-  //once we have the score, handle the submit
+  //when captcha score is recieved we will handle submit
   useEffect(() => {
     if (captchaScore) {
       handleRegisterSubmit();
     }
   }, [captchaScore]);
 
+  //we then handle submit, then set fetchCaptcha back to false
   const handleRegisterSubmit = async () => {
     if (password === passwordConfirm) {
       setLoading(true);

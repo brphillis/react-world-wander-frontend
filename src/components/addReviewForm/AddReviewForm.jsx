@@ -11,6 +11,8 @@ import Lottie from "lottie-react";
 import logoAnimation from "./uploadAnimation.json";
 
 export default function AddReviewForm({
+  height,
+  width,
   setAddReviewForm,
   currentPlace,
   setCurrentPlace,
@@ -57,9 +59,7 @@ export default function AddReviewForm({
     setCurrentPlaceId(id);
   };
 
-  const handlePost = async (e) => {
-    e.preventDefault();
-
+  const handlePost = async () => {
     if (currentPlace) {
       const newReview = {
         id: currentPlace._id,
@@ -97,7 +97,6 @@ export default function AddReviewForm({
     }
 
     if (!currentPlace) {
-      e.preventDefault();
       const newPin = {
         name: pinName,
         lat: newPlace.long,
@@ -294,20 +293,39 @@ export default function AddReviewForm({
     }
   }
 
+  const motionValues = {
+    desktop: {
+      position: "absolute",
+      left: "40%",
+      top: "20%",
+      margin: "0",
+    },
+    mobile: {
+      position: "absolute",
+      top: "0%",
+      left: "0",
+      right: "0",
+      marginLeft: "auto",
+      marginRight: "auto",
+      width: width,
+    },
+  };
+
   return (
     <motion.div
       drag
       dragControls={dragControls}
       dragListener={false}
       dragMomentum={false}
-      initial={{
-        position: "absolute",
-        left: "40%",
-        top: "20%",
-        margin: "0",
-      }}
+      initial={width > 600 ? motionValues.desktop : motionValues.mobile}
     >
-      <div className="addReviewFormContainer">
+      <div
+        className={
+          width > 900
+            ? "addReviewFormContainer"
+            : "addReviewFormContainerMobile"
+        }
+      >
         <form className="addReviewForm" onSubmit={handleSubmit(handlePost)}>
           <div
             className="topBar"
@@ -417,11 +435,11 @@ export default function AddReviewForm({
               required: "review desc is required.",
               minLength: {
                 value: 3,
-                message: "review title must exceed 30 characters",
+                message: "review must exceed 30 characters",
               },
               maxLength: {
-                value: 15,
-                message: "review title must not exceed 250 characters",
+                value: 250,
+                message: "review must not exceed 250 characters",
               },
             })}
             placeholder="what did you think..."
@@ -431,7 +449,7 @@ export default function AddReviewForm({
           <label>Rating: </label>
           <div
             {...register("starErrorInput", {
-              required: true,
+              required: false,
               validate: () => {
                 if (currentStars < 1) {
                   return "dont forget to leave a rating";

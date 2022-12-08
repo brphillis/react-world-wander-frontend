@@ -16,6 +16,8 @@ export default function PinRenderer({
   setAddReviewForm,
   setImageGallery,
   setReviewViewer,
+  width,
+  height,
 }) {
   useEffect(() => {
     const getPins = async () => {
@@ -27,7 +29,6 @@ export default function PinRenderer({
       }
     };
     getPins();
-    console.log(mapRef);
   }, [setPins]);
 
   const handleMarkerClick = (id) => {
@@ -61,7 +62,7 @@ export default function PinRenderer({
           {/* Selected Pin Popup */}
           {p._id === currentPlaceId && (
             <Popup
-              // closeOnMove={true}
+              className={width < 600 && "mobilePopup"}
               longitude={p.long}
               latitude={p.lat}
               anchor="bottom"
@@ -72,33 +73,36 @@ export default function PinRenderer({
               }}
               onClose={() => setCurrentPlaceId(null)}
             >
-              <div className="selectedPin">
+              <div
+                className={width > 600 ? "selectedPin" : "selectedPinMobile"}
+              >
                 <div className="pinImageContainer">
                   <img
                     className={"pinImage0"}
                     style={{
-                      width:
-                        p.review[0].pictures.length === 1 ? "100%" : "67.3%",
+                      width: p.review[0].pictures.length === 1 ? "100%" : "70%",
                     }}
                     alt={`uploadNum0`}
                     src={p.review[0].pictures[0].base64}
                     onClick={() => setImageGallery(true)}
                   />
 
-                  <div className="pinImageThumbnails">
-                    {p.review[0].pictures.map((e, i) => {
-                      if (i > 0 && i <= 2)
-                        return (
-                          <img
-                            className={"pinImage" + [i]}
-                            key={p.review[0].pictures[i].name + `${i}`}
-                            alt={`uploadNum${i}`}
-                            src={e.base64}
-                            onClick={() => setImageGallery(true)}
-                          />
-                        );
-                    })}
-                  </div>
+                  {width > 900 && (
+                    <div className="pinImageThumbnailContainer">
+                      {p.review[0].pictures.map((e, i) => {
+                        if (i > 0 && i <= 2)
+                          return (
+                            <img
+                              className={"pinImage" + [i]}
+                              key={p.review[0].pictures[i].name + `${i}`}
+                              alt={`uploadNum${i}`}
+                              src={e.base64}
+                              onClick={() => setImageGallery(true)}
+                            />
+                          );
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 <h1 className="place">{capitalizeFirstLetter(p.name)}</h1>

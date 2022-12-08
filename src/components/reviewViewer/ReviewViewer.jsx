@@ -17,18 +17,29 @@ export default function ReviewViewer({
   setImageGalleryPics,
   currentPlace,
   currentUser,
+  height,
+  width,
 }) {
+  const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState([]);
   const profilePicturesRef = useRef([]);
   const dragControls = useDragControls();
+  const [sortedBy, setSortedBy] = useState("popular");
 
-  const [sortReviews, setSortReviews] = useState({
-    reviewsByLikes: reviews.sort(function (a, b) {
-      return b.likes.length - a.likes.length;
-    }),
+  function handleSortReviews() {
+    setLoading(true);
+    if (sortedBy === "popular") {
+      setSortedBy("recent");
+    }
 
-    reviewsByRecent: reviews.reverse(),
-  });
+    if (sortedBy === "recent") {
+      setSortedBy("oldest");
+    }
+
+    if (sortedBy === "oldest") {
+      setSortedBy("popular");
+    }
+  }
 
   const getProfilePicture = async (user) => {
     try {
@@ -52,25 +63,38 @@ export default function ReviewViewer({
           currentid
         );
 
-        var reviewsByLikes = res.data.sort(function (a, b) {
-          return b.likes.length - a.likes.length;
-        });
+        if (sortedBy === "recent") {
+          setReviews(res.data.reverse());
+        }
 
-        setReviews(reviewsByLikes);
+        if (sortedBy === "oldest") {
+          setReviews(res.data);
+        }
+
+        if (sortedBy === "popular") {
+          setReviews(
+            res.data.sort(function (a, b) {
+              if (a.likes.length < b.likes.length) return 1;
+              if (a.likes.length > b.likes.length) return -1;
+              return 0;
+            })
+          );
+        }
+
         res.data.forEach((e, i) => {
           getProfilePicture(e.username).then(
             (data) =>
               (profilePicturesRef.current[i].src = data[0].profilePicture)
           );
         });
-
+        setLoading(false);
         return res.data;
       } catch (err) {
         console.log(err);
       }
     };
     getAllReviews();
-  }, [currentPlace._id]);
+  }, [currentPlace._id, sortedBy]);
 
   function handleSetImageGalleryPics(e) {
     e.forEach((elem, i) => {
@@ -78,21 +102,33 @@ export default function ReviewViewer({
     });
   }
 
+  const motionValues = {
+    desktop: {
+      position: "absolute",
+      left: "35%",
+      top: "1%",
+      margin: "0",
+    },
+    mobile: {
+      position: "absolute",
+      left: "0",
+      right: "0",
+      marginLeft: "auto",
+      marginRight: "auto",
+      width: width,
+    },
+  };
+
   return (
     <motion.div
       drag
       dragControls={dragControls}
       dragListener={false}
       dragMomentum={false}
-      initial={{
-        position: "absolute",
-        left: "35%",
-        top: "1%",
-        margin: "0",
-      }}
+      initial={width > 600 ? motionValues.desktop : motionValues.mobile}
     >
-      <div id="reviewViewer">
-        {reviews.length === 0 && (
+      <div id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}>
+        {loading && (
           <Lottie
             id="reviewsLoadingCircle"
             animationData={loadingCircle}
@@ -106,7 +142,9 @@ export default function ReviewViewer({
             dragControls.start(e);
           }}
         >
-          <MdSort className="sortButton" />
+          <MdSort onClick={handleSortReviews} className="sortButton" />
+          <div className="sortText">{sortedBy}</div>
+
           <RiCloseCircleFill
             className="xCloseButtonWhite"
             onClick={() => setReviewViewer(false)}
@@ -118,7 +156,11 @@ export default function ReviewViewer({
           {reviews.length > 0 &&
             reviews.map((e, i) => {
               return (
-                <div className="reviewViewerContent" key={e.desc.length + 9}>
+                <div
+                  className="reviewViewerContent"
+                  style={{ display: loading ? "none" : "flex" }}
+                  key={Math.floor(Math.random() * 99999)}
+                >
                   <div className="reviewViewerTitleContainer">
                     <div className="reviewViewerTitle">"{e.title}"&nbsp;</div>
 
@@ -189,6 +231,7 @@ export default function ReviewViewer({
                 </div>
               );
             })}
+          <button className="btnPrimary">See More</button>
         </div>
       </div>
     </motion.div>

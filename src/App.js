@@ -184,6 +184,8 @@ function App() {
           setAddReviewForm={setAddReviewForm}
           setImageGallery={setImageGallery}
           setReviewViewer={setReviewViewer}
+          width={width}
+          height={height}
         ></PinRenderer>
 
         {/* Add Pin Popup */}
@@ -225,6 +227,8 @@ function App() {
             newPlace={newPlace}
             pinType={pinType}
             pinColor={pinColor}
+            height={height}
+            width={width}
           ></AddReviewForm>
         )}
 
@@ -238,6 +242,8 @@ function App() {
             imageGalleryPics={imageGalleryPics}
             currentPlace={currentPlace}
             currentUser={currentUser}
+            height={height}
+            width={width}
           ></ReviewViewer>
         )}
 

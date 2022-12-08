@@ -1,6 +1,19 @@
-/* .mapboxgl-popup-close-button {
-  display: none;
-} */
+.mobilePopup {
+  z-index: 2;
+  position: absolute;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: translate(0%, 0%) translate(0px, 0px) !important;
+  max-width: 100% !important;
+}
+
+.selectedPinMobile {
+  max-width: 96vw;
+  max-height: 90vh;
+}
 
 .selectedPin {
   width: 500px;
@@ -11,8 +24,25 @@
   font-size: 16px;
 }
 
+.pinImageContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 2.5px;
+}
+
+.pinImageThumbnailContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5px;
+  overflow: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .pinImage0 {
-  height: auto;
+  object-fit: cover;
 }
 
 .pinImage0:hover {
@@ -20,8 +50,8 @@
 }
 
 .pinImage1 {
-  height: auto;
-  width: 100%;
+  object-fit: cover;
+  height: 100% !important;
 }
 
 .pinImage1:hover {
@@ -29,8 +59,8 @@
 }
 
 .pinImage2 {
-  height: auto;
-  width: 100%;
+  object-fit: cover;
+  height: 100% !important;
 }
 
 .pinImage2:hover {
@@ -38,26 +68,11 @@
 }
 
 .pinImage3 {
-  height: auto;
-  width: 100px;
+  object-fit: cover;
 }
 
 .pinImage3:hover {
   cursor: pointer;
-}
-
-.pinImageContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 2.5px;
-}
-
-.pinImageThumbnails {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5px;
 }
 
 .place {
