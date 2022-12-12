@@ -73,24 +73,22 @@ export default function PinRenderer({
               }}
               onClose={() => setCurrentPlaceId(null)}
             >
-              <div
-                className={width > 600 ? "selectedPin" : "selectedPinMobile"}
-              >
+              <div className="selectedPin">
                 <div className="pinImageContainer">
                   <img
                     className={"pinImage0"}
                     style={{
-                      width: p.review[0].pictures.length === 1 ? "100%" : "70%",
+                      width: p.review[0].pictures.length === 1 ? "100%" : "65%",
                     }}
                     alt={`uploadNum0`}
                     src={p.review[0].pictures[0].base64}
                     onClick={() => setImageGallery(true)}
                   />
 
-                  {width > 900 && (
+                  {width > 600 && (
                     <div className="pinImageThumbnailContainer">
                       {p.review[0].pictures.map((e, i) => {
-                        if (i > 0 && i <= 2)
+                        if (i > 0 && i <= 2) {
                           return (
                             <img
                               className={"pinImage" + [i]}
@@ -100,6 +98,7 @@ export default function PinRenderer({
                               onClick={() => setImageGallery(true)}
                             />
                           );
+                        } else return null;
                       })}
                     </div>
                   )}

@@ -21,6 +21,7 @@ export default function AccountPanel({
   setError,
   pins,
   setCurrentPins,
+  setProfileEditor,
 }) {
   const [profilePictureUpload, setProfilePictureUpload] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -217,7 +218,10 @@ export default function AccountPanel({
         </figure>
 
         <div className="profileBtnContainer">
-          <BsFillPersonLinesFill className="optionBtn"></BsFillPersonLinesFill>
+          <BsFillPersonLinesFill
+            className="optionBtn"
+            onClick={() => setProfileEditor(true)}
+          ></BsFillPersonLinesFill>
 
           <BsFillGearFill
             className="optionBtn"

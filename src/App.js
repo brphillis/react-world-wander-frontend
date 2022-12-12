@@ -9,6 +9,7 @@ import MapClickMenu from "./components/mapClickMenu/MapClickMenu";
 import ImageGallery from "./components/imageGallery/ImageGallery";
 import AddReviewForm from "./components/addReviewForm/AddReviewForm";
 import ReviewViewer from "./components/reviewViewer/ReviewViewer";
+import ProfileEditor from "./components/profileEditor/ProfileEditor";
 
 import useWindowDimensions from "./hooks/useWindowDimensions";
 
@@ -32,6 +33,7 @@ function App() {
   const [nrTaps, setNrTaps] = useState(0);
   const [startDate, setStartDate] = useState(Date.now());
   const [addReviewForm, setAddReviewForm] = useState(false);
+  const [profileEditor, setProfileEditor] = useState(false);
   const [reviewViewer, setReviewViewer] = useState(false);
   const [imageGallery, setImageGallery] = useState(false);
   const [imageGalleryPics, setImageGalleryPics] = useState([]);
@@ -169,6 +171,7 @@ function App() {
             setError={setError}
             pins={pins}
             setCurrentPins={setCurrentPins}
+            setProfileEditor={setProfileEditor}
           ></AccountPanel>
         )}
 
@@ -260,6 +263,15 @@ function App() {
             useWindowDimensions={useWindowDimensions}
             height={height}
             width={width}
+          />
+        )}
+
+        {/* Profile Editor */}
+        {profileEditor && (
+          <ProfileEditor
+            width={width}
+            profileEditor={profileEditor}
+            setProfileEditor={setProfileEditor}
           />
         )}
       </Map>

@@ -17,8 +17,8 @@
   position: relative;
   display: block;
   margin: 0 auto;
-  width: 97.5vw;
-  max-width: 95vw;
+  width: 94.5vw;
+  max-width: 94.5vw;
   max-height: 100vh;
   overflow-y: scroll;
   padding: 0px 10px 0 10px;
@@ -129,7 +129,7 @@
   background-color: white;
   width: 110%;
   padding-top: 10px;
-  padding-bottom: 32px;
+  padding-bottom: 36px;
 }
 
 .reviewImagesContainer > div {
@@ -168,14 +168,16 @@
 
 .likeButtonContainer {
   position: absolute;
-  left: 15px;
+  left: 10px;
   bottom: 38px;
 }
 
 .rvTimeAgo {
   position: absolute;
+  display: flex;
+  gap: 8px;
   font-size: 10px;
-  right: 10px;
+  right: 35px;
   bottom: 44px;
 }
 
@@ -184,4 +186,8 @@
   height: 20px;
   width: 110%;
   margin-top: 10px;
+}
+
+HiOutlineDotsVertical {
+  cursor: pointer;
 }

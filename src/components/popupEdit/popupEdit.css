@@ -1,0 +1,33 @@
+.popupEdit {
+  position: absolute;
+  bottom: 42px;
+  right: 8px;
+}
+
+.popupDots {
+  color: #a06cd5;
+  font-size: 18px;
+}
+
+.popupEditMenu {
+  position: absolute;
+  bottom: 28px;
+  right: 9px;
+  background-color: white;
+  border: 1px solid #a06cd5;
+  border-radius: 10px 10px 0 10px;
+  flex-direction: row;
+  gap: 10px;
+  padding: 10px;
+}
+
+.popupEditMenu > * {
+  font-size: 22px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  color: #a06cd5;
+}
+
+.popupEditMenu > *:hover {
+  transform: scale(1.1);
+}

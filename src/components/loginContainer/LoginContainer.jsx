@@ -16,6 +16,7 @@ export default function LoginContainer({
   pins,
   setCurrentPins,
 }) {
+  const [loading, setLoading] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
@@ -37,10 +38,12 @@ export default function LoginContainer({
 
   return (
     <div className="LoginContainer">
-      <div>
-        <p className="logoText">WorldWander</p>
-        <Lottie animationData={logoAnimation} loop={true} />
-      </div>
+      {!loading && (
+        <div>
+          <p className="logoText">WorldWander</p>
+          <Lottie animationData={logoAnimation} loop={true} />
+        </div>
+      )}
 
       <div className="loginBtnContainer">
         {!currentUser && !showLogin && !showRegister && (
@@ -72,6 +75,8 @@ export default function LoginContainer({
 
       {showRegister && (
         <Register
+          loading={loading}
+          setLoading={setLoading}
           success={success}
           setSuccess={setSuccess}
           error={error}
@@ -81,6 +86,8 @@ export default function LoginContainer({
       )}
       {showLogin && (
         <Login
+          loading={loading}
+          setLoading={setLoading}
           setCurrentUser={setCurrentUser}
           success={success}
           setSuccess={setSuccess}

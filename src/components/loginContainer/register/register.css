@@ -6,7 +6,7 @@
   justify-content: center;
 }
 
-.registerForm > form {
+.registerForm > div > form {
   height: max-content;
   width: 200px;
   display: flex;
@@ -15,7 +15,7 @@
   row-gap: 10px;
 }
 
-.registerForm > button {
+.registerForm > div > button {
   margin-top: -1rem;
 }
 

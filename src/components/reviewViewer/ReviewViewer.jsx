@@ -10,6 +10,7 @@ import axios from "axios";
 import React from "react";
 import { format } from "timeago.js";
 import LikeButton from "../likeButton/LikeButton";
+import PopupEdit from "../popupEdit/PopupEdit";
 
 export default function ReviewViewer({
   setReviewViewer,
@@ -26,6 +27,9 @@ export default function ReviewViewer({
   const dragControls = useDragControls();
   const [sortedBy, setSortedBy] = useState("popular");
 
+  const [firstFetched, setFirstFetched] = useState(0);
+  const [lastFetched, setlastFetched] = useState(10);
+
   function handleSortReviews() {
     setLoading(true);
     if (sortedBy === "popular") {
@@ -41,7 +45,7 @@ export default function ReviewViewer({
     }
   }
 
-  const getProfilePicture = async (user) => {
+  const getProfilePictures = async (user) => {
     try {
       const currentid = { username: user };
       const res = await axios.post(
@@ -55,11 +59,15 @@ export default function ReviewViewer({
   };
 
   useEffect(() => {
-    const getAllReviews = async () => {
-      const currentid = { id: currentPlace._id };
+    const getLimitedReviews = async () => {
+      const currentid = {
+        id: currentPlace._id,
+        startIndex: firstFetched,
+        endIndex: lastFetched,
+      };
       try {
         const res = await axios.post(
-          "http://localhost:8800/api/pins/getAllReviews",
+          "http://localhost:8800/api/pins/getLimitedReviews",
           currentid
         );
 
@@ -82,7 +90,7 @@ export default function ReviewViewer({
         }
 
         res.data.forEach((e, i) => {
-          getProfilePicture(e.username).then(
+          getProfilePictures(e.username).then(
             (data) =>
               (profilePicturesRef.current[i].src = data[0].profilePicture)
           );
@@ -93,8 +101,14 @@ export default function ReviewViewer({
         console.log(err);
       }
     };
-    getAllReviews();
-  }, [currentPlace._id, sortedBy]);
+    getLimitedReviews();
+  }, [currentPlace._id, sortedBy, firstFetched, lastFetched]);
+
+  function handleSeeMore() {
+    setLoading(true);
+    setFirstFetched(firstFetched + 10);
+    setlastFetched(lastFetched + 10);
+  }
 
   function handleSetImageGalleryPics(e) {
     e.forEach((elem, i) => {
@@ -199,18 +213,20 @@ export default function ReviewViewer({
 
                   <div className="reviewImagesContainer">
                     {e.pictures.map((elem, index) => {
-                      return (
-                        <img
-                          key={index + 12}
-                          alt={`${e.size + e.name}`}
-                          className="reviewImage"
-                          src={elem.base64}
-                          onClick={() => {
-                            handleSetImageGalleryPics(e.pictures);
-                            setImageGallery(true);
-                          }}
-                        />
-                      );
+                      if (index < 3) {
+                        return (
+                          <img
+                            key={index + 12}
+                            alt={`${e.size + e.name}`}
+                            className="reviewImage"
+                            src={elem.base64}
+                            onClick={() => {
+                              handleSetImageGalleryPics(e.pictures);
+                              setImageGallery(true);
+                            }}
+                          />
+                        );
+                      } else return null;
                     })}
                   </div>
 
@@ -223,6 +239,8 @@ export default function ReviewViewer({
                     currentPlace={currentPlace}
                   />
 
+                  <PopupEdit currentIndex={i} />
+
                   <div className="rvTimeAgo">
                     {format(e.createdAt, "en_US")}
                   </div>
@@ -231,7 +249,12 @@ export default function ReviewViewer({
                 </div>
               );
             })}
-          <button className="btnPrimary">See More</button>
+
+          {!loading && (
+            <button className="btnPrimary" onClick={handleSeeMore}>
+              See More
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

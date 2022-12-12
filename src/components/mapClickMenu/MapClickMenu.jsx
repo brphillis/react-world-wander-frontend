@@ -1,4 +1,4 @@
-import { React, useRef } from "react";
+import { React } from "react";
 import { RiCloseCircleFill } from "react-icons/ri";
 
 import "./mapClickMenu.css";
@@ -7,7 +7,7 @@ export default function MapClickMenu({ addReviewForm, setAddReviewForm }) {
   return (
     <div>
       <div className="menuTopBar">
-        <RiCloseCircleFill class="xCloseButtonWhite" />
+        <RiCloseCircleFill className="xCloseButtonWhite" />
         <p>Add a Pin</p>
       </div>
 
