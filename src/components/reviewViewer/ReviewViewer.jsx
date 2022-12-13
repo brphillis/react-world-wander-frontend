@@ -11,14 +11,17 @@ import React from "react";
 import { format } from "timeago.js";
 import LikeButton from "../likeButton/LikeButton";
 import PopupEdit from "../popupEdit/PopupEdit";
+import AddReviewForm from "../addReviewForm/AddReviewForm";
 
 export default function ReviewViewer({
+  setAddReviewForm,
   setReviewViewer,
   setImageGallery,
   setImageGalleryPics,
+  reviewToEdit,
+  setReviewToEdit,
   currentPlace,
   currentUser,
-  height,
   width,
 }) {
   const [loading, setLoading] = useState(true);
@@ -94,6 +97,7 @@ export default function ReviewViewer({
             (data) =>
               (profilePicturesRef.current[i].src = data[0].profilePicture)
           );
+          console.log(profilePicturesRef);
         });
         setLoading(false);
         return res.data;
@@ -134,129 +138,136 @@ export default function ReviewViewer({
   };
 
   return (
-    <motion.div
-      drag
-      dragControls={dragControls}
-      dragListener={false}
-      dragMomentum={false}
-      initial={width > 600 ? motionValues.desktop : motionValues.mobile}
-    >
-      <div id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}>
-        {loading && (
-          <Lottie
-            id="reviewsLoadingCircle"
-            animationData={loadingCircle}
-            loop={true}
-          ></Lottie>
-        )}
+    <div>
+      <motion.div
+        drag
+        dragControls={dragControls}
+        dragListener={false}
+        dragMomentum={false}
+        initial={width > 600 ? motionValues.desktop : motionValues.mobile}
+      >
+        <div id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}>
+          {loading && (
+            <Lottie
+              id="reviewsLoadingCircle"
+              animationData={loadingCircle}
+              loop={true}
+            ></Lottie>
+          )}
 
-        <div
-          className="menuTopBar"
-          onPointerDown={(e) => {
-            dragControls.start(e);
-          }}
-        >
-          <MdSort onClick={handleSortReviews} className="sortButton" />
-          <div className="sortText">{sortedBy}</div>
+          <div
+            className="menuTopBar"
+            onPointerDown={(e) => {
+              dragControls.start(e);
+            }}
+          >
+            <MdSort onClick={handleSortReviews} className="sortButton" />
+            <div className="sortText">{sortedBy}</div>
 
-          <RiCloseCircleFill
-            className="xCloseButtonWhite"
-            onClick={() => setReviewViewer(false)}
-          />
-          <p>Reviews</p>
-        </div>
+            <RiCloseCircleFill
+              className="xCloseButtonWhite"
+              onClick={() => setReviewViewer(false)}
+            />
+            <p>Reviews</p>
+          </div>
 
-        <div id="reviewViewerContentContainer">
-          {reviews.length > 0 &&
-            reviews.map((e, i) => {
-              return (
-                <div
-                  className="reviewViewerContent"
-                  style={{ display: loading ? "none" : "flex" }}
-                  key={Math.floor(Math.random() * 99999)}
-                >
-                  <div className="reviewViewerTitleContainer">
-                    <div className="reviewViewerTitle">"{e.title}"&nbsp;</div>
+          <div id="reviewViewerContentContainer">
+            {reviews.length > 0 &&
+              reviews.map((e, i) => {
+                return (
+                  <div
+                    className="reviewViewerContent"
+                    style={{ display: loading ? "none" : "flex" }}
+                    key={Math.floor(Math.random() * 99999)}
+                  >
+                    <div className="reviewViewerTitleContainer">
+                      <div className="reviewViewerTitle">"{e.title}"&nbsp;</div>
 
-                    <img
-                      className="reviewViewerProfilePicture"
-                      alt={`${e.title + i}`}
-                      ref={(element) => {
-                        profilePicturesRef.current[i] = element;
-                      }}
-                      src="https://st3.depositphotos.com/6672868/13701/v/600/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
-                    />
+                      <img
+                        className="reviewViewerProfilePicture"
+                        alt={`${e.title + i}`}
+                        ref={(element) => {
+                          profilePicturesRef.current[i] = element;
+                        }}
+                        src="https://st3.depositphotos.com/6672868/13701/v/600/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
+                      />
 
-                    <div className="reviewViewerTitleContent">
-                      by {e.username}
+                      <div className="reviewViewerTitleContent">
+                        by {e.username}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="reviewStarsContainer">
-                    <React.Fragment>
-                      {(() => {
-                        const arr = [];
-                        for (let i = 0; i < e.rating; i++) {
-                          arr.push(
-                            <FaStar
-                              className="reviewStars"
-                              key={Math.floor(parseInt(e._id) + i)}
+                    <div className="reviewStarsContainer">
+                      <React.Fragment>
+                        {(() => {
+                          const arr = [];
+                          for (let i = 0; i < e.rating; i++) {
+                            arr.push(
+                              <FaStar
+                                className="reviewStars"
+                                key={Math.floor(parseInt(e._id) + i)}
+                              />
+                            );
+                          }
+                          return arr;
+                        })()}
+                      </React.Fragment>
+                    </div>
+
+                    <div className="reviewViewerDesc">{e.desc}</div>
+
+                    <div className="reviewImagesContainer">
+                      {e.pictures.map((elem, index) => {
+                        if (index < 3) {
+                          return (
+                            <img
+                              key={index + 12}
+                              alt={`${e.size + e.name}`}
+                              className="reviewImage"
+                              src={elem.base64}
+                              onClick={() => {
+                                handleSetImageGalleryPics(e.pictures);
+                                setImageGallery(true);
+                              }}
                             />
                           );
-                        }
-                        return arr;
-                      })()}
-                    </React.Fragment>
+                        } else return null;
+                      })}
+                    </div>
+
+                    <LikeButton
+                      className="likeButtonContainer"
+                      likesArray={e.likes}
+                      likesCount={e.likes.length}
+                      currentIndex={i}
+                      currentUser={currentUser}
+                      currentPlace={currentPlace}
+                    />
+
+                    <PopupEdit
+                      currentReview={e}
+                      setAddReviewForm={setAddReviewForm}
+                      reviewToEdit={reviewToEdit}
+                      setReviewToEdit={setReviewToEdit}
+                    />
+
+                    <div className="rvTimeAgo">
+                      {format(e.createdAt, "en_US")}
+                    </div>
+
+                    <div className="rvDivider"></div>
                   </div>
+                );
+              })}
 
-                  <div className="reviewViewerDesc">{e.desc}</div>
-
-                  <div className="reviewImagesContainer">
-                    {e.pictures.map((elem, index) => {
-                      if (index < 3) {
-                        return (
-                          <img
-                            key={index + 12}
-                            alt={`${e.size + e.name}`}
-                            className="reviewImage"
-                            src={elem.base64}
-                            onClick={() => {
-                              handleSetImageGalleryPics(e.pictures);
-                              setImageGallery(true);
-                            }}
-                          />
-                        );
-                      } else return null;
-                    })}
-                  </div>
-
-                  <LikeButton
-                    className="likeButtonContainer"
-                    likesArray={e.likes}
-                    likesCount={e.likes.length}
-                    currentIndex={i}
-                    currentUser={currentUser}
-                    currentPlace={currentPlace}
-                  />
-
-                  <PopupEdit currentIndex={i} />
-
-                  <div className="rvTimeAgo">
-                    {format(e.createdAt, "en_US")}
-                  </div>
-
-                  <div className="rvDivider"></div>
-                </div>
-              );
-            })}
-
-          {!loading && (
-            <button className="btnPrimary" onClick={handleSeeMore}>
-              See More
-            </button>
-          )}
+            {!loading && (
+              <button className="btnPrimary" onClick={handleSeeMore}>
+                See More
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }

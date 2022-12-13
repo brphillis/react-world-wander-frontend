@@ -2,7 +2,7 @@ import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import { motion, useDragControls } from "framer-motion";
 import "./addReviewForm.css";
 import { RiCloseCircleFill } from "react-icons/ri";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import Swal from "sweetalert2";
@@ -16,6 +16,7 @@ export default function AddReviewForm({
   setAddReviewForm,
   currentPlace,
   setCurrentPlace,
+  currentPlaceId,
   setCurrentPlaceId,
   currentUser,
   pinName,
@@ -25,6 +26,8 @@ export default function AddReviewForm({
   desc,
   setDesc,
   rating,
+  reviewToEdit,
+  setReviewToEdit,
   setRating,
   setPins,
   pins,
@@ -50,6 +53,41 @@ export default function AddReviewForm({
   const [currentStars, setCurrentStars] = useState(0);
   const dragControls = useDragControls();
   const [images, setImages] = useState([]);
+  const reviewTitleRef = useRef(null);
+  const reviewDescRef = useRef(null);
+
+  const titleValidation = register("reveiewTitleErrorInput", {
+    required: "review title is required.",
+    minLength: {
+      value: 3,
+      message: "review title must exceed 3 characters",
+    },
+    maxLength: {
+      value: 15,
+      message: "review title must not exceed 15 characters",
+    },
+  });
+
+  const descValidation = register("reveiewDescErrorInput", {
+    required: "review desc is required.",
+    minLength: {
+      value: 3,
+      message: "review must exceed 30 characters",
+    },
+    maxLength: {
+      value: 250,
+      message: "review must not exceed 250 characters",
+    },
+  });
+
+  useEffect(() => {
+    if (Object.keys(reviewToEdit).length > 0) {
+      reviewTitleRef.current.value = reviewToEdit.title;
+      reviewDescRef.current.value = reviewToEdit.desc;
+      setCurrentStars(reviewToEdit.rating);
+      setImages([...reviewToEdit.pictures]);
+    }
+  }, []);
 
   useEffect(() => {
     setRating(currentStars);
@@ -60,7 +98,7 @@ export default function AddReviewForm({
   };
 
   const handlePost = async () => {
-    if (currentPlace) {
+    if (currentPlace && Object.keys(reviewToEdit).length === 0) {
       const newReview = {
         id: currentPlace._id,
         username: currentUser.username,
@@ -94,9 +132,7 @@ export default function AddReviewForm({
       } catch (err) {
         console.log(err);
       }
-    }
-
-    if (!currentPlace) {
+    } else if (!currentPlace && Object.keys(reviewToEdit).length === 0) {
       const newPin = {
         name: pinName,
         lat: newPlace.long,
@@ -121,6 +157,41 @@ export default function AddReviewForm({
         setAddReviewForm(false);
         Swal.fire({
           title: "Thankyou for your Review",
+          text: "   ",
+          icon: "success",
+          padding: "10px",
+          confirmButtonColor: "#a06cd5",
+          confirmButtonText: "Okay!",
+          backdrop: `#23232380`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            openNewPin(res.data._id, res.data.lat, res.data.long);
+          }
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    } else if (Object.keys(reviewToEdit).length > 0) {
+      const newPin = {
+        id: currentPlaceId,
+        reviewid: reviewToEdit._id,
+        title,
+        desc,
+        rating: currentStars,
+        pictures: [...images],
+      };
+      console.log(newPin);
+
+      try {
+        const res = await axios.put(
+          "http://localhost:8800/api/pins/updateReview/",
+          newPin
+        );
+        setPins([...pins, res.data]);
+        setNewPlace(null);
+        setAddReviewForm(false);
+        Swal.fire({
+          title: "Your Review has been Updated!",
           text: "   ",
           icon: "success",
           padding: "10px",
@@ -333,14 +404,15 @@ export default function AddReviewForm({
               dragControls.start(e);
             }}
           >
-            Add A Review
+            {Object.keys(reviewToEdit).length === 0 && "Add A Review"}
+            {Object.keys(reviewToEdit).length > 0 && "Edit Your Review"}
           </div>
 
           <RiCloseCircleFill
             class="xCloseButtonWhite"
             onClick={() => {
               setAddReviewForm(false);
-              setCurrentPlace(null);
+              // setCurrentPlace(null);
             }}
           />
 
@@ -410,20 +482,14 @@ export default function AddReviewForm({
           )}
 
           <input
-            {...register("reveiewTitleErrorInput", {
-              required: "review title is required.",
-              minLength: {
-                value: 3,
-                message: "review title must exceed 3 characters",
-              },
-              maxLength: {
-                value: 15,
-                message: "review title must not exceed 15 characters",
-              },
-            })}
+            {...titleValidation}
             className="reviewTitle"
             placeholder="Review Title"
             onChange={(e) => setTitle(e.target.value)}
+            ref={(e) => {
+              titleValidation.ref(e);
+              reviewTitleRef.current = e;
+            }}
           ></input>
 
           {currentPlace && (
@@ -431,19 +497,13 @@ export default function AddReviewForm({
           )}
 
           <textarea
-            {...register("reveiewDescErrorInput", {
-              required: "review desc is required.",
-              minLength: {
-                value: 3,
-                message: "review must exceed 30 characters",
-              },
-              maxLength: {
-                value: 250,
-                message: "review must not exceed 250 characters",
-              },
-            })}
+            {...descValidation}
             placeholder="what did you think..."
             onChange={(e) => setDesc(e.target.value)}
+            ref={(e) => {
+              descValidation.ref(e);
+              reviewDescRef.current = e;
+            }}
           />
           <br />
           <label>Rating: </label>
@@ -616,7 +676,7 @@ export default function AddReviewForm({
             className="btnPrimary"
             onClick={() => {
               setAddReviewForm(false);
-              setCurrentPlace(null);
+              // setCurrentPlace(null);
             }}
           >
             Close

@@ -29,6 +29,7 @@ function App() {
   const [desc, setDesc] = useState(null);
   const [pinType, setPinType] = useState(null);
   const [pinColor, setPinColor] = useState(null);
+  const [reviewToEdit, setReviewToEdit] = useState({});
   const [rating, setRating] = useState(0);
   const [nrTaps, setNrTaps] = useState(0);
   const [startDate, setStartDate] = useState(Date.now());
@@ -214,6 +215,7 @@ function App() {
             setAddReviewForm={setAddReviewForm}
             currentPlace={currentPlace}
             setCurrentPlace={setCurrentPlace}
+            currentPlaceId={currentPlaceId}
             setCurrentPlaceId={setCurrentPlaceId}
             currentUser={currentUser}
             pinName={pinName}
@@ -223,6 +225,8 @@ function App() {
             desc={desc}
             setDesc={setDesc}
             rating={rating}
+            reviewToEdit={reviewToEdit}
+            setReviewToEdit={setReviewToEdit}
             setRating={setRating}
             setPins={setPins}
             pins={pins}
@@ -247,6 +251,26 @@ function App() {
             currentUser={currentUser}
             height={height}
             width={width}
+            addReviewForm={addReviewForm}
+            setAddReviewForm={setAddReviewForm}
+            setCurrentPlace={setCurrentPlace}
+            setCurrentPlaceId={setCurrentPlaceId}
+            setPinName={setPinName}
+            pinName={pinName}
+            title={title}
+            setTitle={setTitle}
+            desc={desc}
+            reviewToEdit={reviewToEdit}
+            setReviewToEdit={setReviewToEdit}
+            setDesc={setDesc}
+            rating={rating}
+            setRating={setRating}
+            setPins={setPins}
+            pins={pins}
+            setNewPlace={setNewPlace}
+            newPlace={newPlace}
+            pinType={pinType}
+            pinColor={pinColor}
           ></ReviewViewer>
         )}
 

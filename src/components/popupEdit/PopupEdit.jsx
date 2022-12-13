@@ -4,7 +4,16 @@ import { useRef, useState } from "react";
 import { useEffect } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 
-export default function ProfileEditor({ currentIndex }) {
+export default function ProfileEditor({
+  currentReview,
+  setAddReviewForm,
+  reviewToEdit,
+  setReviewToEdit,
+}) {
+  // useEffect(() => {
+  //   console.log(currentPlaceId);
+  // }, []);
+
   const popupEditRef = useRef();
 
   function handlePopupDisplay() {
@@ -28,6 +37,10 @@ export default function ProfileEditor({ currentIndex }) {
         ref={popupEditRef}
         style={{ display: "none" }}
         className="popupEditMenu"
+        onClick={() => {
+          setReviewToEdit(currentReview);
+          setAddReviewForm(true);
+        }}
       >
         <MdEdit />
         <MdDelete />

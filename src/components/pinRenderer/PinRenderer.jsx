@@ -157,7 +157,6 @@ export default function PinRenderer({
                   className="btnPrimary"
                   onClick={() => {
                     setCurrentPlaceId(null);
-                    setCurrentPlace(null);
                   }}
                 >
                   Close
