@@ -191,3 +191,15 @@
 HiOutlineDotsVertical {
   cursor: pointer;
 }
+
+.reportReviewForm {
+  position: absolute;
+  background-color: white;
+  height: 200px;
+  width: 200px;
+  top: 20px;
+  left: 0;
+  right: 0;
+  margin-right: auto;
+  margin-left: auto;
+}

@@ -174,7 +174,7 @@ export default function AddReviewForm({
     } else if (Object.keys(reviewToEdit).length > 0) {
       const newPin = {
         id: currentPlaceId,
-        reviewid: reviewToEdit._id,
+        reviewId: reviewToEdit._id,
         title,
         desc,
         rating: currentStars,
@@ -184,10 +184,10 @@ export default function AddReviewForm({
 
       try {
         const res = await axios.put(
-          "http://localhost:8800/api/pins/updateReview/",
+          "http://localhost:8800/api/pins/updateReview",
           newPin
         );
-        setPins([...pins, res.data]);
+        setPins([...pins]);
         setNewPlace(null);
         setAddReviewForm(false);
         Swal.fire({
@@ -200,6 +200,7 @@ export default function AddReviewForm({
           backdrop: `#23232380`,
         }).then((result) => {
           if (result.isConfirmed) {
+            setReviewToEdit({});
             openNewPin(res.data._id, res.data.lat, res.data.long);
           }
         });
@@ -411,8 +412,9 @@ export default function AddReviewForm({
           <RiCloseCircleFill
             class="xCloseButtonWhite"
             onClick={() => {
+              setReviewToEdit({});
+              setCurrentPlace(null);
               setAddReviewForm(false);
-              // setCurrentPlace(null);
             }}
           />
 
@@ -675,8 +677,9 @@ export default function AddReviewForm({
             type="button"
             className="btnPrimary"
             onClick={() => {
+              setReviewToEdit({});
               setAddReviewForm(false);
-              // setCurrentPlace(null);
+              setCurrentPlace(null);
             }}
           >
             Close

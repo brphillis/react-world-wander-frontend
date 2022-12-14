@@ -2,6 +2,8 @@ import Map, { Popup } from "react-map-gl";
 import React, { useState, useEffect, useRef } from "react";
 import "./app.css";
 
+import { RiAdminFill } from "react-icons/ri";
+
 import LoginContainer from "./components/loginContainer/LoginContainer";
 import PinRenderer from "./components/pinRenderer/PinRenderer";
 import AccountPanel from "./components/accountPanel/AccountPanel";
@@ -12,6 +14,7 @@ import ReviewViewer from "./components/reviewViewer/ReviewViewer";
 import ProfileEditor from "./components/profileEditor/ProfileEditor";
 
 import useWindowDimensions from "./hooks/useWindowDimensions";
+import AdminPanel from "./components/adminPanel/AdminPanel";
 
 function App() {
   const myStorage = window.localStorage;
@@ -35,6 +38,7 @@ function App() {
   const [startDate, setStartDate] = useState(Date.now());
   const [addReviewForm, setAddReviewForm] = useState(false);
   const [profileEditor, setProfileEditor] = useState(false);
+  const [adminPanel, setAdminPanel] = useState(false);
   const [reviewViewer, setReviewViewer] = useState(false);
   const [imageGallery, setImageGallery] = useState(false);
   const [imageGalleryPics, setImageGalleryPics] = useState([]);
@@ -162,6 +166,15 @@ function App() {
           ></LoginContainer>
         )}
 
+        {/* Admin Panel */}
+        {adminPanel && <AdminPanel setAdminPanel={setAdminPanel} />}
+        <RiAdminFill
+          className="adminButton"
+          onClick={() => {
+            setAdminPanel(true);
+          }}
+        />
+
         {/* Profile Panel */}
         {currentUser && (
           <AccountPanel
@@ -188,6 +201,7 @@ function App() {
           setAddReviewForm={setAddReviewForm}
           setImageGallery={setImageGallery}
           setReviewViewer={setReviewViewer}
+          reviewViewer={reviewViewer}
           width={width}
           height={height}
         ></PinRenderer>
@@ -254,6 +268,7 @@ function App() {
             addReviewForm={addReviewForm}
             setAddReviewForm={setAddReviewForm}
             setCurrentPlace={setCurrentPlace}
+            currentPlaceId={currentPlaceId}
             setCurrentPlaceId={setCurrentPlaceId}
             setPinName={setPinName}
             pinName={pinName}

@@ -16,6 +16,7 @@ export default function PinRenderer({
   setAddReviewForm,
   setImageGallery,
   setReviewViewer,
+  reviewViewer,
   width,
   height,
 }) {
@@ -62,6 +63,7 @@ export default function PinRenderer({
           {/* Selected Pin Popup */}
           {p._id === currentPlaceId && (
             <Popup
+              style={{ opacity: reviewViewer ? "0" : "1" }}
               className={width < 600 && "mobilePopup"}
               longitude={p.long}
               latitude={p.lat}

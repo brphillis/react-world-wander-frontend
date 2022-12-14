@@ -11,12 +11,15 @@ import React from "react";
 import { format } from "timeago.js";
 import LikeButton from "../likeButton/LikeButton";
 import PopupEdit from "../popupEdit/PopupEdit";
+import ReportReviewForm from "../reportReviewForm/ReportReviewForm";
 import AddReviewForm from "../addReviewForm/AddReviewForm";
 
 export default function ReviewViewer({
+  addReviewForm,
   setAddReviewForm,
   setReviewViewer,
   setImageGallery,
+  currentPlaceId,
   setImageGalleryPics,
   reviewToEdit,
   setReviewToEdit,
@@ -29,6 +32,8 @@ export default function ReviewViewer({
   const profilePicturesRef = useRef([]);
   const dragControls = useDragControls();
   const [sortedBy, setSortedBy] = useState("popular");
+  const [reportReviewForm, setReportReviewForm] = useState(false);
+  const [reviewToReport, setReviewToReport] = useState({});
 
   const [firstFetched, setFirstFetched] = useState(0);
   const [lastFetched, setlastFetched] = useState(10);
@@ -55,6 +60,7 @@ export default function ReviewViewer({
         "http://localhost:8800/api/users/getProfilePicture",
         currentid
       );
+
       return res.data;
     } catch (err) {
       console.log(err);
@@ -64,7 +70,7 @@ export default function ReviewViewer({
   useEffect(() => {
     const getLimitedReviews = async () => {
       const currentid = {
-        id: currentPlace._id,
+        id: currentPlaceId,
         startIndex: firstFetched,
         endIndex: lastFetched,
       };
@@ -97,7 +103,6 @@ export default function ReviewViewer({
             (data) =>
               (profilePicturesRef.current[i].src = data[0].profilePicture)
           );
-          console.log(profilePicturesRef);
         });
         setLoading(false);
         return res.data;
@@ -106,7 +111,7 @@ export default function ReviewViewer({
       }
     };
     getLimitedReviews();
-  }, [currentPlace._id, sortedBy, firstFetched, lastFetched]);
+  }, [currentPlaceId, sortedBy, firstFetched, lastFetched]);
 
   function handleSeeMore() {
     setLoading(true);
@@ -146,7 +151,32 @@ export default function ReviewViewer({
         dragMomentum={false}
         initial={width > 600 ? motionValues.desktop : motionValues.mobile}
       >
-        <div id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}>
+        <div
+          className="menuTopBar"
+          style={{
+            visibility:
+              reportReviewForm || addReviewForm ? "hidden" : "visible",
+          }}
+          onPointerDown={(e) => {
+            dragControls.start(e);
+          }}
+        >
+          <MdSort onClick={handleSortReviews} className="sortButton" />
+          <div className="sortText">{sortedBy}</div>
+
+          <RiCloseCircleFill
+            className="xCloseButtonWhite"
+            onClick={() => setReviewViewer(false)}
+          />
+          <p>Reviews</p>
+        </div>
+        <div
+          id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}
+          style={{
+            visibility:
+              reportReviewForm || addReviewForm ? "hidden" : "visible",
+          }}
+        >
           {loading && (
             <Lottie
               id="reviewsLoadingCircle"
@@ -154,22 +184,6 @@ export default function ReviewViewer({
               loop={true}
             ></Lottie>
           )}
-
-          <div
-            className="menuTopBar"
-            onPointerDown={(e) => {
-              dragControls.start(e);
-            }}
-          >
-            <MdSort onClick={handleSortReviews} className="sortButton" />
-            <div className="sortText">{sortedBy}</div>
-
-            <RiCloseCircleFill
-              className="xCloseButtonWhite"
-              onClick={() => setReviewViewer(false)}
-            />
-            <p>Reviews</p>
-          </div>
 
           <div id="reviewViewerContentContainer">
             {reviews.length > 0 &&
@@ -249,6 +263,12 @@ export default function ReviewViewer({
                       setAddReviewForm={setAddReviewForm}
                       reviewToEdit={reviewToEdit}
                       setReviewToEdit={setReviewToEdit}
+                      currentPlace={currentPlace}
+                      currentUser={currentUser}
+                      reportReviewForm={reportReviewForm}
+                      setReportReviewForm={setReportReviewForm}
+                      reviewToReport={reviewToReport}
+                      setReviewToReport={setReviewToReport}
                     />
 
                     <div className="rvTimeAgo">
@@ -268,6 +288,16 @@ export default function ReviewViewer({
           </div>
         </div>
       </motion.div>
+
+      {reportReviewForm && (
+        <ReportReviewForm
+          reportReviewForm={reportReviewForm}
+          setReportReviewForm={setReportReviewForm}
+          reviewToReport={reviewToReport}
+          setReviewToReport={setReviewToReport}
+          currentUser={currentUser}
+        />
+      )}
     </div>
   );
 }
