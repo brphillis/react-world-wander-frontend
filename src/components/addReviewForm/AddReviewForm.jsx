@@ -2,6 +2,7 @@ import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import { motion, useDragControls } from "framer-motion";
 import "./addReviewForm.css";
 import { RiCloseCircleFill } from "react-icons/ri";
+import { BsFillTrashFill } from "react-icons/bs";
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
@@ -180,7 +181,6 @@ export default function AddReviewForm({
         rating: currentStars,
         pictures: [...images],
       };
-      console.log(newPin);
 
       try {
         const res = await axios.put(
@@ -432,14 +432,23 @@ export default function AddReviewForm({
               <p>Upload up to 4 Images</p>
 
               {images.length > 0 && (
-                <img
-                  className="previewImage"
-                  alt={`uploadNum`}
-                  src={images[0].base64}
-                />
+                <div>
+                  <img
+                    className="previewImage"
+                    alt={`uploadNum`}
+                    src={images[0].base64}
+                  />
+                </div>
               )}
             </div>
           </label>
+
+          {images.length > 0 && (
+            <BsFillTrashFill
+              className="mainImageTrashIcon"
+              onClick={() => handleDisplayImage(images[0])}
+            />
+          )}
 
           <div className="previewThumbnailContainer">
             {images.slice(1).map((e, i) => {
@@ -464,24 +473,26 @@ export default function AddReviewForm({
           />
           <br />
 
-          {!currentPlace && (
-            <input
-              {...register("placeNameErrorInput", {
-                required: "place name is required.",
-                minLength: {
-                  value: 3,
-                  message: "place name must exceed 3 characters",
-                },
-                maxLength: {
-                  value: 15,
-                  message: "place name must not exceed 15 characters",
-                },
-              })}
-              className="reviewTitle"
-              placeholder="Name of the Location"
-              onChange={(e) => setPinName(e.target.value)}
-            />
-          )}
+          {!currentPlace &&
+            !currentPlace &&
+            Object.keys(reviewToEdit).length === 0 && (
+              <input
+                {...register("placeNameErrorInput", {
+                  required: "place name is required.",
+                  minLength: {
+                    value: 3,
+                    message: "place name must exceed 3 characters",
+                  },
+                  maxLength: {
+                    value: 15,
+                    message: "place name must not exceed 15 characters",
+                  },
+                })}
+                className="reviewTitle"
+                placeholder="Name of the Location"
+                onChange={(e) => setPinName(e.target.value)}
+              />
+            )}
 
           <input
             {...titleValidation}

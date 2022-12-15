@@ -37,7 +37,7 @@ export default function LoginContainer({
   };
 
   return (
-    <div className="LoginContainer">
+    <div className="loginContainer">
       {!loading && (
         <div>
           <p className="logoText">WorldWander</p>
@@ -98,6 +98,8 @@ export default function LoginContainer({
           setCurrentPins={setCurrentPins}
         />
       )}
+
+      <p>Version 1.0 | 01/23</p>
     </div>
   );
 }

@@ -73,7 +73,9 @@ export default function PinRenderer({
                 mapRef.current.easeTo({ lng: p.long, lat: p.lat });
                 setCurrentPlace(p);
               }}
-              onClose={() => setCurrentPlaceId(null)}
+              onClose={() => {
+                setCurrentPlaceId(null);
+              }}
             >
               <div className="selectedPin">
                 <div className="pinImageContainer">
@@ -158,7 +160,9 @@ export default function PinRenderer({
                 <button
                   className="btnPrimary"
                   onClick={() => {
-                    setCurrentPlaceId(null);
+                    {
+                      setCurrentPlaceId(null);
+                    }
                   }}
                 >
                   Close

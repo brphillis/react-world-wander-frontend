@@ -220,3 +220,16 @@ textarea:focus {
 .previewThumbnail:hover {
   transform: scale(1.04);
 }
+
+.mainImageTrashIcon {
+  cursor: pointer;
+  background-color: #a06cd5;
+  border-radius: 100%;
+  color: white;
+  font-size: 14px;
+  padding: 5px;
+  position: absolute;
+  top: 169px;
+  right: 78px;
+  z-index: 1;
+}

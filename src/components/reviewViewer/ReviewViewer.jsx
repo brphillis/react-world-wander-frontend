@@ -12,10 +12,11 @@ import { format } from "timeago.js";
 import LikeButton from "../likeButton/LikeButton";
 import PopupEdit from "../popupEdit/PopupEdit";
 import ReportReviewForm from "../reportReviewForm/ReportReviewForm";
-import AddReviewForm from "../addReviewForm/AddReviewForm";
 
 export default function ReviewViewer({
   addReviewForm,
+  reviews,
+  setReviews,
   setAddReviewForm,
   setReviewViewer,
   setImageGallery,
@@ -28,7 +29,6 @@ export default function ReviewViewer({
   width,
 }) {
   const [loading, setLoading] = useState(true);
-  const [reviews, setReviews] = useState([]);
   const profilePicturesRef = useRef([]);
   const dragControls = useDragControls();
   const [sortedBy, setSortedBy] = useState("popular");
@@ -68,49 +68,60 @@ export default function ReviewViewer({
   };
 
   useEffect(() => {
-    const getLimitedReviews = async () => {
-      const currentid = {
-        id: currentPlaceId,
-        startIndex: firstFetched,
-        endIndex: lastFetched,
+    if (currentPlace) {
+      const getLimitedReviews = async () => {
+        const currentid = {
+          id: currentPlaceId,
+          startIndex: firstFetched,
+          endIndex: lastFetched,
+        };
+        try {
+          const res = await axios.post(
+            "http://localhost:8800/api/pins/getLimitedReviews",
+            currentid
+          );
+
+          if (sortedBy === "recent") {
+            setReviews(res.data.reverse());
+          }
+
+          if (sortedBy === "oldest") {
+            setReviews(res.data);
+          }
+
+          if (sortedBy === "popular") {
+            setReviews(
+              res.data.sort(function (a, b) {
+                if (a.likes.length < b.likes.length) return 1;
+                if (a.likes.length > b.likes.length) return -1;
+                return 0;
+              })
+            );
+          }
+
+          console.log(reviews);
+
+          res.data.forEach((e, i) => {
+            getProfilePictures(e.username).then(
+              (data) =>
+                (profilePicturesRef.current[i].src = data[0].profilePicture)
+            );
+          });
+          setLoading(false);
+          return res.data;
+        } catch (err) {
+          console.log(err);
+        }
       };
-      try {
-        const res = await axios.post(
-          "http://localhost:8800/api/pins/getLimitedReviews",
-          currentid
+      getLimitedReviews();
+    } else {
+      setLoading(false);
+      reviews.forEach((e, i) => {
+        getProfilePictures(e.username).then(
+          (data) => (profilePicturesRef.current[i].src = data[0].profilePicture)
         );
-
-        if (sortedBy === "recent") {
-          setReviews(res.data.reverse());
-        }
-
-        if (sortedBy === "oldest") {
-          setReviews(res.data);
-        }
-
-        if (sortedBy === "popular") {
-          setReviews(
-            res.data.sort(function (a, b) {
-              if (a.likes.length < b.likes.length) return 1;
-              if (a.likes.length > b.likes.length) return -1;
-              return 0;
-            })
-          );
-        }
-
-        res.data.forEach((e, i) => {
-          getProfilePictures(e.username).then(
-            (data) =>
-              (profilePicturesRef.current[i].src = data[0].profilePicture)
-          );
-        });
-        setLoading(false);
-        return res.data;
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getLimitedReviews();
+      });
+    }
   }, [currentPlaceId, sortedBy, firstFetched, lastFetched]);
 
   function handleSeeMore() {
@@ -166,7 +177,10 @@ export default function ReviewViewer({
 
           <RiCloseCircleFill
             className="xCloseButtonWhite"
-            onClick={() => setReviewViewer(false)}
+            onClick={() => {
+              setReviewViewer(false);
+              setReviews([]);
+            }}
           />
           <p>Reviews</p>
         </div>
@@ -177,7 +191,7 @@ export default function ReviewViewer({
               reportReviewForm || addReviewForm ? "hidden" : "visible",
           }}
         >
-          {loading && (
+          {(loading || reviews.length < 0) && (
             <Lottie
               id="reviewsLoadingCircle"
               animationData={loadingCircle}
@@ -280,7 +294,7 @@ export default function ReviewViewer({
                 );
               })}
 
-            {!loading && (
+            {!loading && reviews.length > 5 && (
               <button className="btnPrimary" onClick={handleSeeMore}>
                 See More
               </button>
@@ -296,6 +310,7 @@ export default function ReviewViewer({
           reviewToReport={reviewToReport}
           setReviewToReport={setReviewToReport}
           currentUser={currentUser}
+          currentPlace={currentPlace}
         />
       )}
     </div>

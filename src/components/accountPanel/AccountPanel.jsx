@@ -200,7 +200,7 @@ export default function AccountPanel({
   return (
     <div className="accountPanelContainer">
       <div className="accountPanel">
-        <figure onClick={() => handleProfilePictureUpload()}>
+        <figure onClick={currentUser !== "guest" && handleProfilePictureUpload}>
           <div className="previewPicture">
             <RiUpload2Fill className="uploadPlaceholder" />
             {profilePicture ? (

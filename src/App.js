@@ -32,6 +32,7 @@ function App() {
   const [desc, setDesc] = useState(null);
   const [pinType, setPinType] = useState(null);
   const [pinColor, setPinColor] = useState(null);
+  const [reviews, setReviews] = useState([]);
   const [reviewToEdit, setReviewToEdit] = useState({});
   const [rating, setRating] = useState(0);
   const [nrTaps, setNrTaps] = useState(0);
@@ -167,7 +168,15 @@ function App() {
         )}
 
         {/* Admin Panel */}
-        {adminPanel && <AdminPanel setAdminPanel={setAdminPanel} />}
+        {adminPanel && (
+          <AdminPanel
+            setAdminPanel={setAdminPanel}
+            reviewViewer={reviewViewer}
+            setReviewViewer={setReviewViewer}
+            setReviews={setReviews}
+            setCurrentPlace={setCurrentPlace}
+          />
+        )}
         <RiAdminFill
           className="adminButton"
           onClick={() => {
@@ -275,6 +284,8 @@ function App() {
             title={title}
             setTitle={setTitle}
             desc={desc}
+            reviews={reviews}
+            setReviews={setReviews}
             reviewToEdit={reviewToEdit}
             setReviewToEdit={setReviewToEdit}
             setDesc={setDesc}

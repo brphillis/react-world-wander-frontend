@@ -12,6 +12,7 @@ export default function ReportReviewForm({
   setReviewToReport,
   width,
   currentUser,
+  currentPlace,
 }) {
   const reportSelectionRef = useRef();
   const reportDescRef = useRef();
@@ -22,7 +23,8 @@ export default function ReportReviewForm({
       reason: reportSelectionRef.current.value,
       desc: reportDescRef.current.value,
       reviewCreator: reviewToReport.username,
-      id: reviewToReport._id,
+      pinId: currentPlace._id,
+      reviewId: reviewToReport._id,
       title: reviewToReport.title,
     };
 

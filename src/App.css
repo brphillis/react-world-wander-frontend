@@ -22,6 +22,20 @@ ReactMapGL {
   transition: all 0.4s ease-in-out;
 }
 
+.swal2-actions > button {
+  border: none !important;
+  margin: 5px 10px auto 10px !important;
+  background-color: #a06cd5 !important;
+  color: white !important;
+  font-size: 11px !important;
+  border-radius: 5px !important;
+  padding: 8px !important;
+  width: 100px !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  transition: all 0.4s ease-in-out !important;
+}
+
 .btnPrimary:hover {
   transform: scale(1.05);
   background-color: #6247aa;

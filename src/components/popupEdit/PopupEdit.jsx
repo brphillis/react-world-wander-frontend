@@ -77,7 +77,8 @@ export default function PopupEdit({
         style={{ display: "none" }}
         className="popupEditMenu"
       >
-        {currentUser.username === currentReview.username && (
+        {(currentUser.username === currentReview.username ||
+          currentUser.role === "admin") && (
           <MdEdit
             onClick={() => {
               setReviewToEdit(currentReview);
@@ -85,7 +86,8 @@ export default function PopupEdit({
             }}
           />
         )}
-        {currentUser.username === currentReview.username && (
+        {(currentUser.username === currentReview.username ||
+          currentUser.role === "admin") && (
           <MdDelete onClick={handleDeleteReview} />
         )}
 
