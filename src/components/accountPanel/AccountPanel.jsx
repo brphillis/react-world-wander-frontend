@@ -1,9 +1,13 @@
 import "./accountPanel.css";
+import { useRef } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { BsFillGearFill } from "react-icons/bs";
-import { BsFillPersonLinesFill } from "react-icons/bs";
-import { BsPersonPlusFill } from "react-icons/bs";
+import {
+  BsFillPersonLinesFill,
+  BsPersonPlusFill,
+  BsArrowRightCircleFill,
+} from "react-icons/bs";
 import { ImPowerCord } from "react-icons/im";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { RiUpload2Fill } from "react-icons/ri";
@@ -22,20 +26,33 @@ export default function AccountPanel({
   pins,
   setCurrentPins,
   setProfileEditor,
+  profilePicture,
+  setProfilePicture,
 }) {
   const [profilePictureUpload, setProfilePictureUpload] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(null);
   const [image, setImage] = useState("");
   const [displayOptionsPanel, setDisplayOptionsPanel] = useState(false);
   const [confirmDeleteAccount, setConfirmDeleteAccount] = useState(false);
   const [showMyPins, setShowMyPins] = useState(true);
   const [showOthersPins, setShowOthersPins] = useState(true);
+  const accountPanelRef = useRef();
+  const arrowBtnRef = useRef();
   const [myPins, setMyPins] = useState(
     pins.filter((p) => p.username === currentUser.username)
   );
   const [othersPins, setOthersPins] = useState(
     pins.filter((p) => p.username !== currentUser.username)
   );
+
+  const handleExpandTray = () => {
+    if (accountPanelRef.current.style.width === "130px") {
+      accountPanelRef.current.style.width = "250px";
+      arrowBtnRef.current.style.transform = "rotate(180deg)";
+    } else {
+      accountPanelRef.current.style.width = "130px";
+      arrowBtnRef.current.style.transform = "rotate(0deg)";
+    }
+  };
 
   useEffect(() => {
     setMyPins(pins.filter((p) => p.username === currentUser.username));
@@ -199,20 +216,20 @@ export default function AccountPanel({
 
   return (
     <div className="accountPanelContainer">
-      <div className="accountPanel">
+      <div className="accountPanel" ref={accountPanelRef}>
         <figure onClick={currentUser !== "guest" && handleProfilePictureUpload}>
-          <div className="previewPicture">
-            <RiUpload2Fill className="uploadPlaceholder" />
-            {profilePicture ? (
-              <img
-                src={profilePicture}
-                alt="profilepic"
-                className="profilePicture"
-              />
-            ) : (
+          <RiUpload2Fill className="uploadPlaceholder" />
+          {profilePicture ? (
+            <img
+              src={profilePicture}
+              alt="profilepic"
+              className="profilePicture"
+            />
+          ) : (
+            <div className="profilePicture">
               <BsPersonPlusFill className="placeholderProfilePicture" />
-            )}
-          </div>
+            </div>
+          )}
 
           <figcaption>{currentUser.username}</figcaption>
         </figure>
@@ -231,6 +248,16 @@ export default function AccountPanel({
           <ImPowerCord className="optionBtn" onClick={handleLogout}>
             Log out
           </ImPowerCord>
+
+          <div className="rotateBtn" ref={arrowBtnRef}>
+            <BsArrowRightCircleFill
+              className="optionBtn"
+              onClick={() => {
+                handleExpandTray();
+                console.log(arrowBtnRef);
+              }}
+            />
+          </div>
         </div>
       </div>
 

@@ -32,6 +32,7 @@ function App() {
   const [desc, setDesc] = useState(null);
   const [pinType, setPinType] = useState(null);
   const [pinColor, setPinColor] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
   const [reviews, setReviews] = useState([]);
   const [reviewToEdit, setReviewToEdit] = useState({});
   const [rating, setRating] = useState(0);
@@ -104,7 +105,8 @@ function App() {
     if (
       nrTaps >= 1 &&
       Date.now() - startDate < 500 &&
-      currentUser !== "guest"
+      currentUser !== "guest" &&
+      !currentPlaceId
     ) {
       setStartDate(Date.now());
       setNrTaps(0);
@@ -195,6 +197,8 @@ function App() {
             pins={pins}
             setCurrentPins={setCurrentPins}
             setProfileEditor={setProfileEditor}
+            profilePicture={profilePicture}
+            setProfilePicture={setProfilePicture}
           ></AccountPanel>
         )}
 
@@ -254,6 +258,8 @@ function App() {
             setPins={setPins}
             pins={pins}
             setNewPlace={setNewPlace}
+            setReviews={setReviews}
+            setReviewViewer={setReviewViewer}
             newPlace={newPlace}
             pinType={pinType}
             pinColor={pinColor}
@@ -322,6 +328,8 @@ function App() {
             width={width}
             profileEditor={profileEditor}
             setProfileEditor={setProfileEditor}
+            profilePicture={profilePicture}
+            currentUser={currentUser}
           />
         )}
       </Map>

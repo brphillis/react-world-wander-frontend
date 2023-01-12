@@ -57,7 +57,7 @@ export default function ReviewViewer({
     try {
       const currentid = { username: user };
       const res = await axios.post(
-        "http://localhost:8800/api/users/getProfilePicture",
+        "http://localhost:8800/api/users/getProfile",
         currentid
       );
 
@@ -278,6 +278,7 @@ export default function ReviewViewer({
                       reviewToEdit={reviewToEdit}
                       setReviewToEdit={setReviewToEdit}
                       currentPlace={currentPlace}
+                      currentPlaceId={currentPlaceId}
                       currentUser={currentUser}
                       reportReviewForm={reportReviewForm}
                       setReportReviewForm={setReportReviewForm}

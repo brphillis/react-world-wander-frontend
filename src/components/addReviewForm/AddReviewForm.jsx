@@ -33,6 +33,8 @@ export default function AddReviewForm({
   setPins,
   pins,
   setNewPlace,
+  setReviews,
+  setReviewViewer,
   newPlace,
   pinType,
   pinColor,
@@ -64,8 +66,8 @@ export default function AddReviewForm({
       message: "review title must exceed 3 characters",
     },
     maxLength: {
-      value: 15,
-      message: "review title must not exceed 15 characters",
+      value: 25,
+      message: "review title must not exceed 25 characters",
     },
   });
 
@@ -76,8 +78,8 @@ export default function AddReviewForm({
       message: "review must exceed 30 characters",
     },
     maxLength: {
-      value: 250,
-      message: "review must not exceed 250 characters",
+      value: 1000,
+      message: "review must not exceed 1000 characters",
     },
   });
 
@@ -93,10 +95,6 @@ export default function AddReviewForm({
   useEffect(() => {
     setRating(currentStars);
   }, [currentStars, setRating]);
-
-  const openNewPin = (id) => {
-    setCurrentPlaceId(id);
-  };
 
   const handlePost = async () => {
     if (currentPlace && Object.keys(reviewToEdit).length === 0) {
@@ -117,7 +115,7 @@ export default function AddReviewForm({
         setAddReviewForm(false);
         Swal.fire({
           title: "Thankyou for your Review",
-          text: "   ",
+          text: " ",
           icon: "success",
           padding: "10px",
           confirmButtonColor: "#a06cd5",
@@ -125,7 +123,10 @@ export default function AddReviewForm({
           backdrop: `#23232380`,
         }).then((result) => {
           if (result.isConfirmed) {
-            openNewPin(res.data._id, res.data.lat, res.data.long);
+            handleOpenReview(
+              res.data._id,
+              res.data.review[res.data.review.length - 1]._id
+            );
           }
         });
 
@@ -158,7 +159,7 @@ export default function AddReviewForm({
         setAddReviewForm(false);
         Swal.fire({
           title: "Thankyou for your Review",
-          text: "   ",
+          text: "your pin has been added",
           icon: "success",
           padding: "10px",
           confirmButtonColor: "#a06cd5",
@@ -166,7 +167,10 @@ export default function AddReviewForm({
           backdrop: `#23232380`,
         }).then((result) => {
           if (result.isConfirmed) {
-            openNewPin(res.data._id, res.data.lat, res.data.long);
+            handleOpenReview(
+              res.data._id,
+              res.data.review[res.data.review.length - 1]._id
+            );
           }
         });
       } catch (err) {
@@ -201,7 +205,7 @@ export default function AddReviewForm({
         }).then((result) => {
           if (result.isConfirmed) {
             setReviewToEdit({});
-            openNewPin(res.data._id, res.data.lat, res.data.long);
+            setCurrentPlaceId(res.data._id, res.data.lat, res.data.long);
           }
         });
       } catch (err) {
@@ -253,6 +257,26 @@ export default function AddReviewForm({
         setImages(images.filter((picture) => picture.base64 !== e.base64));
       }
     });
+  };
+
+  const handleOpenReview = async (pinId, reviewId) => {
+    const reqReview = {
+      id: pinId,
+      reviewid: reviewId,
+    };
+
+    try {
+      const res = await axios.post(
+        "http://localhost:8800/api/pins/getReview",
+        reqReview
+      );
+
+      setCurrentPlace(null);
+      setReviews(res.data);
+      setReviewViewer(true);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   function highlightStars(e) {

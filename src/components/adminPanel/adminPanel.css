@@ -37,23 +37,6 @@
   margin-bottom: 10px;
 }
 
-/* .frScroller {
-  width: 100%;
-  max-height: 300px;
-  overflow-y: scroll;
-}
-
-.frScrollItem:nth-child(odd) {
-  background-color: #e5dded;
-}
-
-.frScrollItem {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding: 10px 0 10px 0;
-} */
-
 table {
   table-layout: fixed;
   border-spacing: 0px;

@@ -75,6 +75,7 @@ export default function PinRenderer({
               }}
               onClose={() => {
                 setCurrentPlaceId(null);
+                setCurrentPlace(null);
               }}
             >
               <div className="selectedPin">
@@ -162,6 +163,7 @@ export default function PinRenderer({
                   onClick={() => {
                     {
                       setCurrentPlaceId(null);
+                      setCurrentPlace(null);
                     }
                   }}
                 >

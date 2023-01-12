@@ -64,8 +64,6 @@ export default function AdminPanel({
       reviewid: reviewId,
     };
 
-    console.log("review is", reqReview);
-
     try {
       const res = await axios.post(
         "http://localhost:8800/api/pins/getReview",
