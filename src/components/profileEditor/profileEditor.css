@@ -108,7 +108,17 @@
   top: 0px;
 }
 
+.profileEditorEditButton {
+  position: absolute;
+  top: -5px;
+  margin-left: 2px;
+  color: #a06cd5;
+  font-size: 15px;
+  cursor: pointer;
+}
+
 .profileEditorAboutMe {
+  width: 100%;
   margin-top: 50px;
   margin-left: 20px;
   margin-bottom: 5px;
@@ -121,7 +131,67 @@
   padding-right: 10px;
 }
 
+.profileEditorAboutMe > h3 {
+  position: relative;
+}
+
+.profileEditorAboutMe > form {
+  width: 94%;
+}
+
+.profileEditorAboutMe > form > textarea {
+  width: 98%;
+  height: 80px;
+}
+
+.profileEditorAboutMe > form > div {
+  justify-content: center;
+}
+
+.profileEditorAboutMe > form > div > button {
+  margin: 5px;
+}
+
+.tag-wrapper.ReactTags__tag {
+  display: inline-block;
+  background-color: #a06cd5;
+  color: white;
+  font-weight: 500;
+  padding: 4px 10px 4px 10px;
+  margin-right: 5px;
+  margin-top: 10px !important;
+}
+
+.ReactTags__tag {
+  margin-top: 10px !important;
+}
+
+.tag-wrapper > button {
+  cursor: pointer;
+  border: none;
+  background-color: #a06cd5;
+  color: white;
+  margin-left: 5px;
+  margin-right: -5px;
+}
+
+.ReactTags__tagInput {
+  margin-top: 10px;
+}
+
+.tagCompleteButton {
+  position: absolute;
+  cursor: pointer;
+  background-color: #a06cd5;
+  font-size: 14px;
+  padding: 8px;
+  color: white;
+  bottom: -1px;
+  right: -25px;
+}
+
 .profileEditorVisited {
+  position: relative;
   margin-top: 20px;
   margin-left: 20px;
   margin-bottom: 5px;

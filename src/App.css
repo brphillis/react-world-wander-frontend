@@ -2,6 +2,11 @@ ReactMapGL {
   z-index: 1;
 }
 
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
 .mapContainer {
   display: grid;
   grid-template-columns: 1fr;

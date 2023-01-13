@@ -59,7 +59,7 @@ export default function AddReviewForm({
   const reviewTitleRef = useRef(null);
   const reviewDescRef = useRef(null);
 
-  const titleValidation = register("reveiewTitleErrorInput", {
+  const titleValidation = register("reviewTitleErrorInput", {
     required: "review title is required.",
     minLength: {
       value: 3,
@@ -71,7 +71,7 @@ export default function AddReviewForm({
     },
   });
 
-  const descValidation = register("reveiewDescErrorInput", {
+  const descValidation = register("reviewDescErrorInput", {
     required: "review desc is required.",
     minLength: {
       value: 3,
@@ -667,7 +667,7 @@ export default function AddReviewForm({
 
             <ErrorMessage
               errors={errors}
-              name="reveiewTitleErrorInput"
+              name="reviewTitleErrorInput"
               render={({ messages }) => {
                 console.log("messages", messages);
                 return messages
@@ -680,7 +680,7 @@ export default function AddReviewForm({
 
             <ErrorMessage
               errors={errors}
-              name="reveiewDescErrorInput"
+              name="reviewDescErrorInput"
               render={({ messages }) => {
                 console.log("messages", messages);
                 return messages
