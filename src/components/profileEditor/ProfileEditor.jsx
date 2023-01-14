@@ -1,29 +1,44 @@
 import "./profileEditor.css";
 import { COUNTRIES } from "./countries.js";
 import { WithContext as ReactTags } from "react-tag-input";
-import { motion, useDragControls } from "framer-motion";
-import { RiCloseCircleFill } from "react-icons/ri";
 import { BsTrophyFill, BsFillHeartFill } from "react-icons/bs";
 import { MdOutlineEdit } from "react-icons/md";
-import { TiTick } from "react-icons/ti";
 import { useState, useRef, useEffect } from "react";
 import { ErrorMessage } from "@hookform/error-message";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import React from "react";
+import NewsFeed from "../newsFeed/NewsFeed";
 
 export default function ProfileEditor({
-  profileEditor,
-  setProfileEditor,
-  width,
-  profilePicture,
+  setReviewViewer,
+  setImageGallery,
+  setImageGalleryPics,
+  currentPlace,
   currentUser,
+  width,
+  addReviewForm,
+  setAddReviewForm,
+  currentPlaceId,
+  reviews,
+  profileEditor,
+  setReviews,
+  reviewToEdit,
+  setReviewToEdit,
+  profilePicture,
+  loading,
+  setLoading,
+  reportReviewForm,
+  setReportReviewForm,
+  reviewToReport,
+  setReviewToReport,
 }) {
   const [currentProfile, setCurrentProfile] = useState(undefined);
   const [edtingAboutMe, setEditingAboutMe] = useState(false);
   const [editingVisited, setEditingVisited] = useState(false);
-  const [tags, setTags] = useState([]);
-  const tagRef = useRef([]);
+  const [editingToVisit, setEditingToVisit] = useState(false);
+  const [visitedTags, setVisitedTags] = useState([]);
+  const [toVisitTags, setToVisitTags] = useState([]);
   const aboutMeRef = useRef("");
   const suggestions = COUNTRIES.map((country) => {
     return {
@@ -39,12 +54,20 @@ export default function ProfileEditor({
 
   const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
-  const handleDelete = (i) => {
-    setTags(tags.filter((tag, index) => index !== i));
+  const handleDeleteVisited = (i) => {
+    setVisitedTags(visitedTags.filter((tag, index) => index !== i));
   };
 
-  const handleAddition = (tag) => {
-    setTags([...tags, tag]);
+  const handleAdditionVisited = (tag) => {
+    setVisitedTags([...visitedTags, tag]);
+  };
+
+  const handleDeleteToVisit = (i) => {
+    setToVisitTags(toVisitTags.filter((tag, index) => index !== i));
+  };
+
+  const handleAdditionToVisit = (tag) => {
+    setToVisitTags([...toVisitTags, tag]);
   };
 
   const {
@@ -67,29 +90,76 @@ export default function ProfileEditor({
     },
   });
 
-  const getProfile = async (user) => {
+  const getProfile = async () => {
     try {
-      const currentid = { username: user };
+      const currentid = { username: currentUser.username };
       const res = await axios.post(
         "http://localhost:8800/api/users/getProfile",
         currentid
       );
-      setCurrentProfile(res.data[0]);
+      if (res.data.length > 0) {
+        if (loading) {
+          handleGetReviews(res.data[0].username);
+        }
+        setCurrentProfile(res.data[0]);
+        setLoading(false);
+        return;
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
   useEffect(() => {
-    if (currentProfile) {
-      const handleChangeTags = async () => {
+    getProfile();
+  }, []);
+
+  const handleGetReviews = async (profileUserName) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8800/api/pins/getUserReviews",
+        {
+          username: profileUserName,
+        }
+      );
+      setReviews(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    if (currentProfile && editingVisited) {
+      const handleChangeVisitedTags = async () => {
         try {
           const newTagsInfo = {
             id: currentProfile._id,
-            visited: tags,
+            visited: visitedTags,
           };
           const res = await axios.put(
             "http://localhost:8800/api/users/updateVisited",
+            newTagsInfo
+          );
+          getProfile(currentUser.username);
+          return;
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      handleChangeVisitedTags();
+    }
+  }, [visitedTags]);
+
+  useEffect(() => {
+    if (currentProfile && editingToVisit) {
+      const handleChangeToVisitTags = async () => {
+        try {
+          const newTagsInfo = {
+            id: currentProfile._id,
+            toVisit: toVisitTags,
+          };
+          const res = await axios.put(
+            "http://localhost:8800/api/users/updateToVisit",
             newTagsInfo
           );
           getProfile(currentUser.username);
@@ -99,9 +169,9 @@ export default function ProfileEditor({
           console.log(err);
         }
       };
-      handleChangeTags();
+      handleChangeToVisitTags();
     }
-  }, [tags]);
+  }, [toVisitTags]);
 
   const changeAboutMe = async () => {
     try {
@@ -122,183 +192,192 @@ export default function ProfileEditor({
   };
 
   useEffect(() => {
-    getProfile(currentUser.username);
-  }, []);
-
-  useEffect(() => {
     if (edtingAboutMe) {
       aboutMeRef.current.value = currentProfile.aboutMe;
     }
   }, [currentProfile, edtingAboutMe]);
 
-  const dragControls = useDragControls();
-  const motionValues = {
-    desktop: {
-      position: "absolute",
-      left: "35%",
-      top: "1%",
-      margin: "0",
-    },
-    mobile: {
-      position: "absolute",
-      left: "0",
-      right: "0",
-      marginLeft: "auto",
-      marginRight: "auto",
-      width: width,
-    },
-  };
-
   return (
-    <motion.div
-      drag
-      dragControls={dragControls}
-      dragListener={false}
-      dragMomentum={false}
-      initial={width > 600 ? motionValues.desktop : motionValues.mobile}
-    >
-      <div id="profileEditor">
-        <div
-          className="menuTopBar"
-          onPointerDown={(e) => {
-            dragControls.start(e);
-          }}
-        >
-          <RiCloseCircleFill
-            className="xCloseButtonWhite"
-            onClick={() => setProfileEditor(false)}
-          />
-          <p>Edit Profile</p>
-        </div>
+    <div id="profileEditor">
+      <div className="profileEditorContent">
+        {currentProfile && reviews && (
+          <>
+            <figure>
+              <img
+                src={profilePicture}
+                alt="profilepic"
+                className="ProfileEditorProfilePicture"
+              />
 
-        <div className="profileEditorContent">
-          {currentProfile && (
-            <>
-              <figure>
-                <img
-                  src={profilePicture}
-                  alt="profilepic"
-                  className="ProfileEditorProfilePicture"
-                />
+              <figcaption>{currentProfile.username}</figcaption>
 
-                <figcaption>{currentProfile.username}</figcaption>
+              <div id="contributionsCount">
+                <BsTrophyFill />
+                {currentProfile.contributions}
+                <p>Contributions</p>
+              </div>
 
-                <div id="contributionsCount">
-                  <BsTrophyFill />
-                  {currentProfile.contributions}
-                  <p>Contributions</p>
-                </div>
+              <div id="likesCount">
+                <BsFillHeartFill />
+                {currentProfile.totalLikes}
+                <p>Total Likes</p>
+              </div>
+            </figure>
 
-                <div id="likesCount">
-                  <BsFillHeartFill />
-                  {currentProfile.totalLikes}
-                  <p>Total Likes</p>
-                </div>
-              </figure>
+            <div className="profileEditorAboutMe">
+              <h3>
+                About Me
+                {currentUser.username && currentProfile.username && (
+                  <MdOutlineEdit
+                    onClick={() => {
+                      setEditingAboutMe(!edtingAboutMe);
+                    }}
+                    className="profileEditorEditButton"
+                  />
+                )}
+              </h3>
 
-              <div className="profileEditorAboutMe">
-                <h3>
-                  About Me
-                  {currentUser.username && currentProfile.username && (
-                    <MdOutlineEdit
+              {!edtingAboutMe && <p>{currentProfile.aboutMe}</p>}
+
+              {edtingAboutMe && (
+                <form onSubmit={handleSubmit(changeAboutMe)}>
+                  <textarea
+                    {...aboutMeValidation}
+                    placeholder="About Me"
+                    ref={(e) => {
+                      aboutMeValidation.ref(e);
+                      aboutMeRef.current = e;
+                    }}
+                  ></textarea>
+
+                  <ErrorMessage
+                    errors={errors}
+                    name="aboutMeErrorInput"
+                    render={({ messages }) => {
+                      console.log("messages", messages);
+                      return messages
+                        ? Object.entries(messages).map(([type, message]) => (
+                            <p key={type}>{message}</p>
+                          ))
+                        : null;
+                    }}
+                  />
+                  <div className="flexRow">
+                    <button className="btnPrimary" type="submit">
+                      Submit
+                    </button>
+                    <button
                       onClick={() => {
                         setEditingAboutMe(!edtingAboutMe);
                       }}
-                      className="profileEditorEditButton"
-                    />
-                  )}
-                </h3>
-
-                {!edtingAboutMe && <p>{currentProfile.aboutMe}</p>}
-
-                {edtingAboutMe && (
-                  <form onSubmit={handleSubmit(changeAboutMe)}>
-                    <textarea
-                      {...aboutMeValidation}
-                      placeholder="About Me"
-                      ref={(e) => {
-                        aboutMeValidation.ref(e);
-                        aboutMeRef.current = e;
-                      }}
-                    ></textarea>
-
-                    <ErrorMessage
-                      errors={errors}
-                      name="aboutMeErrorInput"
-                      render={({ messages }) => {
-                        console.log("messages", messages);
-                        return messages
-                          ? Object.entries(messages).map(([type, message]) => (
-                              <p key={type}>{message}</p>
-                            ))
-                          : null;
-                      }}
-                    />
-                    <div className="flexRow">
-                      <button className="btnPrimary" type="submit">
-                        Submit
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEditingAboutMe(!edtingAboutMe);
-                        }}
-                        className="btnPrimary"
-                        type="button"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </div>
-
-              <div className="profileEditorVisited">
-                <h3>
-                  I Have Visited
-                  {currentUser.username && currentProfile.username && (
-                    <MdOutlineEdit
-                      onClick={() => {
-                        setEditingVisited(!editingVisited);
-                        !editingVisited && setTags(currentProfile.visited);
-                      }}
-                      className="profileEditorEditButton"
-                    />
-                  )}
-                </h3>
-                {!editingVisited && (
-                  <div className="visitedList">
-                    {currentProfile.visited.sort().map((e, i) => {
-                      return <p key={i}>{e.text}</p>;
-                    })}
+                      className="btnPrimary"
+                      type="button"
+                    >
+                      Close
+                    </button>
                   </div>
-                )}
+                </form>
+              )}
+            </div>
 
-                {editingVisited && (
-                  <ReactTags
-                    tags={tags}
-                    suggestions={suggestions}
-                    delimiters={delimiters}
-                    handleDelete={handleDelete}
-                    allowDragDrop={false}
-                    handleAddition={handleAddition}
-                    inputFieldPosition="bottom"
-                    autocomplete
+            <div className="profileEditorVisited">
+              <h3>
+                I Have Visited
+                {currentUser.username && currentProfile.username && (
+                  <MdOutlineEdit
+                    onClick={() => {
+                      setEditingVisited(!editingVisited);
+                      !editingVisited && setVisitedTags(currentProfile.visited);
+                    }}
+                    className="profileEditorEditButton"
                   />
                 )}
-              </div>
-
-              <div className="profileEditorToVisit">
-                <h3>I Want to Visit</h3>
-                <div className="toVisitList">
-                  {currentProfile.toVisit.sort().map((e, i) => {
-                    return <p key={i}>{e}</p>;
+              </h3>
+              {!editingVisited && (
+                <div className="visitedList">
+                  {currentProfile.visited.sort().map((e, i) => {
+                    return <p key={i}>{e.text}</p>;
                   })}
                 </div>
-              </div>
-            </>
-          )}
-        </div>
+              )}
+
+              {editingVisited && (
+                <ReactTags
+                  tags={visitedTags}
+                  suggestions={suggestions}
+                  delimiters={delimiters}
+                  handleDelete={handleDeleteVisited}
+                  allowDragDrop={false}
+                  handleAddition={handleAdditionVisited}
+                  inputFieldPosition="bottom"
+                  autocomplete
+                />
+              )}
+            </div>
+
+            <div className="profileEditorToVisit">
+              <h3>
+                I Want to Visit
+                {currentUser.username && currentProfile.username && (
+                  <MdOutlineEdit
+                    onClick={() => {
+                      setEditingToVisit(!editingToVisit);
+                      !editingToVisit && setToVisitTags(currentProfile.toVisit);
+                    }}
+                    className="profileEditorEditButton"
+                  />
+                )}
+              </h3>
+              {!editingToVisit && (
+                <div className="toVisitList">
+                  {currentProfile.toVisit.sort().map((e, i) => {
+                    return <p key={i}>{e.text}</p>;
+                  })}
+                </div>
+              )}
+
+              {editingToVisit && (
+                <ReactTags
+                  tags={toVisitTags}
+                  suggestions={suggestions}
+                  delimiters={delimiters}
+                  handleDelete={handleDeleteToVisit}
+                  allowDragDrop={false}
+                  handleAddition={handleAdditionToVisit}
+                  inputFieldPosition="bottom"
+                  autocomplete
+                />
+              )}
+            </div>
+
+            <div className="profileEditorToVisit">
+              <h3>Recent Activity</h3>
+            </div>
+            <NewsFeed
+              addReviewForm={addReviewForm}
+              reviews={reviews}
+              setReviews={setReviews}
+              setAddReviewForm={setAddReviewForm}
+              setReviewViewer={setReviewViewer}
+              setImageGallery={setImageGallery}
+              currentPlaceId={currentPlaceId}
+              setImageGalleryPics={setImageGalleryPics}
+              reviewToEdit={reviewToEdit}
+              setReviewToEdit={setReviewToEdit}
+              currentPlace={currentPlace}
+              currentUser={currentUser}
+              width={width}
+              profileEditor={profileEditor}
+              loading={loading}
+              setLoading={setLoading}
+              reportReviewForm={reportReviewForm}
+              setReportReviewForm={setReportReviewForm}
+              reviewToReport={reviewToReport}
+              setReviewToReport={setReviewToReport}
+            ></NewsFeed>
+          </>
+        )}
       </div>
-    </motion.div>
+    </div>
   );
 }

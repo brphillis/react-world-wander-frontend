@@ -15,6 +15,7 @@ import ProfileEditor from "./components/profileEditor/ProfileEditor";
 
 import useWindowDimensions from "./hooks/useWindowDimensions";
 import AdminPanel from "./components/adminPanel/AdminPanel";
+import TitleBar from "./components/titleBar/TitleBar";
 
 function App() {
   const myStorage = window.localStorage;
@@ -33,7 +34,7 @@ function App() {
   const [pinType, setPinType] = useState(null);
   const [pinColor, setPinColor] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState(null);
   const [reviewToEdit, setReviewToEdit] = useState({});
   const [rating, setRating] = useState(0);
   const [nrTaps, setNrTaps] = useState(0);
@@ -44,7 +45,12 @@ function App() {
   const [reviewViewer, setReviewViewer] = useState(false);
   const [imageGallery, setImageGallery] = useState(false);
   const [imageGalleryPics, setImageGalleryPics] = useState([]);
+  const [sortedBy, setSortedBy] = useState("popular");
+  const [activeWindows, setActiveWindows] = useState([]);
   const { height, width } = useWindowDimensions();
+  const [loading, setLoading] = useState(true);
+  const [reportReviewForm, setReportReviewForm] = useState(false);
+  const [reviewToReport, setReviewToReport] = useState({});
   const [viewport, setViewport] = useState({
     latitude: 47.040182,
     longitude: 17.071727,
@@ -125,6 +131,21 @@ function App() {
     }
   };
 
+  function handleSortFeed() {
+    setLoading(true);
+    if (sortedBy === "popular") {
+      setSortedBy("recent");
+    }
+
+    if (sortedBy === "recent") {
+      setSortedBy("oldest");
+    }
+
+    if (sortedBy === "oldest") {
+      setSortedBy("popular");
+    }
+  }
+
   return (
     <div className="App">
       <Map
@@ -199,6 +220,8 @@ function App() {
             setProfileEditor={setProfileEditor}
             profilePicture={profilePicture}
             setProfilePicture={setProfilePicture}
+            activeWindows={activeWindows}
+            setActiveWindows={setActiveWindows}
           ></AccountPanel>
         )}
 
@@ -269,7 +292,7 @@ function App() {
         )}
 
         {/* View Reviews */}
-        {reviewViewer && (
+        {reviewViewer && !profileEditor && (
           <ReviewViewer
             reviewViewer={reviewViewer}
             setReviewViewer={setReviewViewer}
@@ -291,6 +314,7 @@ function App() {
             setTitle={setTitle}
             desc={desc}
             reviews={reviews}
+            profileEditor={profileEditor}
             setReviews={setReviews}
             reviewToEdit={reviewToEdit}
             setReviewToEdit={setReviewToEdit}
@@ -303,7 +327,16 @@ function App() {
             newPlace={newPlace}
             pinType={pinType}
             pinColor={pinColor}
-          ></ReviewViewer>
+            handleSortFeed={handleSortFeed}
+            sortedBy={sortedBy}
+            setSortedBy={setSortedBy}
+            loading={loading}
+            setLoading={setLoading}
+            reportReviewForm={reportReviewForm}
+            setReportReviewForm={setReportReviewForm}
+            reviewToReport={reviewToReport}
+            setReviewToReport={setReviewToReport}
+          />
         )}
 
         {/* Image Gallery */}
@@ -323,14 +356,61 @@ function App() {
         )}
 
         {/* Profile Editor */}
-        {profileEditor && (
-          <ProfileEditor
-            width={width}
-            profileEditor={profileEditor}
-            setProfileEditor={setProfileEditor}
-            profilePicture={profilePicture}
-            currentUser={currentUser}
-          />
+        {activeWindows.includes("ProfileEditor") && (
+          <TitleBar
+            isList={true}
+            title={"Edit Profile"}
+            activeWindows={activeWindows}
+            setActiveWindows={setActiveWindows}
+            setLoading={setLoading}
+            sortedBy={sortedBy}
+            setSortedBy={setSortedBy}
+            componentToPassDown={
+              <ProfileEditor
+                reviewViewer={reviewViewer}
+                setReviewViewer={setReviewViewer}
+                setImageGallery={setImageGallery}
+                setImageGalleryPics={setImageGalleryPics}
+                imageGalleryPics={imageGalleryPics}
+                currentPlace={currentPlace}
+                currentUser={currentUser}
+                height={height}
+                width={width}
+                addReviewForm={addReviewForm}
+                setAddReviewForm={setAddReviewForm}
+                setCurrentPlace={setCurrentPlace}
+                currentPlaceId={currentPlaceId}
+                setCurrentPlaceId={setCurrentPlaceId}
+                setPinName={setPinName}
+                pinName={pinName}
+                title={title}
+                setTitle={setTitle}
+                desc={desc}
+                reviews={reviews}
+                profileEditor={profileEditor}
+                setReviews={setReviews}
+                reviewToEdit={reviewToEdit}
+                setReviewToEdit={setReviewToEdit}
+                setDesc={setDesc}
+                rating={rating}
+                setRating={setRating}
+                setPins={setPins}
+                pins={pins}
+                setNewPlace={setNewPlace}
+                newPlace={newPlace}
+                pinType={pinType}
+                pinColor={pinColor}
+                profilePicture={profilePicture}
+                setProfileEditor={setProfileEditor}
+                loading={loading}
+                setLoading={setLoading}
+                reportReviewForm={reportReviewForm}
+                setReportReviewForm={setReportReviewForm}
+                reviewToReport={reviewToReport}
+                setReviewToReport={setReviewToReport}
+              />
+            }
+          ></TitleBar>
         )}
       </Map>
     </div>

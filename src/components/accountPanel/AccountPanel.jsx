@@ -28,6 +28,8 @@ export default function AccountPanel({
   setProfileEditor,
   profilePicture,
   setProfilePicture,
+  activeWindows,
+  setActiveWindows,
 }) {
   const [profilePictureUpload, setProfilePictureUpload] = useState(false);
   const [image, setImage] = useState("");
@@ -237,7 +239,12 @@ export default function AccountPanel({
         <div className="profileBtnContainer">
           <BsFillPersonLinesFill
             className="optionBtn"
-            onClick={() => setProfileEditor(true)}
+            onClick={() =>
+              setActiveWindows((activeWindows) => [
+                ...activeWindows,
+                "ProfileEditor",
+              ])
+            }
           ></BsFillPersonLinesFill>
 
           <BsFillGearFill
@@ -254,7 +261,6 @@ export default function AccountPanel({
               className="optionBtn"
               onClick={() => {
                 handleExpandTray();
-                console.log(arrowBtnRef);
               }}
             />
           </div>

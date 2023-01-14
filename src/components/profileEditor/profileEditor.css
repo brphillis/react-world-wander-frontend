@@ -10,6 +10,11 @@
   border: 1px dotted #a06cd5;
   border-radius: 10px;
   background-color: white;
+  overflow-y: scroll;
+}
+
+#profileEditor::-webkit-scrollbar {
+  display: none;
 }
 
 .profileEditorContent {
@@ -128,7 +133,7 @@
 .profileEditorAboutMe > p {
   margin-top: 5px;
   padding-left: 10px;
-  padding-right: 10px;
+  padding-right: 45px;
 }
 
 .profileEditorAboutMe > h3 {
@@ -179,6 +184,27 @@
   margin-top: 10px;
 }
 
+.ReactTags__suggestions {
+  position: absolute;
+  z-index: 10;
+  background-color: white;
+  padding-right: 20px;
+  border: 1px solid #a06cd5;
+}
+
+.ReactTags__suggestions > * {
+  list-style-type: none !important;
+}
+
+.ReactTags__suggestions > * > * {
+  margin: 5px 0 5px 0;
+  cursor: pointer;
+}
+
+.ReactTags__activeSuggestion {
+  font-weight: bold;
+}
+
 .tagCompleteButton {
   position: absolute;
   cursor: pointer;
@@ -221,6 +247,7 @@
 }
 
 .profileEditorToVisit {
+  position: relative;
   margin-top: 20px;
   margin-left: 20px;
   margin-bottom: 5px;

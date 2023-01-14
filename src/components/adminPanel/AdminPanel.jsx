@@ -19,10 +19,6 @@ export default function AdminPanel({
   const [flaggedReviews, setFlaggedReviews] = useState([]);
   const dragControls = useDragControls();
 
-  useEffect(() => {
-    console.log(flaggedReviews);
-  }, []);
-
   const completeTask = (id) => {
     Swal.fire({
       icon: "warning",

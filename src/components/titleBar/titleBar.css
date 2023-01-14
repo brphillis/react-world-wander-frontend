@@ -1,0 +1,39 @@
+.motionWindow {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: max-content;
+}
+
+@media (max-width: 620px) {
+  .motionbox {
+    width: 100vw;
+    top: 154px;
+  }
+}
+
+.menuTopBar {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1;
+  border: 1px dotted white;
+  height: 20px;
+  background-color: #a06cd5;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px 10px 0 0;
+  text-align: center;
+  font-size: 8px;
+  padding: 5px 0 5px 0;
+}
+
+.menuTopBar > p {
+  font-size: 12px;
+}

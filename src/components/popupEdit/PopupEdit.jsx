@@ -48,11 +48,6 @@ export default function PopupEdit({
     });
   }
 
-  useEffect(() => {
-    console.log(currentPlace);
-    console.log(currentPlaceId);
-  }, []);
-
   const deleteReview = async () => {
     const reviewToDelete = {
       id: currentPlace._id,
