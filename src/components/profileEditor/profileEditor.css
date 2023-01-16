@@ -21,16 +21,21 @@
   margin-top: 35px;
   font-size: 12px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: block;
 }
 
 .ProfileEditorProfilePicture {
+  display: block;
+  margin: 0 auto;
   margin-top: 10px;
   height: 170px;
   width: 170px;
   border-radius: 100%;
+}
+
+.profileEditorContent > figure {
+  display: block;
+  margin: 50px auto;
 }
 
 .profileEditorContent > figure > figcaption {
@@ -43,6 +48,18 @@
   padding: 5px;
   display: block;
   margin: -24px auto;
+}
+
+@media (max-width: 900px) {
+  #contributionsCount {
+    margin-left: -80px;
+    margin-top: 50px;
+  }
+
+  #likesCount {
+    margin-right: -80px;
+    margin-top: 50px;
+  }
 }
 
 #contributionsCount {

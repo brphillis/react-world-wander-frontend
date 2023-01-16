@@ -1,9 +1,10 @@
 .imageGalleryContainer {
-  position: relative;
+  position: absolute;
+  top: 0;
   height: 100vh;
   width: 100vw;
   background-color: #000000e6;
-  z-index: 5;
+  z-index: 20;
   display: flex;
   flex-direction: column;
   justify-content: center;

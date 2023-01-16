@@ -13,12 +13,9 @@ export default function PinRenderer({
   viewport,
   mapRef,
   setCurrentPlace,
-  setAddReviewForm,
   setImageGallery,
-  setReviewViewer,
-  reviewViewer,
   width,
-  height,
+  setActiveWindows,
 }) {
   useEffect(() => {
     const getPins = async () => {
@@ -34,6 +31,10 @@ export default function PinRenderer({
 
   const handleMarkerClick = (id) => {
     setCurrentPlaceId(id);
+  };
+
+  const handleShowForm = () => {
+    setActiveWindows((activeWindows) => [...activeWindows, "AddReviewForm"]);
   };
 
   function capitalizeFirstLetter(string) {
@@ -63,7 +64,7 @@ export default function PinRenderer({
           {/* Selected Pin Popup */}
           {p._id === currentPlaceId && (
             <Popup
-              style={{ opacity: reviewViewer ? "0" : "1" }}
+              // style={{ opacity: reviewViewer ? "0" : "1" }}
               className={width < 600 && "mobilePopup"}
               longitude={p.long}
               latitude={p.lat}
@@ -146,7 +147,7 @@ export default function PinRenderer({
                 <button
                   className="btnPrimary"
                   onClick={() => {
-                    setAddReviewForm(true);
+                    handleShowForm();
                     setCurrentPlaceId(null);
                   }}
                 >
@@ -154,7 +155,12 @@ export default function PinRenderer({
                 </button>
                 <button
                   className="btnPrimary"
-                  onClick={() => setReviewViewer(true)}
+                  onClick={() =>
+                    setActiveWindows((activeWindows) => [
+                      ...activeWindows,
+                      "ReviewViewer",
+                    ])
+                  }
                 >
                   See more
                 </button>

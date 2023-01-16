@@ -11,7 +11,6 @@ import React from "react";
 import NewsFeed from "../newsFeed/NewsFeed";
 
 export default function ProfileEditor({
-  setReviewViewer,
   setImageGallery,
   setImageGalleryPics,
   currentPlace,
@@ -22,6 +21,7 @@ export default function ProfileEditor({
   currentPlaceId,
   reviews,
   profileEditor,
+  setCurrentPlace,
   setReviews,
   reviewToEdit,
   setReviewToEdit,
@@ -32,6 +32,11 @@ export default function ProfileEditor({
   setReportReviewForm,
   reviewToReport,
   setReviewToReport,
+  sortedBy,
+  imageGallery,
+  imageGalleryPics,
+  useWindowDimensions,
+  height,
 }) {
   const [currentProfile, setCurrentProfile] = useState(undefined);
   const [edtingAboutMe, setEditingAboutMe] = useState(false);
@@ -110,8 +115,17 @@ export default function ProfileEditor({
     }
   };
 
+  //initialize
   useEffect(() => {
     getProfile();
+  }, []);
+
+  //cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setLoading(true);
+      setReviews(null);
+    };
   }, []);
 
   const handleGetReviews = async (profileUserName) => {
@@ -352,13 +366,12 @@ export default function ProfileEditor({
 
             <div className="profileEditorToVisit">
               <h3>Recent Activity</h3>
+              <br />
             </div>
             <NewsFeed
-              addReviewForm={addReviewForm}
               reviews={reviews}
               setReviews={setReviews}
               setAddReviewForm={setAddReviewForm}
-              setReviewViewer={setReviewViewer}
               setImageGallery={setImageGallery}
               currentPlaceId={currentPlaceId}
               setImageGalleryPics={setImageGalleryPics}
@@ -366,14 +379,13 @@ export default function ProfileEditor({
               setReviewToEdit={setReviewToEdit}
               currentPlace={currentPlace}
               currentUser={currentUser}
-              width={width}
-              profileEditor={profileEditor}
               loading={loading}
               setLoading={setLoading}
               reportReviewForm={reportReviewForm}
               setReportReviewForm={setReportReviewForm}
               reviewToReport={reviewToReport}
               setReviewToReport={setReviewToReport}
+              sortedBy={sortedBy}
             ></NewsFeed>
           </>
         )}

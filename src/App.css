@@ -7,6 +7,14 @@ input:focus {
   outline: none;
 }
 
+.mapboxgl-ctrl-bottom-right {
+  visibility: hidden !important;
+}
+
+.mapboxgl-ctrl-bottom-left {
+  visibility: hidden !important;
+}
+
 .mapContainer {
   display: grid;
   grid-template-columns: 1fr;

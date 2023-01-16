@@ -6,6 +6,7 @@
   margin-left: auto;
   margin-right: auto;
   width: max-content;
+  z-index: 5;
 }
 
 @media (max-width: 620px) {
@@ -13,6 +14,12 @@
     width: 100vw;
     top: 154px;
   }
+}
+
+.xCloseButtonWhite {
+  cursor: pointer;
+  position: absolute;
+  right: 5px;
 }
 
 .menuTopBar {

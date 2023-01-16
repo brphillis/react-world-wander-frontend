@@ -1,3 +1,11 @@
+.newsFeed {
+  width: 1000px !important;
+}
+
+.newsFeed {
+  width: 1000px !important;
+}
+
 .mapboxgl-popup-content {
   width: max-content;
   border: 1px dotted #a06cd5;

@@ -42,7 +42,6 @@ function App() {
   const [addReviewForm, setAddReviewForm] = useState(false);
   const [profileEditor, setProfileEditor] = useState(false);
   const [adminPanel, setAdminPanel] = useState(false);
-  const [reviewViewer, setReviewViewer] = useState(false);
   const [imageGallery, setImageGallery] = useState(false);
   const [imageGalleryPics, setImageGalleryPics] = useState([]);
   const [sortedBy, setSortedBy] = useState("popular");
@@ -101,7 +100,7 @@ function App() {
       "recaptcha-key",
       `https://www.google.com/recaptcha/api.js?render=${process.env.REACT_APP_SITE_KEY}`,
       function () {
-        console.log("captcha 3 loaded");
+        console.log("CAPTCHA LOADED");
       }
     );
   }, []);
@@ -194,8 +193,6 @@ function App() {
         {adminPanel && (
           <AdminPanel
             setAdminPanel={setAdminPanel}
-            reviewViewer={reviewViewer}
-            setReviewViewer={setReviewViewer}
             setReviews={setReviews}
             setCurrentPlace={setCurrentPlace}
           />
@@ -217,10 +214,8 @@ function App() {
             setError={setError}
             pins={pins}
             setCurrentPins={setCurrentPins}
-            setProfileEditor={setProfileEditor}
             profilePicture={profilePicture}
             setProfilePicture={setProfilePicture}
-            activeWindows={activeWindows}
             setActiveWindows={setActiveWindows}
           ></AccountPanel>
         )}
@@ -234,12 +229,9 @@ function App() {
           viewport={viewport}
           mapRef={mapRef}
           setCurrentPlace={setCurrentPlace}
-          setAddReviewForm={setAddReviewForm}
           setImageGallery={setImageGallery}
-          setReviewViewer={setReviewViewer}
-          reviewViewer={reviewViewer}
           width={width}
-          height={height}
+          setActiveWindows={setActiveWindows}
         ></PinRenderer>
 
         {/* Add Pin Popup */}
@@ -253,164 +245,139 @@ function App() {
             onClose={() => setNewPlace(null)}
           >
             <MapClickMenu
-              addReviewForm={addReviewForm}
-              setAddReviewForm={setAddReviewForm}
+              activeWindows={activeWindows}
+              setActiveWindows={setActiveWindows}
             />
           </Popup>
         )}
 
         {/* Add a Review Form */}
-        {addReviewForm && (
-          <AddReviewForm
-            setAddReviewForm={setAddReviewForm}
-            currentPlace={currentPlace}
-            setCurrentPlace={setCurrentPlace}
-            currentPlaceId={currentPlaceId}
-            setCurrentPlaceId={setCurrentPlaceId}
-            currentUser={currentUser}
-            pinName={pinName}
-            setPinName={setPinName}
-            title={title}
-            setTitle={setTitle}
-            desc={desc}
-            setDesc={setDesc}
-            rating={rating}
-            reviewToEdit={reviewToEdit}
-            setReviewToEdit={setReviewToEdit}
-            setRating={setRating}
-            setPins={setPins}
-            pins={pins}
-            setNewPlace={setNewPlace}
-            setReviews={setReviews}
-            setReviewViewer={setReviewViewer}
-            newPlace={newPlace}
-            pinType={pinType}
-            pinColor={pinColor}
-            height={height}
-            width={width}
-          ></AddReviewForm>
+        {activeWindows.includes("AddReviewForm") && (
+          <TitleBar
+            isList={false}
+            title={"Add Review"}
+            activeWindows={activeWindows}
+            setActiveWindows={setActiveWindows}
+            setLoading={setLoading}
+            sortedBy={sortedBy}
+            setSortedBy={setSortedBy}
+          >
+            <AddReviewForm
+              activeWindows={activeWindows}
+              setActiveWindows={setActiveWindows}
+              setLoading={setLoading}
+              width={width}
+              currentPlace={currentPlace}
+              setCurrentPlace={setCurrentPlace}
+              currentPlaceId={currentPlaceId}
+              setCurrentPlaceId={setCurrentPlaceId}
+              currentUser={currentUser}
+              title={title}
+              desc={desc}
+              reviewToEdit={reviewToEdit}
+              setReviewToEdit={setReviewToEdit}
+              setRating={setRating}
+              setPins={setPins}
+              pins={pins}
+              setNewPlace={setNewPlace}
+              setReviews={setReviews}
+              newPlace={newPlace}
+              pinType={pinType}
+              pinColor={pinColor}
+            />
+          </TitleBar>
         )}
 
         {/* View Reviews */}
-        {reviewViewer && !profileEditor && (
-          <ReviewViewer
-            reviewViewer={reviewViewer}
-            setReviewViewer={setReviewViewer}
-            setImageGallery={setImageGallery}
-            setImageGalleryPics={setImageGalleryPics}
-            imageGalleryPics={imageGalleryPics}
-            currentPlace={currentPlace}
-            currentUser={currentUser}
-            height={height}
-            width={width}
-            addReviewForm={addReviewForm}
-            setAddReviewForm={setAddReviewForm}
-            setCurrentPlace={setCurrentPlace}
-            currentPlaceId={currentPlaceId}
-            setCurrentPlaceId={setCurrentPlaceId}
-            setPinName={setPinName}
-            pinName={pinName}
-            title={title}
-            setTitle={setTitle}
-            desc={desc}
-            reviews={reviews}
-            profileEditor={profileEditor}
-            setReviews={setReviews}
-            reviewToEdit={reviewToEdit}
-            setReviewToEdit={setReviewToEdit}
-            setDesc={setDesc}
-            rating={rating}
-            setRating={setRating}
-            setPins={setPins}
-            pins={pins}
-            setNewPlace={setNewPlace}
-            newPlace={newPlace}
-            pinType={pinType}
-            pinColor={pinColor}
-            handleSortFeed={handleSortFeed}
+        {activeWindows.includes("ReviewViewer") && (
+          <TitleBar
+            isList={true}
+            title={"Reviews"}
+            activeWindows={activeWindows}
+            setActiveWindows={setActiveWindows}
+            setLoading={setLoading}
             sortedBy={sortedBy}
             setSortedBy={setSortedBy}
-            loading={loading}
-            setLoading={setLoading}
-            reportReviewForm={reportReviewForm}
-            setReportReviewForm={setReportReviewForm}
-            reviewToReport={reviewToReport}
-            setReviewToReport={setReviewToReport}
-          />
+            setCurrentPlace={setCurrentPlace}
+          >
+            <ReviewViewer
+              addReviewForm={addReviewForm}
+              reviews={reviews}
+              setReviews={setReviews}
+              setAddReviewForm={setAddReviewForm}
+              setImageGallery={setImageGallery}
+              currentPlaceId={currentPlaceId}
+              setImageGalleryPics={setImageGalleryPics}
+              reviewToEdit={reviewToEdit}
+              setReviewToEdit={setReviewToEdit}
+              currentPlace={currentPlace}
+              setCurrentPlace={setCurrentPlace}
+              currentUser={currentUser}
+              width={width}
+              sortedBy={sortedBy}
+              profileEditor={profileEditor}
+              loading={loading}
+              setLoading={setLoading}
+              reportReviewForm={reportReviewForm}
+              setReportReviewForm={setReportReviewForm}
+              reviewToReport={reviewToReport}
+              setReviewToReport={setReviewToReport}
+            />
+          </TitleBar>
         )}
 
         {/* Image Gallery */}
         {imageGallery && (
           <ImageGallery
-            imageGallery={imageGallery}
             setImageGallery={setImageGallery}
             imageGalleryPics={imageGalleryPics}
             setImageGalleryPics={setImageGalleryPics}
-            reviewViewer={reviewViewer}
-            setReviewViewer={setReviewViewer}
-            currentPlace={currentPlace}
-            useWindowDimensions={useWindowDimensions}
-            height={height}
+            activeWindows={activeWindows}
             width={width}
+            currentPlace={currentPlace}
           />
         )}
 
         {/* Profile Editor */}
         {activeWindows.includes("ProfileEditor") && (
           <TitleBar
-            isList={true}
+            isList={false}
             title={"Edit Profile"}
             activeWindows={activeWindows}
             setActiveWindows={setActiveWindows}
             setLoading={setLoading}
             sortedBy={sortedBy}
             setSortedBy={setSortedBy}
-            componentToPassDown={
-              <ProfileEditor
-                reviewViewer={reviewViewer}
-                setReviewViewer={setReviewViewer}
-                setImageGallery={setImageGallery}
-                setImageGalleryPics={setImageGalleryPics}
-                imageGalleryPics={imageGalleryPics}
-                currentPlace={currentPlace}
-                currentUser={currentUser}
-                height={height}
-                width={width}
-                addReviewForm={addReviewForm}
-                setAddReviewForm={setAddReviewForm}
-                setCurrentPlace={setCurrentPlace}
-                currentPlaceId={currentPlaceId}
-                setCurrentPlaceId={setCurrentPlaceId}
-                setPinName={setPinName}
-                pinName={pinName}
-                title={title}
-                setTitle={setTitle}
-                desc={desc}
-                reviews={reviews}
-                profileEditor={profileEditor}
-                setReviews={setReviews}
-                reviewToEdit={reviewToEdit}
-                setReviewToEdit={setReviewToEdit}
-                setDesc={setDesc}
-                rating={rating}
-                setRating={setRating}
-                setPins={setPins}
-                pins={pins}
-                setNewPlace={setNewPlace}
-                newPlace={newPlace}
-                pinType={pinType}
-                pinColor={pinColor}
-                profilePicture={profilePicture}
-                setProfileEditor={setProfileEditor}
-                loading={loading}
-                setLoading={setLoading}
-                reportReviewForm={reportReviewForm}
-                setReportReviewForm={setReportReviewForm}
-                reviewToReport={reviewToReport}
-                setReviewToReport={setReviewToReport}
-              />
-            }
-          ></TitleBar>
+          >
+            <ProfileEditor
+              setImageGallery={setImageGallery}
+              setImageGalleryPics={setImageGalleryPics}
+              currentPlace={currentPlace}
+              currentUser={currentUser}
+              width={width}
+              addReviewForm={addReviewForm}
+              setAddReviewForm={setAddReviewForm}
+              currentPlaceId={currentPlaceId}
+              reviews={reviews}
+              profileEditor={profileEditor}
+              setCurrentPlace={setCurrentPlace}
+              setReviews={setReviews}
+              reviewToEdit={reviewToEdit}
+              setReviewToEdit={setReviewToEdit}
+              profilePicture={profilePicture}
+              loading={loading}
+              setLoading={setLoading}
+              reportReviewForm={reportReviewForm}
+              setReportReviewForm={setReportReviewForm}
+              reviewToReport={reviewToReport}
+              setReviewToReport={setReviewToReport}
+              sortedBy={sortedBy}
+              imageGallery={imageGallery}
+              imageGalleryPics={imageGalleryPics}
+              useWindowDimensions={useWindowDimensions}
+              height={height}
+            />
+          </TitleBar>
         )}
       </Map>
     </div>

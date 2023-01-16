@@ -8,13 +8,10 @@ import axios from "axios";
 import "./imageGallery.css";
 
 export default function ImageGallery({
-  imageGallery,
   setImageGallery,
   imageGalleryPics,
   setImageGalleryPics,
-  reviewViewer,
-  setReviewViewer,
-  height,
+  activeWindows,
   width,
   currentPlace,
 }) {
@@ -30,17 +27,18 @@ export default function ImageGallery({
   });
 
   const getAllPinImages = async () => {
-    const currentid = { id: currentPlace._id };
-    try {
-      const res = await axios.post(
-        "http://localhost:8800/api/pins/getAllPinImages",
-        currentid
-      );
-      console.log(res.data);
-      setImageGalleryPics(res.data);
-      return res.data;
-    } catch (err) {
-      console.log(err);
+    if (activeWindows.length === 0) {
+      const currentid = { id: currentPlace._id };
+      try {
+        const res = await axios.post(
+          "http://localhost:8800/api/pins/getAllPinImages",
+          currentid
+        );
+        setImageGalleryPics(res.data);
+        return res.data;
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -89,9 +87,7 @@ export default function ImageGallery({
   };
 
   useEffect(() => {
-    if (!reviewViewer) {
-      getAllPinImages();
-    }
+    getAllPinImages();
   }, []);
 
   useEffect(() => {

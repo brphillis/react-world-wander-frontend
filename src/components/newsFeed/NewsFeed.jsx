@@ -9,11 +9,9 @@ import PopupEdit from "../popupEdit/PopupEdit";
 import "./newsFeed.css";
 
 export default function NewsFeed({
-  addReviewForm,
   reviews,
   setReviews,
   setAddReviewForm,
-  setReviewViewer,
   setImageGallery,
   currentPlaceId,
   setImageGalleryPics,
@@ -21,20 +19,17 @@ export default function NewsFeed({
   setReviewToEdit,
   currentPlace,
   currentUser,
-  width,
-  profileEditor,
   loading,
   setLoading,
   reportReviewForm,
   setReportReviewForm,
   reviewToReport,
   setReviewToReport,
-  handleSortFeed,
   sortedBy,
 }) {
   const [firstFetched, setFirstFetched] = useState(0);
   const [lastFetched, setlastFetched] = useState(10);
-  const profilePicturesRef = useRef([]);
+  const [profilePictures, setProfilePictures] = useState([]);
 
   function handleSeeMore() {
     setLoading(true);
@@ -63,7 +58,7 @@ export default function NewsFeed({
   };
 
   useEffect(() => {
-    if (currentPlace) {
+    if (currentPlace && loading) {
       const getLimitedReviews = async () => {
         const currentid = {
           id: currentPlaceId,
@@ -97,15 +92,16 @@ export default function NewsFeed({
           setReviews(res.data);
 
           res.data.forEach((e, i) => {
-            getProfilePictures(e.username).then(
-              (data) =>
-                (profilePicturesRef.current[i].src = data[0].profilePicture)
+            getProfilePictures(e.username).then((data) =>
+              setProfilePictures((profilePictures) => [
+                ...profilePictures,
+                data[0].profilePicture,
+              ])
             );
           });
 
-          if (loading) {
-            setLoading(false);
-          }
+          setLoading(false);
+
           return res.data;
         } catch (err) {
           console.log(err);
@@ -114,16 +110,20 @@ export default function NewsFeed({
       getLimitedReviews();
     } else {
       reviews.forEach((e, i) => {
-        getProfilePictures(e.username).then(
-          (data) => (profilePicturesRef.current[i].src = data[0].profilePicture)
+        getProfilePictures(e.username).then((data) =>
+          setProfilePictures((profilePictures) => [
+            ...profilePictures,
+            data[0].profilePicture,
+          ])
         );
       });
     }
-  }, [currentPlaceId, sortedBy, firstFetched, lastFetched]);
+  }, [sortedBy]);
 
   return (
     <div>
       {reviews &&
+        !loading &&
         reviews.map((e, i) => {
           return (
             <div
@@ -133,14 +133,13 @@ export default function NewsFeed({
               <div className="reviewViewerTitleContainer">
                 <div className="reviewViewerTitle">"{e.title}"&nbsp;</div>
 
-                <img
-                  className="reviewViewerProfilePicture"
-                  alt={`${e.title + i}`}
-                  ref={(element) => {
-                    profilePicturesRef.current[i] = element;
-                  }}
-                  src="https://st3.depositphotos.com/6672868/13701/v/600/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
-                />
+                {profilePictures.length > 0 && (
+                  <img
+                    className="reviewViewerProfilePicture"
+                    alt={`${e.title + i}`}
+                    src={profilePictures[i]}
+                  />
+                )}
 
                 <div className="reviewViewerTitleContent">by {e.username}</div>
               </div>

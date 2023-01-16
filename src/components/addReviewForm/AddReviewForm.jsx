@@ -1,7 +1,5 @@
 import { AiOutlineStar, AiFillStar } from "react-icons/ai";
-import { motion, useDragControls } from "framer-motion";
 import "./addReviewForm.css";
-import { RiCloseCircleFill } from "react-icons/ri";
 import { BsFillTrashFill } from "react-icons/bs";
 import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
@@ -12,21 +10,17 @@ import Lottie from "lottie-react";
 import logoAnimation from "./uploadAnimation.json";
 
 export default function AddReviewForm({
-  height,
+  activeWindows,
+  setActiveWindows,
+  setLoading,
   width,
-  setAddReviewForm,
   currentPlace,
   setCurrentPlace,
   currentPlaceId,
   setCurrentPlaceId,
   currentUser,
-  pinName,
-  setPinName,
   title,
-  setTitle,
   desc,
-  setDesc,
-  rating,
   reviewToEdit,
   setReviewToEdit,
   setRating,
@@ -34,7 +28,6 @@ export default function AddReviewForm({
   pins,
   setNewPlace,
   setReviews,
-  setReviewViewer,
   newPlace,
   pinType,
   pinColor,
@@ -47,17 +40,33 @@ export default function AddReviewForm({
   } = useForm({
     criteriaMode: "all",
   });
-  const [oneStar, setOneStar] = useState(false);
-  const [twoStar, setTwoStar] = useState(false);
-  const [threeStar, setThreeStar] = useState(false);
-  const [fourStar, setFourStar] = useState(false);
-  const [fiveStar, setFiveStar] = useState(false);
+  const currentStarValueRef = useRef(1);
+  const oneStarRef = useRef();
+  const twoStarRef = useRef();
+  const threeStarRef = useRef();
+  const fourStarRef = useRef();
+  const fiveStarRef = useRef();
   const [starSelection, setStarSelection] = useState(true);
-  const [currentStars, setCurrentStars] = useState(0);
-  const dragControls = useDragControls();
+  const [currentStars, setCurrentStars] = useState(1);
   const [images, setImages] = useState([]);
   const reviewTitleRef = useRef(null);
   const reviewDescRef = useRef(null);
+  const locationNameRef = useRef(null);
+
+  const nameValidation = register("placeNameErrorInput", {
+    required:
+      !currentPlace && Object.keys(reviewToEdit).length === 0
+        ? "place name is required."
+        : false,
+    minLength: {
+      value: 3,
+      message: "place name must exceed 3 characters",
+    },
+    maxLength: {
+      value: 15,
+      message: "place name must not exceed 15 characters",
+    },
+  });
 
   const titleValidation = register("reviewTitleErrorInput", {
     required: "review title is required.",
@@ -96,14 +105,18 @@ export default function AddReviewForm({
     setRating(currentStars);
   }, [currentStars, setRating]);
 
+  useEffect(() => {
+    console.log(oneStarRef);
+  }, []);
+
   const handlePost = async () => {
     if (currentPlace && Object.keys(reviewToEdit).length === 0) {
       const newReview = {
         id: currentPlace._id,
         username: currentUser.username,
-        title,
-        desc,
-        rating: currentStars,
+        title: reviewTitleRef.current.value,
+        desc: reviewDescRef.current.value,
+        rating: currentStarValueRef.current.value,
         pictures: [...images],
       };
 
@@ -112,7 +125,7 @@ export default function AddReviewForm({
           "http://localhost:8800/api/pins/addReview/",
           newReview
         );
-        setAddReviewForm(false);
+        handleClose();
         Swal.fire({
           title: "Thankyou for your Review",
           text: " ",
@@ -136,7 +149,7 @@ export default function AddReviewForm({
       }
     } else if (!currentPlace && Object.keys(reviewToEdit).length === 0) {
       const newPin = {
-        name: pinName,
+        name: locationNameRef.current.value,
         lat: newPlace.long,
         long: newPlace.lat,
         pinType,
@@ -144,9 +157,9 @@ export default function AddReviewForm({
         review: [
           {
             username: currentUser.username,
-            title,
-            desc,
-            rating,
+            title: reviewTitleRef.current.value,
+            desc: reviewDescRef.current.value,
+            rating: currentStarValueRef.current.value,
             pictures: [...images],
           },
         ],
@@ -156,7 +169,7 @@ export default function AddReviewForm({
         const res = await axios.post("http://localhost:8800/api/pins", newPin);
         setPins([...pins, res.data]);
         setNewPlace(null);
-        setAddReviewForm(false);
+        handleClose();
         Swal.fire({
           title: "Thankyou for your Review",
           text: "your pin has been added",
@@ -193,7 +206,7 @@ export default function AddReviewForm({
         );
         setPins([...pins]);
         setNewPlace(null);
-        setAddReviewForm(false);
+        handleClose();
         Swal.fire({
           title: "Your Review has been Updated!",
           text: "   ",
@@ -273,454 +286,280 @@ export default function AddReviewForm({
 
       setCurrentPlace(null);
       setReviews(res.data);
-      setReviewViewer(true);
+      setActiveWindows((activeWindows) => [...activeWindows, "ReviewViewer"]);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
   };
 
-  function highlightStars(e) {
-    if (e.path[0].id === "oneStar" && !oneStar && starSelection) {
-      setOneStar(true);
-    }
-
-    if (e.path[0].id === "twoStar" && !twoStar && starSelection) {
-      setOneStar(true);
-      setTwoStar(true);
-    }
-
-    if (e.path[0].id === "threeStar" && !threeStar && starSelection) {
-      setOneStar(true);
-      setTwoStar(true);
-      setThreeStar(true);
-    }
-
-    if (e.path[0].id === "fourStar" && !fourStar && starSelection) {
-      setOneStar(true);
-      setTwoStar(true);
-      setThreeStar(true);
-      setFourStar(true);
-    }
-
-    if (e.path[0].id === "fiveStar" && !fiveStar && starSelection) {
-      setOneStar(true);
-      setTwoStar(true);
-      setThreeStar(true);
-      setFourStar(true);
-      setFiveStar(true);
-    }
-  }
-
-  function omitStars(e) {
-    if (e.path[0].id === "oneStar" && starSelection) {
-      setOneStar(false);
-    }
-    if (e.path[0].id === "twoStar" && starSelection) {
-      setOneStar(false);
-      setTwoStar(false);
-    }
-    if (e.path[0].id === "threeStar" && starSelection) {
-      setOneStar(false);
-      setTwoStar(false);
-      setThreeStar(false);
-    }
-    if (e.path[0].id === "fourStar" && starSelection) {
-      setOneStar(false);
-      setTwoStar(false);
-      setThreeStar(false);
-      setFourStar(false);
-    }
-    if (e.path[0].id === "fiveStar" && starSelection) {
-      setOneStar(false);
-      setTwoStar(false);
-      setThreeStar(false);
-      setFourStar(false);
-      setFiveStar(false);
-    }
-  }
-
-  function handleStarClick(e) {
+  function handleStarClick(number) {
+    var number = number;
     setStarSelection(false);
-    console.log(e);
-
-    if (e.target.parentNode.id === "oneStar") {
-      setOneStar(true);
-      setTwoStar(false);
-      setThreeStar(false);
-      setFourStar(false);
-      setFiveStar(false);
-      setCurrentStars(1);
+    if (number === 1) {
+      currentStarValueRef.current.value = 1;
     }
-
-    if (e.target.parentNode.id === "twoStar") {
-      setOneStar(true);
-      setTwoStar(true);
-      setThreeStar(false);
-      setFourStar(false);
-      setFiveStar(false);
-      setCurrentStars(2);
+    if (number >= 1) {
+      oneStarRef.current.innerHTML = "★";
     }
-
-    if (e.target.parentNode.id === "threeStar") {
-      setOneStar(true);
-      setTwoStar(true);
-      setThreeStar(true);
-      setFourStar(false);
-      setFiveStar(false);
-      setCurrentStars(3);
+    if (number < 1) {
+      oneStarRef.current.innerHTML = "☆";
     }
-
-    if (e.target.parentNode.id === "fourStar") {
-      setOneStar(true);
-      setTwoStar(true);
-      setThreeStar(true);
-      setFourStar(true);
-      setFiveStar(false);
-      setCurrentStars(4);
+    if (number === 2) {
+      currentStarValueRef.current.value = 2;
     }
-
-    if (e.target.parentNode.id === "fiveStar") {
-      setOneStar(true);
-      setTwoStar(true);
-      setThreeStar(true);
-      setFourStar(true);
-      setFiveStar(true);
-      setCurrentStars(5);
+    if (number >= 2) {
+      twoStarRef.current.innerHTML = "★";
+    }
+    if (number < 2) {
+      twoStarRef.current.innerHTML = "☆";
+    }
+    if (number === 3) {
+      currentStarValueRef.current.value = 3;
+    }
+    if (number >= 3) {
+      threeStarRef.current.innerHTML = "★";
+    }
+    if (number < 3) {
+      threeStarRef.current.innerHTML = "☆";
+    }
+    if (number === 4) {
+      currentStarValueRef.current.value = 4;
+    }
+    if (number >= 4) {
+      fourStarRef.current.innerHTML = "★";
+    }
+    if (number < 4) {
+      fourStarRef.current.innerHTML = "☆";
+    }
+    if (number === 5) {
+      currentStarValueRef.current.value = 5;
+    }
+    if (number >= 5) {
+      fiveStarRef.current.innerHTML = "★";
+    }
+    if (number < 5) {
+      fiveStarRef.current.innerHTML = "☆";
     }
   }
 
-  const motionValues = {
-    desktop: {
-      position: "absolute",
-      left: "40%",
-      top: "20%",
-      margin: "0",
-    },
-    mobile: {
-      position: "absolute",
-      top: "0%",
-      left: "0",
-      right: "0",
-      marginLeft: "auto",
-      marginRight: "auto",
-      width: width,
-    },
+  const handleClose = () => {
+    setActiveWindows(activeWindows.filter((e) => e !== "AddReviewForm"));
   };
 
   return (
-    <motion.div
-      drag
-      dragControls={dragControls}
-      dragListener={false}
-      dragMomentum={false}
-      initial={width > 600 ? motionValues.desktop : motionValues.mobile}
+    <div
+      className={
+        width > 900 ? "addReviewFormContainer" : "addReviewFormContainerMobile"
+      }
     >
-      <div
-        className={
-          width > 900
-            ? "addReviewFormContainer"
-            : "addReviewFormContainerMobile"
-        }
-      >
-        <form className="addReviewForm" onSubmit={handleSubmit(handlePost)}>
-          <div
-            className="topBar"
-            onPointerDown={(e) => {
-              dragControls.start(e);
-            }}
-          >
-            {Object.keys(reviewToEdit).length === 0 && "Add A Review"}
-            {Object.keys(reviewToEdit).length > 0 && "Edit Your Review"}
-          </div>
-
-          <RiCloseCircleFill
-            class="xCloseButtonWhite"
-            onClick={() => {
-              setReviewToEdit({});
-              setCurrentPlace(null);
-              setAddReviewForm(false);
-            }}
-          />
-
-          <label htmlFor="fileUpload">
-            <div className="previewImageContainer">
-              {images.length === 0 && (
-                <div>
-                  <Lottie
-                    className="imgPreviewAnimation"
-                    animationData={logoAnimation}
-                    loop={true}
-                  ></Lottie>
-                </div>
-              )}
-              <p>Upload up to 4 Images</p>
-
-              {images.length > 0 && (
-                <div>
-                  <img
-                    className="previewImage"
-                    alt={`uploadNum`}
-                    src={images[0].base64}
-                  />
-                </div>
-              )}
-            </div>
-          </label>
-
-          {images.length > 0 && (
-            <BsFillTrashFill
-              className="mainImageTrashIcon"
-              onClick={() => handleDisplayImage(images[0])}
-            />
-          )}
-
-          <div className="previewThumbnailContainer">
-            {images.slice(1).map((e, i) => {
-              return (
-                <div key={i}>
-                  <img
-                    className="previewThumbnail"
-                    alt={`uploadNum${i}`}
-                    src={e.base64}
-                    onClick={() => handleDisplayImage(e, i)}
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <input
-            id={images.length < 4 && "fileUpload"}
-            className="fileUploadInput"
-            type="file"
-            onChange={uploadImage}
-            multiple
-          />
-          <br />
-
-          {!currentPlace &&
-            !currentPlace &&
-            Object.keys(reviewToEdit).length === 0 && (
-              <input
-                {...register("placeNameErrorInput", {
-                  required: "place name is required.",
-                  minLength: {
-                    value: 3,
-                    message: "place name must exceed 3 characters",
-                  },
-                  maxLength: {
-                    value: 15,
-                    message: "place name must not exceed 15 characters",
-                  },
-                })}
-                className="reviewTitle"
-                placeholder="Name of the Location"
-                onChange={(e) => setPinName(e.target.value)}
-              />
+      <form className="addReviewForm" onSubmit={handleSubmit(handlePost)}>
+        <label htmlFor="fileUpload">
+          <div className="previewImageContainer">
+            {images.length === 0 && (
+              <div>
+                <Lottie
+                  className="imgPreviewAnimation"
+                  animationData={logoAnimation}
+                  loop={true}
+                ></Lottie>
+              </div>
             )}
+            <p>Upload up to 4 Images</p>
 
+            {images.length > 0 && (
+              <div>
+                <img
+                  className="previewImage"
+                  alt={`uploadNum`}
+                  src={images[0].base64}
+                />
+              </div>
+            )}
+          </div>
+        </label>
+
+        {images.length > 0 && (
+          <BsFillTrashFill
+            className="mainImageTrashIcon"
+            onClick={() => handleDisplayImage(images[0])}
+          />
+        )}
+
+        <div className="previewThumbnailContainer">
+          {images.slice(1).map((e, i) => {
+            return (
+              <div key={i}>
+                <img
+                  className="previewThumbnail"
+                  alt={`uploadNum${i}`}
+                  src={e.base64}
+                  onClick={() => handleDisplayImage(e, i)}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <input
+          id={images.length < 4 && "fileUpload"}
+          className="fileUploadInput"
+          type="file"
+          onChange={uploadImage}
+          multiple
+        />
+        <br />
+
+        {!currentPlace && Object.keys(reviewToEdit).length === 0 && (
           <input
-            {...titleValidation}
+            {...nameValidation}
             className="reviewTitle"
-            placeholder="Review Title"
-            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Name of the Location"
             ref={(e) => {
-              titleValidation.ref(e);
-              reviewTitleRef.current = e;
-            }}
-          ></input>
-
-          {currentPlace && (
-            <h3>What did you think of {`${currentPlace.name}`} ?</h3>
-          )}
-
-          <textarea
-            {...descValidation}
-            placeholder="what did you think..."
-            onChange={(e) => setDesc(e.target.value)}
-            ref={(e) => {
-              descValidation.ref(e);
-              reviewDescRef.current = e;
+              nameValidation.ref(e);
+              locationNameRef.current = e;
             }}
           />
-          <br />
-          <label>Rating: </label>
+        )}
+
+        <input
+          {...titleValidation}
+          className="reviewTitle"
+          placeholder="Review Title"
+          ref={(e) => {
+            titleValidation.ref(e);
+            reviewTitleRef.current = e;
+          }}
+        ></input>
+
+        {currentPlace && (
+          <h3>What did you think of {`${currentPlace.name}`} ?</h3>
+        )}
+
+        <textarea
+          {...descValidation}
+          placeholder="what did you think..."
+          ref={(e) => {
+            descValidation.ref(e);
+            reviewDescRef.current = e;
+          }}
+        />
+        <br />
+        <label id="ratingLabel">Rating</label>
+        <input
+          style={{ visibility: "hidden" }}
+          ref={(e) => {
+            currentStarValueRef.current = e;
+          }}
+        />
+        <div
+          {...register("starErrorInput", {
+            required: false,
+            validate: () => {
+              if (currentStars < 1) {
+                return "dont forget to leave a rating";
+              }
+            },
+          })}
+          className="starContainer"
+        >
+          <div id="oneStar" ref={oneStarRef} onClick={() => handleStarClick(1)}>
+            ☆
+          </div>
+          <div id="twoStar" ref={twoStarRef} onClick={() => handleStarClick(2)}>
+            ☆
+          </div>
           <div
-            {...register("starErrorInput", {
-              required: false,
-              validate: () => {
-                if (currentStars < 1) {
-                  return "dont forget to leave a rating";
-                }
-              },
-            })}
-            className="starContainer"
+            id="threeStar"
+            ref={threeStarRef}
+            onClick={() => handleStarClick(3)}
           >
-            {!oneStar ? (
-              <motion.div
-                id="oneStar"
-                className="starSelect"
-                onHoverStart={(e) => highlightStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiOutlineStar id="oneStar" className="ratingStar" />
-              </motion.div>
-            ) : (
-              <motion.div
-                id="oneStar"
-                onHoverEnd={(e) => omitStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiFillStar id="oneStar" className="ratingStarFill" />
-              </motion.div>
-            )}
-
-            {!twoStar ? (
-              <motion.div
-                id="twoStar"
-                className="starSelect"
-                onHoverStart={(e) => highlightStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiOutlineStar id="twoStar" className="ratingStar" />
-              </motion.div>
-            ) : (
-              <motion.div
-                id="twoStar"
-                onHoverEnd={(e) => omitStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiFillStar id="twoStar" className="ratingStarFill" />
-              </motion.div>
-            )}
-
-            {!threeStar ? (
-              <motion.div
-                id="threeStar"
-                className="starSelect"
-                onHoverStart={(e) => highlightStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiOutlineStar id="threeStar" className="ratingStar" />
-              </motion.div>
-            ) : (
-              <motion.div
-                id="threeStar"
-                onHoverEnd={(e) => omitStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiFillStar id="threeStar" className="ratingStarFill" />
-              </motion.div>
-            )}
-
-            {!fourStar ? (
-              <motion.div
-                id="fourStar"
-                className="starSelect"
-                onHoverStart={(e) => highlightStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiOutlineStar id="fourStar" className="ratingStar" />
-              </motion.div>
-            ) : (
-              <motion.div
-                id="fourStar"
-                onHoverEnd={(e) => omitStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiFillStar id="fourStar" className="ratingStarFill" />
-              </motion.div>
-            )}
-
-            {!fiveStar ? (
-              <motion.div
-                id="fiveStar"
-                className="starSelect"
-                onHoverStart={(e) => highlightStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiOutlineStar id="fiveStar" className="ratingStar" />
-              </motion.div>
-            ) : (
-              <motion.div
-                id="fiveStar"
-                onHoverEnd={(e) => omitStars(e)}
-                onClick={(e) => handleStarClick(e)}
-              >
-                <AiFillStar id="fiveStar" className="ratingStarFill" />
-              </motion.div>
-            )}
+            ☆
           </div>
-
-          <div className="val">
-            <ErrorMessage
-              errors={errors}
-              name="placeNameErrorInput"
-              render={({ messages }) => {
-                console.log("messages", messages);
-                return messages
-                  ? Object.entries(messages).map(([type, message]) => (
-                      <p key={type}>{message}</p>
-                    ))
-                  : null;
-              }}
-            />
-
-            <ErrorMessage
-              errors={errors}
-              name="reviewTitleErrorInput"
-              render={({ messages }) => {
-                console.log("messages", messages);
-                return messages
-                  ? Object.entries(messages).map(([type, message]) => (
-                      <p key={type}>{message}</p>
-                    ))
-                  : null;
-              }}
-            />
-
-            <ErrorMessage
-              errors={errors}
-              name="reviewDescErrorInput"
-              render={({ messages }) => {
-                console.log("messages", messages);
-                return messages
-                  ? Object.entries(messages).map(([type, message]) => (
-                      <p key={type}>{message}</p>
-                    ))
-                  : null;
-              }}
-            />
-
-            <ErrorMessage
-              errors={errors}
-              name="starErrorInput"
-              render={({ messages }) => {
-                console.log("messages", messages);
-                return messages
-                  ? Object.entries(messages).map(([type, message]) => (
-                      <p key={type}>{message}</p>
-                    ))
-                  : null;
-              }}
-            />
+          <div
+            id="fourStar"
+            ref={fourStarRef}
+            onClick={() => handleStarClick(4)}
+          >
+            ☆
           </div>
+          <div
+            id="fiveStar"
+            ref={fiveStarRef}
+            onClick={() => handleStarClick(5)}
+          >
+            ☆
+          </div>
+        </div>
 
-          <button type="submit" className="btnPrimary">
-            Submit
-          </button>
-          <button
-            type="button"
-            className="btnPrimary"
-            onClick={() => {
-              setReviewToEdit({});
-              setAddReviewForm(false);
-              setCurrentPlace(null);
+        <div className="val">
+          <ErrorMessage
+            errors={errors}
+            name="placeNameErrorInput"
+            render={({ messages }) => {
+              console.log("messages", messages);
+              return messages
+                ? Object.entries(messages).map(([type, message]) => (
+                    <p key={type}>{message}</p>
+                  ))
+                : null;
             }}
-          >
-            Close
-          </button>
-        </form>
-      </div>
-    </motion.div>
+          />
+
+          <ErrorMessage
+            errors={errors}
+            name="reviewTitleErrorInput"
+            render={({ messages }) => {
+              console.log("messages", messages);
+              return messages
+                ? Object.entries(messages).map(([type, message]) => (
+                    <p key={type}>{message}</p>
+                  ))
+                : null;
+            }}
+          />
+
+          <ErrorMessage
+            errors={errors}
+            name="reviewDescErrorInput"
+            render={({ messages }) => {
+              console.log("messages", messages);
+              return messages
+                ? Object.entries(messages).map(([type, message]) => (
+                    <p key={type}>{message}</p>
+                  ))
+                : null;
+            }}
+          />
+
+          <ErrorMessage
+            errors={errors}
+            name="starErrorInput"
+            render={({ messages }) => {
+              console.log("messages", messages);
+              return messages
+                ? Object.entries(messages).map(([type, message]) => (
+                    <p key={type}>{message}</p>
+                  ))
+                : null;
+            }}
+          />
+        </div>
+
+        <button type="submit" className="btnPrimary">
+          Submit
+        </button>
+        <button
+          type="button"
+          className="btnPrimary"
+          onClick={() => {
+            setReviewToEdit({});
+            handleClose();
+            setCurrentPlace(null);
+          }}
+        >
+          Close
+        </button>
+      </form>
+    </div>
   );
 }

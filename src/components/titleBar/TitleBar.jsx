@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useEffect } from "react";
 import { motion, useDragControls } from "framer-motion";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { MdSort } from "react-icons/md";
@@ -7,7 +7,7 @@ import { MdSort } from "react-icons/md";
 import "./titleBar.css";
 
 export default function TitleBar({
-  componentToPassDown,
+  children,
   title,
   activeWindows,
   setActiveWindows,
@@ -16,14 +16,8 @@ export default function TitleBar({
   sortedBy,
   setSortedBy,
 }) {
-  const Child = ({ componentToPassDown }) => {
-    return <>{componentToPassDown}</>;
-  };
-
   const handleCloseWindow = () => {
-    setActiveWindows(
-      activeWindows.filter((e) => e !== componentToPassDown.type.name)
-    );
+    setActiveWindows(activeWindows.filter((e) => e !== children.type.name));
   };
 
   const dragControls = useDragControls();
@@ -51,7 +45,7 @@ export default function TitleBar({
       dragListener={false}
       dragMomentum={false}
     >
-      <Child componentToPassDown={componentToPassDown} />
+      {children}
       <div
         className="menuTopBar"
         onPointerDown={(e) => {

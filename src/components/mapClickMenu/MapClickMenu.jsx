@@ -3,7 +3,7 @@ import { RiCloseCircleFill } from "react-icons/ri";
 
 import "./mapClickMenu.css";
 
-export default function MapClickMenu({ addReviewForm, setAddReviewForm }) {
+export default function MapClickMenu({ activeWindows, setActiveWindows }) {
   return (
     <div>
       <div className="menuTopBar" style={{ zIndex: "0", top: "-1px" }}>
@@ -12,7 +12,15 @@ export default function MapClickMenu({ addReviewForm, setAddReviewForm }) {
       </div>
 
       <div id="clickMenuContentContainer">
-        <button className="btnPrimary" onClick={() => setAddReviewForm(true)}>
+        <button
+          className="btnPrimary"
+          onClick={() =>
+            setActiveWindows((activeWindows) => [
+              ...activeWindows,
+              "AddReviewForm",
+            ])
+          }
+        >
           New Review
         </button>
       </div>

@@ -25,10 +25,8 @@ export default function AccountPanel({
   setError,
   pins,
   setCurrentPins,
-  setProfileEditor,
   profilePicture,
   setProfilePicture,
-  activeWindows,
   setActiveWindows,
 }) {
   const [profilePictureUpload, setProfilePictureUpload] = useState(false);
