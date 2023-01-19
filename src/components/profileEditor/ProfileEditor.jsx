@@ -385,6 +385,8 @@ export default function ProfileEditor({
               )}
             </div>
 
+            <br />
+
             <div className="profileEditorToVisit">
               <h3>Recent Activity</h3>
               <br />

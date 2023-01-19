@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Lottie from "lottie-react";
 import logoAnimation from "../../assets/uploadAnimation.json";
+import { useChangeContributionPoints } from "../../hooks/useChangeContributionPoints";
 
 export default function AddReviewForm({
   activeWindows,
@@ -47,6 +48,7 @@ export default function AddReviewForm({
   const reviewTitleRef = useRef(null);
   const reviewDescRef = useRef(null);
   const locationNameRef = useRef(null);
+  const { setChangeContributions } = useChangeContributionPoints();
 
   const nameValidation = register("placeNameErrorInput", {
     required:
@@ -101,6 +103,8 @@ export default function AddReviewForm({
   }, [currentStars, setRating]);
 
   const handlePost = async () => {
+    setChangeContributions({ id: currentUser._id, count: 5 });
+
     if (currentPlace && Object.keys(reviewToEdit).length === 0) {
       const newReview = {
         id: currentPlace._id,
@@ -116,7 +120,6 @@ export default function AddReviewForm({
           "http://localhost:8800/api/pins/addReview/",
           newReview
         );
-        handleClose();
         Swal.fire({
           title: "Thankyou for your Review",
           text: " ",

@@ -27,13 +27,6 @@ export default function ReviewViewer({
   reviewToReport,
   setReviewToReport,
 }) {
-  //cleanup on unmount
-  useEffect(() => {
-    return () => {
-      setLoading(true);
-      setReviews(null);
-    };
-  }, [setLoading, setReviews]);
   return (
     <div
       id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}

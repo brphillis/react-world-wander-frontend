@@ -39,7 +39,7 @@
 }
 
 .profileEditorContent > figure > figcaption {
-  z-index: 3;
+  z-index: 1;
   position: relative;
   width: 120px;
   background-color: #a06cd5;

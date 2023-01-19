@@ -168,7 +168,7 @@ export default function AccountPanel({
 
   useEffect(() => {
     setProfilePicture(currentUser.profilePicture);
-  }, [currentUser.profilePicture]);
+  }, [setProfilePicture, currentUser.profilePicture]);
 
   const handleProfilePictureUpload = function () {
     setProfilePictureUpload(true);

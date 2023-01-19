@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import React from "react";
 import axios from "axios";
 import { FaStar } from "react-icons/fa";
@@ -32,6 +33,14 @@ export default function NewsFeed({
   const [firstFetched, setFirstFetched] = useState(0);
   const [lastFetched, setlastFetched] = useState(10);
   const [profilePictures, setProfilePictures] = useState([]);
+
+  //cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setLoading(true);
+      setReviews(null);
+    };
+  }, [setLoading, setReviews]);
 
   function handleSeeMore() {
     setLoading(true);
