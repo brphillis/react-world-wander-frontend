@@ -1,22 +1,17 @@
 import "./popupEdit.css";
 import { MdEdit, MdDelete, MdFlag } from "react-icons/md";
-import { useRef, useState } from "react";
-import { useEffect } from "react";
+import { useRef } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Swal from "sweetalert2";
 import axios from "axios";
 
 export default function PopupEdit({
+  setActiveWindows,
   currentReview,
   currentUser,
   setAddReviewForm,
-  reviewToEdit,
   setReviewToEdit,
   currentPlace,
-  currentPlaceId,
-  reportReviewForm,
-  setReportReviewForm,
-  reviewToReport,
   setReviewToReport,
 }) {
   const popupEditRef = useRef();
@@ -54,7 +49,7 @@ export default function PopupEdit({
       reviewId: currentReview._id,
     };
     try {
-      const res = await axios.put(
+      await axios.put(
         "http://localhost:8800/api/pins/deleteReview",
         reviewToDelete
       );
@@ -83,7 +78,10 @@ export default function PopupEdit({
           <MdEdit
             onClick={() => {
               setReviewToEdit(currentReview);
-              setAddReviewForm(true);
+              setActiveWindows((activeWindows) => [
+                ...activeWindows,
+                "AddReviewForm",
+              ]);
             }}
           />
         )}
@@ -95,7 +93,10 @@ export default function PopupEdit({
         <MdFlag
           onClick={() => {
             setReviewToReport(currentReview);
-            setReportReviewForm(true);
+            setActiveWindows((activeWindows) => [
+              ...activeWindows,
+              "ReportReviewForm",
+            ]);
           }}
         />
       </div>

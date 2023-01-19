@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import axios from "axios";
 import { FaStar } from "react-icons/fa";
@@ -9,6 +9,8 @@ import PopupEdit from "../popupEdit/PopupEdit";
 import "./newsFeed.css";
 
 export default function NewsFeed({
+  activeWindows,
+  setActiveWindows,
   reviews,
   setReviews,
   setAddReviewForm,
@@ -193,15 +195,11 @@ export default function NewsFeed({
 
               <PopupEdit
                 currentReview={e}
+                setActiveWindows={setActiveWindows}
+                currentUser={currentUser}
                 setAddReviewForm={setAddReviewForm}
-                reviewToEdit={reviewToEdit}
                 setReviewToEdit={setReviewToEdit}
                 currentPlace={currentPlace}
-                currentPlaceId={currentPlaceId}
-                currentUser={currentUser}
-                reportReviewForm={reportReviewForm}
-                setReportReviewForm={setReportReviewForm}
-                reviewToReport={reviewToReport}
                 setReviewToReport={setReviewToReport}
               />
 

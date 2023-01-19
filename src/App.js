@@ -16,6 +16,7 @@ import ProfileEditor from "./components/profileEditor/ProfileEditor";
 import useWindowDimensions from "./hooks/useWindowDimensions";
 import AdminPanel from "./components/adminPanel/AdminPanel";
 import TitleBar from "./components/titleBar/TitleBar";
+import ReportReviewForm from "./components/reportReviewForm/ReportReviewForm";
 
 function App() {
   const myStorage = window.localStorage;
@@ -28,7 +29,6 @@ function App() {
   const [currentPlaceId, setCurrentPlaceId] = useState(null);
   const [currentPlace, setCurrentPlace] = useState(null);
   const [newPlace, setNewPlace] = useState(null);
-  const [pinName, setPinName] = useState(null);
   const [title, setTitle] = useState(null);
   const [desc, setDesc] = useState(null);
   const [pinType, setPinType] = useState(null);
@@ -40,8 +40,6 @@ function App() {
   const [nrTaps, setNrTaps] = useState(0);
   const [startDate, setStartDate] = useState(Date.now());
   const [addReviewForm, setAddReviewForm] = useState(false);
-  const [profileEditor, setProfileEditor] = useState(false);
-  const [adminPanel, setAdminPanel] = useState(false);
   const [imageGallery, setImageGallery] = useState(false);
   const [imageGalleryPics, setImageGalleryPics] = useState([]);
   const [sortedBy, setSortedBy] = useState("popular");
@@ -190,17 +188,34 @@ function App() {
         )}
 
         {/* Admin Panel */}
-        {adminPanel && (
-          <AdminPanel
-            setAdminPanel={setAdminPanel}
-            setReviews={setReviews}
-            setCurrentPlace={setCurrentPlace}
-          />
+
+        {activeWindows.includes("AdminPanel") && (
+          <TitleBar
+            isList={false}
+            title={"Admin Panel"}
+            activeWindows={activeWindows}
+            setActiveWindows={setActiveWindows}
+            setLoading={setLoading}
+            sortedBy={sortedBy}
+            setSortedBy={setSortedBy}
+          >
+            <AdminPanel
+              activeWindows={activeWindows}
+              setActiveWindows={setActiveWindows}
+              setReviews={setReviews}
+              setCurrentPlace={setCurrentPlace}
+              setLoading={setLoading}
+            />
+          </TitleBar>
         )}
+
         <RiAdminFill
           className="adminButton"
           onClick={() => {
-            setAdminPanel(true);
+            setActiveWindows((activeWindows) => [
+              ...activeWindows,
+              "AdminPanel",
+            ]);
           }}
         />
 
@@ -272,8 +287,6 @@ function App() {
               currentPlaceId={currentPlaceId}
               setCurrentPlaceId={setCurrentPlaceId}
               currentUser={currentUser}
-              title={title}
-              desc={desc}
               reviewToEdit={reviewToEdit}
               setReviewToEdit={setReviewToEdit}
               setRating={setRating}
@@ -301,7 +314,8 @@ function App() {
             setCurrentPlace={setCurrentPlace}
           >
             <ReviewViewer
-              addReviewForm={addReviewForm}
+              activeWindows={activeWindows}
+              setActiveWindows={setActiveWindows}
               reviews={reviews}
               setReviews={setReviews}
               setAddReviewForm={setAddReviewForm}
@@ -311,17 +325,38 @@ function App() {
               reviewToEdit={reviewToEdit}
               setReviewToEdit={setReviewToEdit}
               currentPlace={currentPlace}
-              setCurrentPlace={setCurrentPlace}
               currentUser={currentUser}
               width={width}
               sortedBy={sortedBy}
-              profileEditor={profileEditor}
               loading={loading}
               setLoading={setLoading}
               reportReviewForm={reportReviewForm}
               setReportReviewForm={setReportReviewForm}
               reviewToReport={reviewToReport}
               setReviewToReport={setReviewToReport}
+            />
+          </TitleBar>
+        )}
+
+        {/* Report Review Form */}
+        {activeWindows.includes("ReportReviewForm") && (
+          <TitleBar
+            isList={true}
+            title={"Report Review"}
+            activeWindows={activeWindows}
+            setActiveWindows={setActiveWindows}
+            setLoading={setLoading}
+            sortedBy={sortedBy}
+            setSortedBy={setSortedBy}
+            setCurrentPlace={setCurrentPlace}
+          >
+            <ReportReviewForm
+              activeWindows={activeWindows}
+              setActiveWindows={setActiveWindows}
+              reviewToReport={reviewToReport}
+              setReviewToReport={setReviewToReport}
+              currentUser={currentUser}
+              currentPlace={currentPlace}
             />
           </TitleBar>
         )}
@@ -354,13 +389,9 @@ function App() {
               setImageGalleryPics={setImageGalleryPics}
               currentPlace={currentPlace}
               currentUser={currentUser}
-              width={width}
-              addReviewForm={addReviewForm}
               setAddReviewForm={setAddReviewForm}
               currentPlaceId={currentPlaceId}
               reviews={reviews}
-              profileEditor={profileEditor}
-              setCurrentPlace={setCurrentPlace}
               setReviews={setReviews}
               reviewToEdit={reviewToEdit}
               setReviewToEdit={setReviewToEdit}
@@ -372,10 +403,6 @@ function App() {
               reviewToReport={reviewToReport}
               setReviewToReport={setReviewToReport}
               sortedBy={sortedBy}
-              imageGallery={imageGallery}
-              imageGalleryPics={imageGalleryPics}
-              useWindowDimensions={useWindowDimensions}
-              height={height}
             />
           </TitleBar>
         )}

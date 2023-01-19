@@ -1,4 +1,3 @@
-import { AiOutlineStar, AiFillStar } from "react-icons/ai";
 import "./addReviewForm.css";
 import { BsFillTrashFill } from "react-icons/bs";
 import { useState, useEffect, useRef } from "react";
@@ -7,7 +6,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import Swal from "sweetalert2";
 import axios from "axios";
 import Lottie from "lottie-react";
-import logoAnimation from "./uploadAnimation.json";
+import logoAnimation from "../../assets/uploadAnimation.json";
 
 export default function AddReviewForm({
   activeWindows,
@@ -19,8 +18,6 @@ export default function AddReviewForm({
   currentPlaceId,
   setCurrentPlaceId,
   currentUser,
-  title,
-  desc,
   reviewToEdit,
   setReviewToEdit,
   setRating,
@@ -34,7 +31,6 @@ export default function AddReviewForm({
 }) {
   const {
     register,
-    watch,
     formState: { errors },
     handleSubmit,
   } = useForm({
@@ -46,7 +42,6 @@ export default function AddReviewForm({
   const threeStarRef = useRef();
   const fourStarRef = useRef();
   const fiveStarRef = useRef();
-  const [starSelection, setStarSelection] = useState(true);
   const [currentStars, setCurrentStars] = useState(1);
   const [images, setImages] = useState([]);
   const reviewTitleRef = useRef(null);
@@ -99,15 +94,11 @@ export default function AddReviewForm({
       setCurrentStars(reviewToEdit.rating);
       setImages([...reviewToEdit.pictures]);
     }
-  }, []);
+  }, [reviewToEdit]);
 
   useEffect(() => {
     setRating(currentStars);
   }, [currentStars, setRating]);
-
-  useEffect(() => {
-    console.log(oneStarRef);
-  }, []);
 
   const handlePost = async () => {
     if (currentPlace && Object.keys(reviewToEdit).length === 0) {
@@ -136,10 +127,7 @@ export default function AddReviewForm({
           backdrop: `#23232380`,
         }).then((result) => {
           if (result.isConfirmed) {
-            handleOpenReview(
-              res.data._id,
-              res.data.review[res.data.review.length - 1]._id
-            );
+            handleOpenReview();
           }
         });
 
@@ -180,29 +168,26 @@ export default function AddReviewForm({
           backdrop: `#23232380`,
         }).then((result) => {
           if (result.isConfirmed) {
-            handleOpenReview(
-              res.data._id,
-              res.data.review[res.data.review.length - 1]._id
-            );
+            handleOpenReview();
           }
         });
       } catch (err) {
         console.log(err);
       }
     } else if (Object.keys(reviewToEdit).length > 0) {
-      const newPin = {
+      const updatedReview = {
         id: currentPlaceId,
         reviewId: reviewToEdit._id,
-        title,
-        desc,
-        rating: currentStars,
+        title: reviewTitleRef.current.value,
+        desc: reviewDescRef.current.value,
+        rating: currentStarValueRef.current.value,
         pictures: [...images],
       };
 
       try {
         const res = await axios.put(
           "http://localhost:8800/api/pins/updateReview",
-          newPin
+          updatedReview
         );
         setPins([...pins]);
         setNewPlace(null);
@@ -217,6 +202,9 @@ export default function AddReviewForm({
           backdrop: `#23232380`,
         }).then((result) => {
           if (result.isConfirmed) {
+            setActiveWindows(activeWindows.filter((e) => e !== "ReviewViewer"));
+
+            handleOpenReview();
             setReviewToEdit({});
             setCurrentPlaceId(res.data._id, res.data.lat, res.data.long);
           }
@@ -272,30 +260,37 @@ export default function AddReviewForm({
     });
   };
 
-  const handleOpenReview = async (pinId, reviewId) => {
-    const reqReview = {
-      id: pinId,
-      reviewid: reviewId,
-    };
-
+  const handleOpenReview = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:8800/api/pins/getReview",
-        reqReview
+        "http://localhost:8800/api/pins/getUserReviews",
+        {
+          username: currentUser.username,
+        }
       );
-
-      setCurrentPlace(null);
-      setReviews(res.data);
-      setActiveWindows((activeWindows) => [...activeWindows, "ReviewViewer"]);
-      setLoading(false);
+      if (Object.keys(reviewToEdit).length > 0) {
+        var editedReview = [];
+        editedReview.push(
+          res.data.filter((e, i) => {
+            return e.reveiwId === reviewToEdit.reveiwId;
+          })
+        );
+        setReviews(editedReview);
+        setActiveWindows((activeWindows) => [...activeWindows, "ReviewViewer"]);
+      } else {
+        var latestReview = [];
+        latestReview.push(res.data[res.data.length - 1]);
+        setReviews(latestReview);
+        // setCurrentPlace(null);
+        setActiveWindows((activeWindows) => [...activeWindows, "ReviewViewer"]);
+        setLoading(false);
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
   function handleStarClick(number) {
-    var number = number;
-    setStarSelection(false);
     if (number === 1) {
       currentStarValueRef.current.value = 1;
     }

@@ -1,13 +1,15 @@
 import "./profileEditor.css";
 import { COUNTRIES } from "./countries.js";
+import Lottie from "lottie-react";
 import { WithContext as ReactTags } from "react-tag-input";
 import { BsTrophyFill, BsFillHeartFill } from "react-icons/bs";
 import { MdOutlineEdit } from "react-icons/md";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ErrorMessage } from "@hookform/error-message";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import React from "react";
+import loadingCircle from "../../assets/loadingCircle.json";
 import NewsFeed from "../newsFeed/NewsFeed";
 
 export default function ProfileEditor({
@@ -15,13 +17,9 @@ export default function ProfileEditor({
   setImageGalleryPics,
   currentPlace,
   currentUser,
-  width,
-  addReviewForm,
   setAddReviewForm,
   currentPlaceId,
   reviews,
-  profileEditor,
-  setCurrentPlace,
   setReviews,
   reviewToEdit,
   setReviewToEdit,
@@ -33,10 +31,6 @@ export default function ProfileEditor({
   reviewToReport,
   setReviewToReport,
   sortedBy,
-  imageGallery,
-  imageGalleryPics,
-  useWindowDimensions,
-  height,
 }) {
   const [currentProfile, setCurrentProfile] = useState(undefined);
   const [edtingAboutMe, setEditingAboutMe] = useState(false);
@@ -95,7 +89,33 @@ export default function ProfileEditor({
     },
   });
 
-  const getProfile = async () => {
+  //cleanup on unmount
+  useEffect(() => {
+    return () => {
+      setLoading(true);
+      setReviews(null);
+    };
+  }, [setLoading, setReviews]);
+
+  const handleGetReviews = useCallback(
+    async (profileUserName) => {
+      try {
+        const user = {
+          username: profileUserName,
+        };
+        const res = await axios.post(
+          "http://localhost:8800/api/pins/getUserReviews",
+          user
+        );
+        setReviews(res.data);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [setReviews]
+  );
+
+  const getProfile = useCallback(async () => {
     try {
       const currentid = { username: currentUser.username };
       const res = await axios.post(
@@ -113,34 +133,14 @@ export default function ProfileEditor({
     } catch (err) {
       console.log(err);
     }
-  };
+  }, [currentUser.username, handleGetReviews, loading, setLoading]);
 
   //initialize
   useEffect(() => {
-    getProfile();
-  }, []);
-
-  //cleanup on unmount
-  useEffect(() => {
-    return () => {
-      setLoading(true);
-      setReviews(null);
-    };
-  }, []);
-
-  const handleGetReviews = async (profileUserName) => {
-    try {
-      const res = await axios.post(
-        "http://localhost:8800/api/pins/getUserReviews",
-        {
-          username: profileUserName,
-        }
-      );
-      setReviews(res.data);
-    } catch (err) {
-      console.log(err);
+    if (!currentProfile) {
+      getProfile();
     }
-  };
+  }, [getProfile, currentProfile]);
 
   useEffect(() => {
     if (currentProfile && editingVisited) {
@@ -150,7 +150,7 @@ export default function ProfileEditor({
             id: currentProfile._id,
             visited: visitedTags,
           };
-          const res = await axios.put(
+          await axios.put(
             "http://localhost:8800/api/users/updateVisited",
             newTagsInfo
           );
@@ -162,7 +162,13 @@ export default function ProfileEditor({
       };
       handleChangeVisitedTags();
     }
-  }, [visitedTags]);
+  }, [
+    visitedTags,
+    currentProfile,
+    currentUser.username,
+    editingVisited,
+    getProfile,
+  ]);
 
   useEffect(() => {
     if (currentProfile && editingToVisit) {
@@ -172,7 +178,7 @@ export default function ProfileEditor({
             id: currentProfile._id,
             toVisit: toVisitTags,
           };
-          const res = await axios.put(
+          await axios.put(
             "http://localhost:8800/api/users/updateToVisit",
             newTagsInfo
           );
@@ -185,7 +191,14 @@ export default function ProfileEditor({
       };
       handleChangeToVisitTags();
     }
-  }, [toVisitTags]);
+  }, [
+    toVisitTags,
+    currentProfile,
+    currentUser.username,
+    editingVisited,
+    getProfile,
+    editingToVisit,
+  ]);
 
   const changeAboutMe = async () => {
     try {
@@ -193,7 +206,7 @@ export default function ProfileEditor({
         id: currentProfile._id,
         aboutMe: aboutMeRef.current.value,
       };
-      const res = await axios.put(
+      await axios.put(
         "http://localhost:8800/api/users/updateAboutMe",
         aboutMeInfo
       );
@@ -213,6 +226,14 @@ export default function ProfileEditor({
 
   return (
     <div id="profileEditor">
+      {!currentProfile ||
+        (!reviews && (
+          <Lottie
+            id="reviewsLoadingCircle"
+            animationData={loadingCircle}
+            loop={true}
+          ></Lottie>
+        ))}
       <div className="profileEditorContent">
         {currentProfile && reviews && (
           <>

@@ -1,21 +1,22 @@
 import "./reportReviewForm.css";
-import { motion, useDragControls } from "framer-motion";
-import { RiCloseCircleFill } from "react-icons/ri";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 
 export default function ReportReviewForm({
-  reportReviewForm,
-  setReportReviewForm,
+  activeWindows,
+  setActiveWindows,
   reviewToReport,
   setReviewToReport,
-  width,
   currentUser,
   currentPlace,
 }) {
   const reportSelectionRef = useRef();
   const reportDescRef = useRef();
+
+  const handleClose = () => {
+    setActiveWindows(activeWindows.filter((e) => e !== "ReportReviewForm"));
+  };
 
   const handleSubmit = async () => {
     const review = {
@@ -44,7 +45,7 @@ export default function ReportReviewForm({
         backdrop: `#23232380`,
       }).then((result) => {
         if (result.isConfirmed) {
-          setReportReviewForm(false);
+          handleClose();
         }
       });
 
@@ -54,94 +55,53 @@ export default function ReportReviewForm({
     }
   };
 
-  const dragControls = useDragControls();
-  const motionValues = {
-    desktop: {
-      position: "absolute",
-      left: "50%",
-      top: "5%",
-      margin: "0",
-    },
-    mobile: {
-      position: "absolute",
-      left: "0",
-      right: "0",
-      marginLeft: "auto",
-      marginRight: "auto",
-      width: width,
-    },
-  };
-
   return (
-    <motion.div
-      drag
-      dragControls={dragControls}
-      dragListener={false}
-      dragMomentum={false}
-      initial={width > 600 ? motionValues.desktop : motionValues.mobile}
-    >
-      <div id="reportReview">
-        <div
-          className="menuTopBar"
-          onPointerDown={(e) => {
-            dragControls.start(e);
-          }}
+    <div id="reportReviewForm">
+      <div className="reportReviewContent">
+        <div className="reportReviewHeader">
+          You are reporting <span>"{reviewToReport.title}"</span> by{" "}
+          <b>{reviewToReport.username}</b>
+        </div>
+        <p> for the reason of ...</p>
+
+        <select
+          name="reportSelection"
+          id="reportSelection"
+          ref={reportSelectionRef}
         >
-          <RiCloseCircleFill
-            className="xCloseButtonWhite"
-            onClick={() => setReportReviewForm(false)}
-          />
-          <p>Report Review</p>
+          <option value="Inappropriate Language">Inappropriate Language</option>
+          <option value="Inappropriate Images">Inappropriate Images</option>
+          <option value="Misleading Content">Misleading Content</option>
+          <option value="Duplicate Or Spam Content">
+            Duplicate Or Spam Content
+          </option>
+          <option value="Security Risk">Security Risk</option>
+        </select>
+
+        <p> tell us more ...</p>
+        <textarea ref={reportDescRef}></textarea>
+        <br />
+        <div className="disclaimerText">
+          by pressing submit you are agreeing that this report is for legitamate
+          reasons and accept that action may be taken against your account if
+          found to be illegitimate.
         </div>
 
-        <div className="reportReviewContent">
-          <div className="reportReviewHeader">
-            You are reporting <span>"{reviewToReport.title}"</span> by{" "}
-            <b>{reviewToReport.username}</b>
-          </div>
-          <p> for the reason of ...</p>
-
-          <select
-            name="reportSelection"
-            id="reportSelection"
-            ref={reportSelectionRef}
+        <div className="reportReviewBtnContainer">
+          <button
+            className="btnPrimary"
+            onClick={() => {
+              handleClose();
+              setReviewToReport({});
+            }}
           >
-            <option value="Inappropriate Language">
-              Inappropriate Language
-            </option>
-            <option value="Inappropriate Images">Inappropriate Images</option>
-            <option value="Misleading Content">Misleading Content</option>
-            <option value="Duplicate Or Spam Content">
-              Duplicate Or Spam Content
-            </option>
-            <option value="Security Risk">Security Risk</option>
-          </select>
-
-          <p> tell us more ...</p>
-          <textarea ref={reportDescRef}></textarea>
-          <br />
-          <div className="disclaimerText">
-            by pressing submit you are agreeing that this report is for
-            legitamate reasons and accept that action may be taken against your
-            account if found to be illegitimate.
-          </div>
-
-          <div className="reportReviewBtnContainer">
-            <button
-              className="btnPrimary"
-              onClick={() => {
-                setReportReviewForm(false);
-                setReviewToReport({});
-              }}
-            >
-              Close
-            </button>
-            <button className="btnPrimary" onClick={handleSubmit}>
-              Submit
-            </button>
-          </div>
+            Close
+          </button>
+          <button className="btnPrimary" onClick={handleSubmit}>
+            Submit
+          </button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

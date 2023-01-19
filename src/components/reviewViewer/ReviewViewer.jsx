@@ -1,13 +1,13 @@
 import "./reviewViewer.css";
 import { useEffect } from "react";
 import Lottie from "lottie-react";
-import loadingCircle from "./loadingCircle.json";
+import loadingCircle from "../../assets/loadingCircle.json";
 import React from "react";
-import ReportReviewForm from "../reportReviewForm/ReportReviewForm";
 import NewsFeed from "../newsFeed/NewsFeed";
 
 export default function ReviewViewer({
-  addReviewForm,
+  activeWindows,
+  setActiveWindows,
   reviews,
   setReviews,
   setAddReviewForm,
@@ -17,11 +17,9 @@ export default function ReviewViewer({
   reviewToEdit,
   setReviewToEdit,
   currentPlace,
-  setCurrentPlace,
   currentUser,
   width,
   sortedBy,
-  profileEditor,
   loading,
   setLoading,
   reportReviewForm,
@@ -35,56 +33,45 @@ export default function ReviewViewer({
       setLoading(true);
       setReviews(null);
     };
-  }, []);
+  }, [setLoading, setReviews]);
   return (
-    <div>
-      <div
-        id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}
-        style={{
-          visibility: reportReviewForm || addReviewForm ? "hidden" : "visible",
-        }}
-      >
-        {(loading || !reviews) && (
-          <Lottie
-            id="reviewsLoadingCircle"
-            animationData={loadingCircle}
-            loop={true}
-          ></Lottie>
-        )}
+    <div
+      id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}
+      // style={{
+      //   visibility: reportReviewForm || addReviewForm ? "hidden" : "visible",
+      // }}
+    >
+      {(loading || !reviews) && (
+        <Lottie
+          id="reviewsLoadingCircle"
+          animationData={loadingCircle}
+          loop={true}
+        ></Lottie>
+      )}
 
-        <div id="reviewViewerContentContainer">
-          <NewsFeed
-            reviews={reviews}
-            setReviews={setReviews}
-            setAddReviewForm={setAddReviewForm}
-            setImageGallery={setImageGallery}
-            currentPlaceId={currentPlaceId}
-            setImageGalleryPics={setImageGalleryPics}
-            reviewToEdit={reviewToEdit}
-            setReviewToEdit={setReviewToEdit}
-            currentPlace={currentPlace}
-            currentUser={currentUser}
-            loading={loading}
-            setLoading={setLoading}
-            reportReviewForm={reportReviewForm}
-            setReportReviewForm={setReportReviewForm}
-            reviewToReport={reviewToReport}
-            setReviewToReport={setReviewToReport}
-            sortedBy={sortedBy}
-          />
-        </div>
-      </div>
-
-      {reportReviewForm && (
-        <ReportReviewForm
+      <div id="reviewViewerContentContainer">
+        <NewsFeed
+          reviews={reviews}
+          setReviews={setReviews}
+          activeWindows={activeWindows}
+          setActiveWindows={setActiveWindows}
+          setAddReviewForm={setAddReviewForm}
+          setImageGallery={setImageGallery}
+          currentPlaceId={currentPlaceId}
+          setImageGalleryPics={setImageGalleryPics}
+          reviewToEdit={reviewToEdit}
+          setReviewToEdit={setReviewToEdit}
+          currentPlace={currentPlace}
+          currentUser={currentUser}
+          loading={loading}
+          setLoading={setLoading}
           reportReviewForm={reportReviewForm}
           setReportReviewForm={setReportReviewForm}
           reviewToReport={reviewToReport}
           setReviewToReport={setReviewToReport}
-          currentUser={currentUser}
-          currentPlace={currentPlace}
+          sortedBy={sortedBy}
         />
-      )}
+      </div>
     </div>
   );
 }

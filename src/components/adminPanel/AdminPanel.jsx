@@ -5,19 +5,15 @@ import { MdTaskAlt } from "react-icons/md";
 import Swal from "sweetalert2";
 import { BsArrowRightCircle } from "react-icons/bs";
 import axios from "axios";
-import { motion, useDragControls } from "framer-motion";
-import { RiCloseCircleFill } from "react-icons/ri";
 
 export default function AdminPanel({
-  setAdminPanel,
-  width,
-  reviewViewer,
-  setReviewViewer,
+  activeWindows,
+  setActiveWindows,
   setReviews,
   setCurrentPlace,
+  setLoading,
 }) {
   const [flaggedReviews, setFlaggedReviews] = useState([]);
-  const dragControls = useDragControls();
 
   const completeTask = (id) => {
     Swal.fire({
@@ -59,6 +55,7 @@ export default function AdminPanel({
       id: pinId,
       reviewid: reviewId,
     };
+    console.log(reqReview);
 
     try {
       const res = await axios.post(
@@ -68,97 +65,61 @@ export default function AdminPanel({
 
       setCurrentPlace(null);
       setReviews(res.data);
-      setReviewViewer(true);
+      setActiveWindows((activeWindows) => [...activeWindows, "ReviewViewer"]);
+      setLoading(false);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const motionValues = {
-    desktop: {
-      position: "absolute",
-      left: "35%",
-      top: "1%",
-      margin: "0",
-    },
-    mobile: {
-      position: "absolute",
-      left: "0",
-      right: "0",
-      marginLeft: "auto",
-      marginRight: "auto",
-      width: width,
-    },
-  };
   return (
-    <motion.div
-      drag
-      dragControls={dragControls}
-      dragListener={false}
-      dragMomentum={false}
-      initial={width > 600 ? motionValues.desktop : motionValues.mobile}
-    >
-      <div id="adminPanel">
-        <div
-          className="menuTopBar"
-          onPointerDown={(e) => {
-            dragControls.start(e);
-          }}
-        >
-          <RiCloseCircleFill
-            className="xCloseButtonWhite"
-            onClick={() => setAdminPanel(false)}
-          />
-          <p>Admin Panel</p>
-        </div>
+    <div id="adminPanel">
+      <div className="adminPanelContent">
+        <div id="flaggedReviewsContainer">
+          <p>Flagged Reviews</p>
 
-        <div className="adminPanelContent">
-          <div id="flaggedReviewsContainer">
-            <p>Flagged Reviews</p>
-
-            <table>
-              <tbody>
-                <tr>
-                  <th></th>
-                  <th>Title</th>
-                  <th>Reason</th>
-                  <th>Description</th>
-                  <th>Created by</th>
-                  <th>Reported by</th>
-                  <th>Go</th>
-                  <th>Del</th>
-                </tr>
-                {flaggedReviews.map((e, i) => {
-                  return (
-                    <tr key={e._id}>
-                      <td>{format(e.createdAt, "en_US")}</td>
-                      <td>{e.title}</td>
-                      <td>{e.reason}</td>
-                      <td>{e.desc}</td>
-                      <td>{e.reviewCreator}</td>
-                      <td>{e.reportedBy}</td>
-                      <td>
-                        <BsArrowRightCircle
-                          onClick={() => handleOpenReview(e.pinId, e.reviewId)}
-                          className="apInfoIcon"
-                        />
-                      </td>
-                      <td>
-                        <MdTaskAlt
-                          className="apTrashIcon"
-                          onClick={() => {
-                            completeTask(e._id);
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <table>
+            <tbody>
+              <tr>
+                <th></th>
+                <th>Title</th>
+                <th>Reason</th>
+                <th>Description</th>
+                <th>Created by</th>
+                <th>Reported by</th>
+                <th>Go</th>
+                <th>Del</th>
+              </tr>
+              {flaggedReviews.map((e, i) => {
+                return (
+                  <tr key={e._id}>
+                    <td>{format(e.createdAt, "en_US")}</td>
+                    <td>{e.title}</td>
+                    <td>{e.reason}</td>
+                    <td>{e.desc}</td>
+                    <td>{e.reviewCreator}</td>
+                    <td>{e.reportedBy}</td>
+                    <td>
+                      <BsArrowRightCircle
+                        onClick={() => handleOpenReview(e.pinId, e.reviewId)}
+                        className="apInfoIcon"
+                      />
+                    </td>
+                    <td>
+                      <MdTaskAlt
+                        className="apTrashIcon"
+                        onClick={() => {
+                          completeTask(e._id);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

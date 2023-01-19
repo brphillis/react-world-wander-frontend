@@ -3,8 +3,8 @@ import { MdClose } from "react-icons/md";
 import { MdSkipNext } from "react-icons/md";
 import { MdSkipPrevious } from "react-icons/md";
 import Lottie from "lottie-react";
-import loadingCircle from "./loadingCircle.json";
 import axios from "axios";
+import loadingCircle from "../../assets/loadingCircle.json";
 import "./imageGallery.css";
 
 export default function ImageGallery({
