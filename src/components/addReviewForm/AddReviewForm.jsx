@@ -26,6 +26,7 @@ export default function AddReviewForm({
   pins,
   setNewPlace,
   setReviews,
+  reviews,
   newPlace,
   pinType,
   pinColor,
@@ -103,11 +104,11 @@ export default function AddReviewForm({
   }, [currentStars, setRating]);
 
   const handlePost = async () => {
-    setChangeContributions({ id: currentUser._id, count: 5 });
+    setChangeContributions({ id: currentUser._id, count: 1 });
 
     if (currentPlace && Object.keys(reviewToEdit).length === 0) {
       const newReview = {
-        id: currentPlace._id,
+        id: currentPlaceId,
         username: currentUser.username,
         title: reviewTitleRef.current.value,
         desc: reviewDescRef.current.value,
@@ -120,6 +121,7 @@ export default function AddReviewForm({
           "http://localhost:8800/api/pins/addReview/",
           newReview
         );
+        handleClose();
         Swal.fire({
           title: "Thankyou for your Review",
           text: " ",
@@ -205,11 +207,8 @@ export default function AddReviewForm({
           backdrop: `#23232380`,
         }).then((result) => {
           if (result.isConfirmed) {
-            setActiveWindows(activeWindows.filter((e) => e !== "ReviewViewer"));
-
             handleOpenReview();
             setReviewToEdit({});
-            setCurrentPlaceId(res.data._id, res.data.lat, res.data.long);
           }
         });
       } catch (err) {
@@ -264,6 +263,9 @@ export default function AddReviewForm({
   };
 
   const handleOpenReview = async () => {
+    setCurrentPlace(null);
+    setLoading(true);
+    setActiveWindows((activeWindows) => [...activeWindows, "ReviewViewer"]);
     try {
       const res = await axios.post(
         "http://localhost:8800/api/pins/getUserReviews",
@@ -273,19 +275,17 @@ export default function AddReviewForm({
       );
       if (Object.keys(reviewToEdit).length > 0) {
         var editedReview = [];
-        editedReview.push(
-          res.data.filter((e, i) => {
-            return e.reveiwId === reviewToEdit.reveiwId;
-          })
-        );
+        editedReview = res.data.filter((e, i) => {
+          return e._id === reviewToEdit._id;
+        });
+
         setReviews(editedReview);
-        setActiveWindows((activeWindows) => [...activeWindows, "ReviewViewer"]);
+        setLoading(false);
       } else {
         var latestReview = [];
         latestReview.push(res.data[res.data.length - 1]);
+
         setReviews(latestReview);
-        // setCurrentPlace(null);
-        setActiveWindows((activeWindows) => [...activeWindows, "ReviewViewer"]);
         setLoading(false);
       }
     } catch (err) {

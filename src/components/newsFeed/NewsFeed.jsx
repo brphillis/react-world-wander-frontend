@@ -10,7 +10,6 @@ import PopupEdit from "../popupEdit/PopupEdit";
 import "./newsFeed.css";
 
 export default function NewsFeed({
-  activeWindows,
   setActiveWindows,
   reviews,
   setReviews,
@@ -18,15 +17,11 @@ export default function NewsFeed({
   setImageGallery,
   currentPlaceId,
   setImageGalleryPics,
-  reviewToEdit,
   setReviewToEdit,
   currentPlace,
   currentUser,
   loading,
   setLoading,
-  reportReviewForm,
-  setReportReviewForm,
-  reviewToReport,
   setReviewToReport,
   sortedBy,
 }) {
@@ -70,6 +65,7 @@ export default function NewsFeed({
 
   useEffect(() => {
     if (currentPlace && loading) {
+      console.log("getting");
       const getLimitedReviews = async () => {
         const currentid = {
           id: currentPlaceId,
@@ -99,18 +95,7 @@ export default function NewsFeed({
               })
             );
           }
-
           setReviews(res.data);
-
-          res.data.forEach((e, i) => {
-            getProfilePictures(e.username).then((data) =>
-              setProfilePictures((profilePictures) => [
-                ...profilePictures,
-                data[0].profilePicture,
-              ])
-            );
-          });
-
           setLoading(false);
 
           return res.data;
@@ -119,7 +104,11 @@ export default function NewsFeed({
         }
       };
       getLimitedReviews();
-    } else {
+    }
+  }, [sortedBy]);
+
+  useEffect(() => {
+    if (reviews)
       reviews.forEach((e, i) => {
         getProfilePictures(e.username).then((data) =>
           setProfilePictures((profilePictures) => [
@@ -128,8 +117,7 @@ export default function NewsFeed({
           ])
         );
       });
-    }
-  }, [sortedBy]);
+  }, [reviews]);
 
   return (
     <div>

@@ -28,12 +28,7 @@ export default function ReviewViewer({
   setReviewToReport,
 }) {
   return (
-    <div
-      id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}
-      // style={{
-      //   visibility: reportReviewForm || addReviewForm ? "hidden" : "visible",
-      // }}
-    >
+    <div id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}>
       {(loading || !reviews) && (
         <Lottie
           id="reviewsLoadingCircle"
@@ -44,23 +39,18 @@ export default function ReviewViewer({
 
       <div id="reviewViewerContentContainer">
         <NewsFeed
+          setActiveWindows={setActiveWindows}
           reviews={reviews}
           setReviews={setReviews}
-          activeWindows={activeWindows}
-          setActiveWindows={setActiveWindows}
           setAddReviewForm={setAddReviewForm}
           setImageGallery={setImageGallery}
           currentPlaceId={currentPlaceId}
           setImageGalleryPics={setImageGalleryPics}
-          reviewToEdit={reviewToEdit}
           setReviewToEdit={setReviewToEdit}
           currentPlace={currentPlace}
           currentUser={currentUser}
           loading={loading}
           setLoading={setLoading}
-          reportReviewForm={reportReviewForm}
-          setReportReviewForm={setReportReviewForm}
-          reviewToReport={reviewToReport}
           setReviewToReport={setReviewToReport}
           sortedBy={sortedBy}
         />

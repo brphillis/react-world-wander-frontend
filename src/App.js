@@ -74,6 +74,11 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    console.log(activeWindows);
+    console.log(!activeWindows.includes("ProfileEditor"));
+  }, [activeWindows]);
+
   //load captcha
   useEffect(() => {
     const loadScriptByURL = (id, url, callback) => {
@@ -297,46 +302,48 @@ function App() {
               newPlace={newPlace}
               pinType={pinType}
               pinColor={pinColor}
+              reviews={reviews}
             />
           </TitleBar>
         )}
 
         {/* View Reviews */}
-        {activeWindows.includes("ReviewViewer") && (
-          <TitleBar
-            isList={true}
-            title={"Reviews"}
-            activeWindows={activeWindows}
-            setActiveWindows={setActiveWindows}
-            setLoading={setLoading}
-            sortedBy={sortedBy}
-            setSortedBy={setSortedBy}
-            setCurrentPlace={setCurrentPlace}
-          >
-            <ReviewViewer
+        {activeWindows.includes("ReviewViewer") &&
+          !activeWindows.includes("ProfileEditor") && (
+            <TitleBar
+              isList={true}
+              title={"Reviews"}
               activeWindows={activeWindows}
               setActiveWindows={setActiveWindows}
-              reviews={reviews}
-              setReviews={setReviews}
-              setAddReviewForm={setAddReviewForm}
-              setImageGallery={setImageGallery}
-              currentPlaceId={currentPlaceId}
-              setImageGalleryPics={setImageGalleryPics}
-              reviewToEdit={reviewToEdit}
-              setReviewToEdit={setReviewToEdit}
-              currentPlace={currentPlace}
-              currentUser={currentUser}
-              width={width}
-              sortedBy={sortedBy}
-              loading={loading}
               setLoading={setLoading}
-              reportReviewForm={reportReviewForm}
-              setReportReviewForm={setReportReviewForm}
-              reviewToReport={reviewToReport}
-              setReviewToReport={setReviewToReport}
-            />
-          </TitleBar>
-        )}
+              sortedBy={sortedBy}
+              setSortedBy={setSortedBy}
+              setCurrentPlace={setCurrentPlace}
+            >
+              <ReviewViewer
+                activeWindows={activeWindows}
+                setActiveWindows={setActiveWindows}
+                reviews={reviews}
+                setReviews={setReviews}
+                setAddReviewForm={setAddReviewForm}
+                setImageGallery={setImageGallery}
+                currentPlaceId={currentPlaceId}
+                setImageGalleryPics={setImageGalleryPics}
+                reviewToEdit={reviewToEdit}
+                setReviewToEdit={setReviewToEdit}
+                currentPlace={currentPlace}
+                currentUser={currentUser}
+                width={width}
+                sortedBy={sortedBy}
+                loading={loading}
+                setLoading={setLoading}
+                reportReviewForm={reportReviewForm}
+                setReportReviewForm={setReportReviewForm}
+                reviewToReport={reviewToReport}
+                setReviewToReport={setReviewToReport}
+              />
+            </TitleBar>
+          )}
 
         {/* Report Review Form */}
         {activeWindows.includes("ReportReviewForm") && (
@@ -385,6 +392,8 @@ function App() {
             setSortedBy={setSortedBy}
           >
             <ProfileEditor
+              activeWindows={activeWindows}
+              setActiveWindows={setActiveWindows}
               setImageGallery={setImageGallery}
               setImageGalleryPics={setImageGalleryPics}
               currentPlace={currentPlace}

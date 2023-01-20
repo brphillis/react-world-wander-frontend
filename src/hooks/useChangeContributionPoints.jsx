@@ -7,7 +7,7 @@ export function useChangeContributionPoints() {
   const [userCurrentScore, setUserCurrentScore] = useState(0);
 
   useEffect(() => {
-    const handleGetUserInfo = async () => {
+    const handleChange = async () => {
       if (Object.keys(changeContributions).length > 0) {
         try {
           const userData = {
@@ -39,7 +39,7 @@ export function useChangeContributionPoints() {
       }
     };
 
-    handleGetUserInfo(changeContributions.id);
+    handleChange(changeContributions.id);
   }, [changeContributions, user, userCurrentScore]);
 
   return { setChangeContributions, changeContributions };

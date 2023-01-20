@@ -13,6 +13,8 @@ import loadingCircle from "../../assets/loadingCircle.json";
 import NewsFeed from "../newsFeed/NewsFeed";
 
 export default function ProfileEditor({
+  activeWindows,
+  setActiveWindows,
   setImageGallery,
   setImageGalleryPics,
   currentPlace,
@@ -96,6 +98,12 @@ export default function ProfileEditor({
       setReviews(null);
     };
   }, [setLoading, setReviews]);
+
+  useEffect(() => {
+    if (activeWindows.includes("ReviewViewer")) {
+      setActiveWindows(activeWindows.filter((e) => e !== "ReviewViewer"));
+    }
+  }, [activeWindows, setActiveWindows]);
 
   const handleGetReviews = useCallback(
     async (profileUserName) => {
@@ -392,21 +400,18 @@ export default function ProfileEditor({
               <br />
             </div>
             <NewsFeed
+              setActiveWindows={setActiveWindows}
               reviews={reviews}
               setReviews={setReviews}
               setAddReviewForm={setAddReviewForm}
               setImageGallery={setImageGallery}
               currentPlaceId={currentPlaceId}
               setImageGalleryPics={setImageGalleryPics}
-              reviewToEdit={reviewToEdit}
               setReviewToEdit={setReviewToEdit}
               currentPlace={currentPlace}
               currentUser={currentUser}
               loading={loading}
               setLoading={setLoading}
-              reportReviewForm={reportReviewForm}
-              setReportReviewForm={setReportReviewForm}
-              reviewToReport={reviewToReport}
               setReviewToReport={setReviewToReport}
               sortedBy={sortedBy}
             ></NewsFeed>
