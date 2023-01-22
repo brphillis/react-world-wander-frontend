@@ -1,5 +1,4 @@
 import "./reviewViewer.css";
-import { useEffect } from "react";
 import Lottie from "lottie-react";
 import loadingCircle from "../../assets/loadingCircle.json";
 import React from "react";
@@ -10,11 +9,10 @@ export default function ReviewViewer({
   setActiveWindows,
   reviews,
   setReviews,
-  setAddReviewForm,
   setImageGallery,
   currentPlaceId,
+  setCurrentPlaceId,
   setImageGalleryPics,
-  reviewToEdit,
   setReviewToEdit,
   currentPlace,
   currentUser,
@@ -22,9 +20,6 @@ export default function ReviewViewer({
   sortedBy,
   loading,
   setLoading,
-  reportReviewForm,
-  setReportReviewForm,
-  reviewToReport,
   setReviewToReport,
 }) {
   return (
@@ -39,12 +34,13 @@ export default function ReviewViewer({
 
       <div id="reviewViewerContentContainer">
         <NewsFeed
+          activeWindows={activeWindows}
           setActiveWindows={setActiveWindows}
           reviews={reviews}
           setReviews={setReviews}
-          setAddReviewForm={setAddReviewForm}
           setImageGallery={setImageGallery}
           currentPlaceId={currentPlaceId}
+          setCurrentPlaceId={setCurrentPlaceId}
           setImageGalleryPics={setImageGalleryPics}
           setReviewToEdit={setReviewToEdit}
           currentPlace={currentPlace}

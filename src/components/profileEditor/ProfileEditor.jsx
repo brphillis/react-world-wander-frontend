@@ -15,22 +15,17 @@ import NewsFeed from "../newsFeed/NewsFeed";
 export default function ProfileEditor({
   activeWindows,
   setActiveWindows,
-  setImageGallery,
   setImageGalleryPics,
   currentPlace,
   currentUser,
-  setAddReviewForm,
   currentPlaceId,
+  setCurrentPlaceId,
   reviews,
   setReviews,
-  reviewToEdit,
   setReviewToEdit,
   profilePicture,
   loading,
   setLoading,
-  reportReviewForm,
-  setReportReviewForm,
-  reviewToReport,
   setReviewToReport,
   sortedBy,
 }) {
@@ -400,12 +395,12 @@ export default function ProfileEditor({
               <br />
             </div>
             <NewsFeed
+              activeWindows={activeWindows}
               setActiveWindows={setActiveWindows}
               reviews={reviews}
               setReviews={setReviews}
-              setAddReviewForm={setAddReviewForm}
-              setImageGallery={setImageGallery}
               currentPlaceId={currentPlaceId}
+              setCurrentPlaceId={setCurrentPlaceId}
               setImageGalleryPics={setImageGalleryPics}
               setReviewToEdit={setReviewToEdit}
               currentPlace={currentPlace}

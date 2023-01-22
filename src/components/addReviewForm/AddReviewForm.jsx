@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Lottie from "lottie-react";
 import logoAnimation from "../../assets/uploadAnimation.json";
-import { useChangeContributionPoints } from "../../hooks/useChangeContributionPoints";
+import { useChangeContributions } from "../../hooks/useChangeContributions";
 
 export default function AddReviewForm({
   activeWindows,
@@ -16,8 +16,6 @@ export default function AddReviewForm({
   width,
   currentPlace,
   setCurrentPlace,
-  currentPlaceId,
-  setCurrentPlaceId,
   currentUser,
   reviewToEdit,
   setReviewToEdit,
@@ -26,10 +24,8 @@ export default function AddReviewForm({
   pins,
   setNewPlace,
   setReviews,
-  reviews,
   newPlace,
   pinType,
-  pinColor,
 }) {
   const {
     register,
@@ -49,7 +45,7 @@ export default function AddReviewForm({
   const reviewTitleRef = useRef(null);
   const reviewDescRef = useRef(null);
   const locationNameRef = useRef(null);
-  const { setChangeContributions } = useChangeContributionPoints();
+  const { changeContributions } = useChangeContributions();
 
   const nameValidation = register("placeNameErrorInput", {
     required:
@@ -104,17 +100,20 @@ export default function AddReviewForm({
   }, [currentStars, setRating]);
 
   const handlePost = async () => {
-    setChangeContributions({ id: currentUser._id, count: 1 });
+    changeContributions(currentUser._id, 1);
 
     if (currentPlace && Object.keys(reviewToEdit).length === 0) {
       const newReview = {
-        id: currentPlaceId,
+        id: currentPlace._id,
         username: currentUser.username,
+        creatorId: currentUser._id,
         title: reviewTitleRef.current.value,
         desc: reviewDescRef.current.value,
         rating: currentStarValueRef.current.value,
         pictures: [...images],
+        pinId: currentPlace._id,
       };
+      console.log(currentPlace);
 
       try {
         const res = await axios.put(
@@ -146,10 +145,10 @@ export default function AddReviewForm({
         lat: newPlace.long,
         long: newPlace.lat,
         pinType,
-        pinColor,
         review: [
           {
             username: currentUser.username,
+            creatorId: currentUser._id,
             title: reviewTitleRef.current.value,
             desc: reviewDescRef.current.value,
             rating: currentStarValueRef.current.value,
@@ -181,7 +180,7 @@ export default function AddReviewForm({
       }
     } else if (Object.keys(reviewToEdit).length > 0) {
       const updatedReview = {
-        id: currentPlaceId,
+        id: reviewToEdit.pinId,
         reviewId: reviewToEdit._id,
         title: reviewTitleRef.current.value,
         desc: reviewDescRef.current.value,
@@ -284,7 +283,6 @@ export default function AddReviewForm({
       } else {
         var latestReview = [];
         latestReview.push(res.data[res.data.length - 1]);
-
         setReviews(latestReview);
         setLoading(false);
       }

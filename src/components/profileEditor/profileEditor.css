@@ -4,7 +4,7 @@
   margin: 0 auto;
   width: 600px;
   height: max-content;
-  max-width: 100vw;
+  max-width: 98vw;
   max-height: 97vh;
   padding: 0px 10px 20px 10px;
   border: 1px dotted #a06cd5;
@@ -22,6 +22,7 @@
   font-size: 12px;
   display: flex;
   display: block;
+  max-width: 100%;
 }
 
 .ProfileEditorProfilePicture {
@@ -50,22 +51,10 @@
   margin: -24px auto;
 }
 
-@media (max-width: 900px) {
-  #contributionsCount {
-    margin-left: -80px;
-    margin-top: 50px;
-  }
-
-  #likesCount {
-    margin-right: -80px;
-    margin-top: 50px;
-  }
-}
-
 #contributionsCount {
   position: absolute;
-  left: 150px;
-  top: 100px;
+  left: 8vw;
+  top: 150px;
   display: flex;
   color: white;
   flex-direction: column;
@@ -98,8 +87,8 @@
 
 #likesCount {
   position: absolute;
-  right: 150px;
-  top: 100px;
+  right: 8vw;
+  top: 150px;
   display: flex;
   color: white;
   flex-direction: column;
@@ -253,6 +242,7 @@
   padding-right: 10px;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 5px;
 }
 
@@ -283,6 +273,7 @@
   padding-right: 10px;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 5px;
 }
 

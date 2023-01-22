@@ -10,12 +10,12 @@ import PopupEdit from "../popupEdit/PopupEdit";
 import "./newsFeed.css";
 
 export default function NewsFeed({
+  activeWindows,
   setActiveWindows,
   reviews,
   setReviews,
-  setAddReviewForm,
-  setImageGallery,
   currentPlaceId,
+  setCurrentPlaceId,
   setImageGalleryPics,
   setReviewToEdit,
   currentPlace,
@@ -36,6 +36,10 @@ export default function NewsFeed({
       setReviews(null);
     };
   }, [setLoading, setReviews]);
+
+  useEffect(() => {
+    console.log(reviews);
+  }, [reviews]);
 
   function handleSeeMore() {
     setLoading(true);
@@ -173,7 +177,10 @@ export default function NewsFeed({
                         src={elem.base64}
                         onClick={() => {
                           handleSetImageGalleryPics(e.pictures);
-                          setImageGallery(true);
+                          setActiveWindows((activeWindows) => [
+                            ...activeWindows,
+                            "ImageGallery",
+                          ]);
                         }}
                       />
                     );
@@ -183,6 +190,7 @@ export default function NewsFeed({
 
               <LikeButton
                 className="likeButtonContainer"
+                content={e}
                 likesArray={e.likes}
                 likesCount={e.likes.length}
                 currentIndex={i}
@@ -192,9 +200,10 @@ export default function NewsFeed({
 
               <PopupEdit
                 currentReview={e}
+                activeWindows={activeWindows}
                 setActiveWindows={setActiveWindows}
                 currentUser={currentUser}
-                setAddReviewForm={setAddReviewForm}
+                setCurrentPlaceId={setCurrentPlaceId}
                 setReviewToEdit={setReviewToEdit}
                 currentPlace={currentPlace}
                 setReviewToReport={setReviewToReport}

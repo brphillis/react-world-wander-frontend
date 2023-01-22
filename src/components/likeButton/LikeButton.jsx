@@ -1,6 +1,7 @@
-import { React, useRef } from "react";
+import { React, useEffect, useRef } from "react";
 import { HiOutlineHeart } from "react-icons/hi";
 import axios from "axios";
+import { useChangeTotalLikes } from "../../hooks/useChangeTotalLikes";
 
 import "./likeButton.css";
 
@@ -10,43 +11,51 @@ export default function LikeButton({
   likesArray,
   currentIndex,
   likesCount,
+  content,
 }) {
   const likeButtonRef = useRef([]);
   const likesCounter = useRef([]);
+  const { changeTotalLikes } = useChangeTotalLikes();
 
   const postLike = async (index) => {
-    let currentLikeList = null;
-    let matchingUsers = null;
-    const likeId = {
-      id: currentPlace._id,
-      index: index,
-      currentUser: currentUser.username,
-    };
+    if (currentUser !== "guest") {
+      let currentLikeList = null;
+      let matchingUsers = null;
+      const likeId = {
+        id: currentPlace._id,
+        index: index,
+        currentUser: currentUser.username,
+      };
 
-    try {
-      let res = await axios.put(
-        "http://localhost:8800/api/pins/addLike",
-        likeId
-      );
-      currentLikeList = res.data.review[index].likes;
-
-      matchingUsers = currentLikeList.filter(
-        (likes) => likes === currentUser.username
-      );
-
-      if (matchingUsers.length < 1) {
-        handleAddLike(index);
-        return res.data;
-      } else {
-        res = await axios.put(
-          "http://localhost:8800/api/pins/deleteLike",
+      try {
+        let res = await axios.put(
+          "http://localhost:8800/api/pins/addLike",
           likeId
         );
-        handleRemoveLike(index);
-        return res.data;
+        currentLikeList = res.data.review[index].likes;
+
+        matchingUsers = currentLikeList.filter(
+          (likes) => likes === currentUser.username
+        );
+
+        if (matchingUsers.length < 1) {
+          handleAddLike(index);
+          changeTotalLikes(content.creatorId, 1);
+
+          return res.data;
+        } else {
+          res = await axios.put(
+            "http://localhost:8800/api/pins/deleteLike",
+            likeId
+          );
+
+          handleRemoveLike(index);
+          changeTotalLikes(content.creatorId, -1);
+          return res.data;
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -77,7 +86,7 @@ export default function LikeButton({
         }}
         className="reviewViewerLikeButton"
         onClick={() => {
-          currentUser !== "guest" && postLike(currentIndex);
+          postLike(currentIndex);
         }}
       />
 

@@ -7,27 +7,32 @@ import axios from "axios";
 
 export default function PinRenderer({
   currentPins,
+  setImageGalleryPics,
   currentPlaceId,
   setCurrentPlaceId,
   setPins,
   viewport,
   mapRef,
+  pins,
   setCurrentPlace,
-  setImageGallery,
   width,
   setActiveWindows,
+  activeWindows,
 }) {
+  const getPins = async () => {
+    try {
+      const res = await axios.get("http://localhost:8800/api/pins");
+      setPins(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    const getPins = async () => {
-      try {
-        const res = await axios.get("http://localhost:8800/api/pins");
-        setPins(res.data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getPins();
-  }, [setPins]);
+    if (activeWindows.length === 0) {
+      getPins();
+    }
+  }, [activeWindows]);
 
   const handleMarkerClick = (id) => {
     setCurrentPlaceId(id);
@@ -43,7 +48,7 @@ export default function PinRenderer({
 
   return (
     <div>
-      {currentPins.map((p, i) => (
+      {pins.map((p, i) => (
         <React.Fragment key={p.long}>
           <Marker
             longitude={p.long}
@@ -88,7 +93,13 @@ export default function PinRenderer({
                     }}
                     alt={`uploadNum0`}
                     src={p.review[0].pictures[0].base64}
-                    onClick={() => setImageGallery(true)}
+                    onClick={() => {
+                      setImageGalleryPics(p.review[0].pictures);
+                      setActiveWindows((activeWindows) => [
+                        ...activeWindows,
+                        "ImageGallery",
+                      ]);
+                    }}
                   />
 
                   {width > 600 && (
@@ -101,7 +112,13 @@ export default function PinRenderer({
                               key={p.review[0].pictures[i].name + `${i}`}
                               alt={`uploadNum${i}`}
                               src={e.base64}
-                              onClick={() => setImageGallery(true)}
+                              onClick={() => {
+                                setImageGalleryPics(p.review[0].pictures);
+                                setActiveWindows((activeWindows) => [
+                                  ...activeWindows,
+                                  "ImageGallery",
+                                ]);
+                              }}
                             />
                           );
                         } else return null;
@@ -167,10 +184,8 @@ export default function PinRenderer({
                 <button
                   className="btnPrimary"
                   onClick={() => {
-                    {
-                      setCurrentPlaceId(null);
-                      setCurrentPlace(null);
-                    }
+                    setCurrentPlaceId(null);
+                    setCurrentPlace(null);
                   }}
                 >
                   Close

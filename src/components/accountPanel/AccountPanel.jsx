@@ -114,10 +114,20 @@ export default function AccountPanel({
   const handleDeleteAccount = async (id) => {
     setSuccess(false);
     setError(false);
+
+    const userData = { id: id };
+
     try {
-      await axiosJWT.delete("http://localhost:8800/api/users/" + id, {
-        headers: { authorization: "Bearer " + currentUser.accessToken },
-      });
+      await axiosJWT.post(
+        "http://localhost:8800/api/users/deleteUser",
+        userData,
+        {
+          headers: {
+            authorization: "Bearer " + currentUser.accessToken,
+          },
+        }
+      );
+
       setSuccess(true);
     } catch (err) {
       setError(true);
@@ -319,7 +329,10 @@ export default function AccountPanel({
       {confirmDeleteAccount && (
         <div className="optionsPanel" style={{ padding: "20px" }}>
           <h1>Are you sure you want to delete your account?</h1>
-          <button className="btnPrimary" onClick={() => handleDeleteAccount(0)}>
+          <button
+            className="btnPrimary"
+            onClick={() => handleDeleteAccount(currentUser._id)}
+          >
             Yes
           </button>
           <button

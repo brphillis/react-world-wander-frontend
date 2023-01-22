@@ -8,10 +8,10 @@ import loadingCircle from "../../assets/loadingCircle.json";
 import "./imageGallery.css";
 
 export default function ImageGallery({
-  setImageGallery,
+  activeWindows,
+  setActiveWindows,
   imageGalleryPics,
   setImageGalleryPics,
-  activeWindows,
   width,
   currentPlace,
 }) {
@@ -197,7 +197,7 @@ export default function ImageGallery({
         <MdClose
           id="galleryBtn"
           onClick={() => {
-            setImageGallery(false);
+            setActiveWindows(activeWindows.filter((e) => e !== "ImageGallery"));
             setImageGalleryPics([]);
           }}
         />

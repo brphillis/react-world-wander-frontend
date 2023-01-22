@@ -9,10 +9,9 @@ export default function PopupEdit({
   setActiveWindows,
   currentReview,
   currentUser,
-  setAddReviewForm,
   setReviewToEdit,
-  currentPlace,
   setReviewToReport,
+  setCurrentPlaceId,
 }) {
   const popupEditRef = useRef();
 
@@ -45,7 +44,7 @@ export default function PopupEdit({
 
   const deleteReview = async () => {
     const reviewToDelete = {
-      id: currentPlace._id,
+      id: currentReview.pinId,
       reviewId: currentReview._id,
     };
     try {
@@ -53,6 +52,17 @@ export default function PopupEdit({
         "http://localhost:8800/api/pins/deleteReview",
         reviewToDelete
       );
+      setActiveWindows([]);
+      setCurrentPlaceId(null);
+      Swal.fire({
+        title: "Your Review Has Been Deleted!",
+        text: "   ",
+        icon: "success",
+        padding: "10px",
+        confirmButtonColor: "#a06cd5",
+        confirmButtonText: "Confirm",
+        backdrop: `#23232380`,
+      });
     } catch (err) {
       console.log(err);
     }

@@ -1,5 +1,4 @@
 import React from "react";
-import { useEffect } from "react";
 import { motion, useDragControls } from "framer-motion";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { MdSort } from "react-icons/md";
