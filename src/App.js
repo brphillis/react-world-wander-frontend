@@ -1,4 +1,5 @@
-import ReactMapGL, { Popup } from "react-map-gl";
+import mapboxgl, { Popup } from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
+
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
@@ -18,7 +19,12 @@ import AdminPanel from "./components/adminPanel/AdminPanel";
 import TitleBar from "./components/titleBar/TitleBar";
 import ReportReviewForm from "./components/reportReviewForm/ReportReviewForm";
 
+mapboxgl.accessToken =
+  "pk.eyJ1IjoicGhpbGxpc2IiLCJhIjoiY2xia24zOGNpMDF2ZjN4b3kwZGE2a2hyNCJ9.N-w-QfPBoPoU8ywWx_QcFw";
+
 function App() {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
   const myStorage = window.localStorage;
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -126,34 +132,39 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (map.current) return; // initialize map only once
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/phillisb/cla869nb9000115qt5z8yfwyw",
+      latitude: viewport.lat,
+      longitude: viewport.long,
+      // transitionDuration: "500",
+      doubleClickZoom: false,
+      projection: "globe",
+      center: [1, 1],
+      zoom: 2,
+      pitch: 90,
+      // fog: {
+      //   range: [0.8, 8],
+      //   color: "#7268B6",
+      //   horizenBlend: 0.1,
+      //   highColor: "#93BEDF",
+      //   spaceColor: "#7268B6",
+      //   starIntensity: 0.2,
+      // },
+    });
+  });
+
   return (
     <div className="App">
-      <ReactMapGL
-        style={
-          currentUser || currentUser === "guest" ? controlFalse : controlTrue
-        }
-        className="loginContainer"
-        mapStyle="mapbox://styles/phillisb/cla869nb9000115qt5z8yfwyw"
-        transitionDuration="500"
-        mapboxAccessToken={process.env.REACT_APP_MAPBOX}
-        initialViewState={{
-          latitude: viewport.lat,
-          longitude: viewport.long,
-          doubleClickZoom: false,
-          projection: "globe",
-          center: [1, 1],
-          zoom: 2,
-          pitch: 90,
-        }}
-        // fog={{
-        //   range: [0.8, 8],
-        //   color: "#7268B6",
-        //   "horizon-blend": 0.1,
-        //   "high-color": "#93BEDF",
-        //   "space-color": "#7268B6",
-        //   "star-intensity": 0.2,
-        // }}
-        onClick={handleAddClick}
+      <div
+        ref={mapContainer}
+        // style={
+        //   currentUser || currentUser === "guest" ? controlFalse : controlTrue
+        // }
+        className="map-container"
+        // onClick={handleAddClick}
       >
         {/* Login Container */}
         {!currentUser && (
@@ -383,7 +394,7 @@ function App() {
             />
           </TitleBar>
         )}
-      </ReactMapGL>
+      </div>
     </div>
   );
 }

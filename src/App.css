@@ -103,3 +103,9 @@ form {
   top: 10px;
   right: 10px;
 }
+
+.map-container {
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+}

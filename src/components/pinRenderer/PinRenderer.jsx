@@ -51,7 +51,7 @@ export default function PinRenderer({
       {pins.length > 0 &&
         pins.map((p, i) => (
           <React.Fragment key={p.long}>
-            <Marker
+            {/* <Marker
               longitude={p.long}
               latitude={p.lat}
               offsetLeft={-viewport.zoom * 3.5}
@@ -65,7 +65,7 @@ export default function PinRenderer({
                   cursor: "pointer",
                 }}
               />
-            </Marker>
+            </Marker> */}
 
             {/* Selected Pin Popup */}
             {p._id === currentPlaceId && (
