@@ -145,14 +145,14 @@ function App() {
           zoom: 2,
           pitch: 90,
         }}
-        // fog={{
-        //   range: [0.8, 8],
-        //   color: "#7268B6",
-        //   "horizon-blend": 0.1,
-        //   "high-color": "#93BEDF",
-        //   "space-color": "#7268B6",
-        //   "star-intensity": 0.2,
-        // }}
+        fog={{
+          range: [0.8, 8],
+          color: "#7268B6",
+          "horizon-blend": 0.1,
+          "high-color": "#93BEDF",
+          "space-color": "#7268B6",
+          "star-intensity": 0.2,
+        }}
         onClick={handleAddClick}
       >
         {/* Login Container */}
