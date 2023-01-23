@@ -57,7 +57,7 @@ export default function NewsFeed({
     try {
       const currentid = { username: user };
       const res = await axios.post(
-        "http://localhost:8800/api/users/getProfile",
+        `${process.env.REACT_APP_CONNECT}/api/users/getProfile`,
         currentid
       );
 
@@ -78,7 +78,7 @@ export default function NewsFeed({
         };
         try {
           const res = await axios.post(
-            "http://localhost:8800/api/pins/getLimitedReviews",
+            `${process.env.REACT_APP_CONNECT}/api/pins/getLimitedReviews`,
             currentid
           );
 

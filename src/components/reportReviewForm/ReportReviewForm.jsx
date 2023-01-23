@@ -31,7 +31,7 @@ export default function ReportReviewForm({
 
     try {
       let res = await axios.post(
-        "http://localhost:8800/api/flaggedreviews",
+        `${process.env.REACT_APP_CONNECT}/api/flaggedreviews`,
         review
       );
 

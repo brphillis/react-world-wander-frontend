@@ -107,7 +107,7 @@ export default function ProfileEditor({
           username: profileUserName,
         };
         const res = await axios.post(
-          "http://localhost:8800/api/pins/getUserReviews",
+          `${process.env.REACT_APP_CONNECT}/api/pins/getUserReviews`,
           user
         );
         setReviews(res.data);
@@ -122,7 +122,7 @@ export default function ProfileEditor({
     try {
       const currentid = { username: currentUser.username };
       const res = await axios.post(
-        "http://localhost:8800/api/users/getProfile",
+        `${process.env.REACT_APP_CONNECT}/api/users/getProfile`,
         currentid
       );
       if (res.data.length > 0) {
@@ -154,7 +154,7 @@ export default function ProfileEditor({
             visited: visitedTags,
           };
           await axios.put(
-            "http://localhost:8800/api/users/updateVisited",
+            `${process.env.REACT_APP_CONNECT}/api/users/updateVisited`,
             newTagsInfo
           );
           getProfile(currentUser.username);

@@ -21,7 +21,8 @@ export default function PinRenderer({
 }) {
   const getPins = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/api/pins");
+      const res = await axios.get(`${process.env.REACT_APP_CONNECT}/api/pins`);
+
       setPins(res.data);
     } catch (err) {
       console.log(err);

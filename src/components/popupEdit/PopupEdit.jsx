@@ -49,7 +49,7 @@ export default function PopupEdit({
     };
     try {
       await axios.put(
-        "http://localhost:8800/api/pins/deleteReview",
+        `${process.env.REACT_APP_CONNECT}/api/pins/deleteReview`,
         reviewToDelete
       );
       setActiveWindows([]);

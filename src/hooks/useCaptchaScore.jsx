@@ -30,7 +30,7 @@ export function useCaptchaScore(username, password, email) {
         try {
           //recieve token
           const res = await axios.post(
-            "http://localhost:8800/api/verify/send",
+            `${process.env.REACT_APP_CONNECT}/api/verify/send`,
             captchaInfo
           );
           getCaptchaScore(res.data.google_response.score);

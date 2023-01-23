@@ -25,7 +25,7 @@ export default function Login({
 
     try {
       const res = await axios.post(
-        "http://localhost:8800/api/users/login",
+        `${process.env.REACT_APP_CONNECT}/api/users/login`,
         user
       );
       setCurrentUser(res.data);

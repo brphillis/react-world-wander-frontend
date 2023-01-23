@@ -119,7 +119,7 @@ export default function AccountPanel({
 
     try {
       await axiosJWT.post(
-        "http://localhost:8800/api/users/deleteUser",
+        `${process.env.REACT_APP_CONNECT}/api/users/deleteUser`,
         userData,
         {
           headers: {
@@ -154,7 +154,7 @@ export default function AccountPanel({
 
     try {
       const res = await axios.put(
-        "http://localhost:8800/api/users/updateProfilePicture/",
+        `${process.env.REACT_APP_CONNECT}/api/users/updateProfilePicture/`,
         newPicture
       );
       setCurrentUser({

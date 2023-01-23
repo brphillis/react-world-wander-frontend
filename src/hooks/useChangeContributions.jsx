@@ -8,7 +8,7 @@ export function useChangeContributions() {
         id: id,
       };
       const res = await axios.put(
-        "http://localhost:8800/api/users/updateContributions",
+        `${process.env.REACT_APP_CONNECT}/api/users/updateContributions`,
         userData
       );
       const newScore = res.data.contributions + number;
@@ -20,7 +20,7 @@ export function useChangeContributions() {
         };
         console.log(newScore);
         await axios.put(
-          "http://localhost:8800/api/users/updateContributions",
+          `${process.env.REACT_APP_CONNECT}/api/users/updateContributions`,
           changeData
         );
       } catch (err) {

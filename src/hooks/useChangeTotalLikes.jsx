@@ -8,7 +8,7 @@ export function useChangeTotalLikes() {
         id: id,
       };
       const res = await axios.put(
-        "http://localhost:8800/api/users/updateTotalLikes",
+        `${process.env.REACT_APP_CONNECT}/api/users/updateTotalLikes`,
         userData
       );
       const newScore = res.data.totalLikes + number;
@@ -20,7 +20,7 @@ export function useChangeTotalLikes() {
         };
         console.log(newScore);
         await axios.put(
-          "http://localhost:8800/api/users/updateTotalLikes",
+          `${process.env.REACT_APP_CONNECT}/api/users/updateTotalLikes`,
           changeData
         );
       } catch (err) {

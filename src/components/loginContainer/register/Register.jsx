@@ -51,7 +51,10 @@ export default function Register({ setShowRegister, loading, setLoading }) {
           password: password,
         };
         try {
-          await axios.post("http://localhost:8800/api/users/register", newUser);
+          await axios.post(
+            `${process.env.REACT_APP_CONNECT}/api/users/register`,
+            newUser
+          );
           setSuccess(true);
           console.log(captchaScore);
           Swal.fire({
