@@ -68,7 +68,7 @@ export default function PinRenderer({
             </Marker>
 
             {/* Selected Pin Popup */}
-            {p._id === currentPlaceId && (
+            {/* {p._id === currentPlaceId && (
               <Popup
                 // style={{ opacity: reviewViewer ? "0" : "1" }}
                 className={width < 600 && "mobilePopup"}
@@ -196,7 +196,7 @@ export default function PinRenderer({
                   </button>
                 </div>
               </Popup>
-            )}
+            )} */}
           </React.Fragment>
         ))}
     </div>
