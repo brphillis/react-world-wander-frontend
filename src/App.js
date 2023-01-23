@@ -52,7 +52,6 @@ function App() {
     longitude: 17.071727,
     zoom: 0.8,
   });
-  const mapRef = useRef();
 
   const controlTrue = {
     width: "100vw",
@@ -130,7 +129,6 @@ function App() {
   return (
     <div className="App">
       <ReactMapGL
-        ref={mapRef}
         style={
           currentUser || currentUser === "guest" ? controlFalse : controlTrue
         }
@@ -228,7 +226,6 @@ function App() {
           pins={pins}
           setPins={setPins}
           viewport={viewport}
-          mapRef={mapRef}
           setCurrentPlace={setCurrentPlace}
           width={width}
           activeWindows={activeWindows}

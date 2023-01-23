@@ -37,10 +37,6 @@ export default function NewsFeed({
     };
   }, [setLoading, setReviews]);
 
-  useEffect(() => {
-    console.log(reviews);
-  }, [reviews]);
-
   function handleSeeMore() {
     setLoading(true);
     setFirstFetched(firstFetched + 10);
@@ -68,7 +64,7 @@ export default function NewsFeed({
   };
 
   useEffect(() => {
-    if (currentPlace && loading) {
+    if (currentPlaceId && loading) {
       console.log("getting");
       const getLimitedReviews = async () => {
         const currentid = {

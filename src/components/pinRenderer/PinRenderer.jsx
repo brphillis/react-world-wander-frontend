@@ -12,7 +12,6 @@ export default function PinRenderer({
   setCurrentPlaceId,
   setPins,
   viewport,
-  mapRef,
   pins,
   setCurrentPlace,
   width,
@@ -76,10 +75,10 @@ export default function PinRenderer({
               latitude={p.lat}
               anchor="bottom"
               closeOnClick={false}
-              onOpen={() => {
-                mapRef.current.easeTo({ lng: p.long, lat: p.lat });
-                setCurrentPlace(p);
-              }}
+              // onOpen={() => {
+              //   mapRef.current.easeTo({ lng: p.long, lat: p.lat });
+              //   setCurrentPlace(p);
+              // }}
               onClose={() => {
                 setCurrentPlaceId(null);
                 setCurrentPlace(null);
