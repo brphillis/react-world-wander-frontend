@@ -15,11 +15,6 @@ input:focus {
   visibility: hidden !important;
 }
 
-.mapContainer {
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
 .btnPrimary {
   border: none;
   display: block;
