@@ -1,6 +1,6 @@
 import Map, { Popup } from "react-map-gl";
 import React, { useState, useEffect, useRef } from "react";
-import "./app.css";
+import "./App.css";
 
 import { RiAdminFill } from "react-icons/ri";
 
