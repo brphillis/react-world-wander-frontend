@@ -129,12 +129,12 @@ function App() {
   return (
     <div className="App">
       <ReactMapGL
-        // style={
-        //   currentUser || currentUser === "guest" ? controlFalse : controlTrue
-        // }
+        style={
+          currentUser || currentUser === "guest" ? controlFalse : controlTrue
+        }
         className="loginContainer"
-        // mapStyle="mapbox://styles/phillisb/cla869nb9000115qt5z8yfwyw"
-        // transitionDuration="500"
+        mapStyle="mapbox://styles/phillisb/cla869nb9000115qt5z8yfwyw"
+        transitionDuration="500"
         mapboxAccessToken={process.env.REACT_APP_MAPBOX}
         initialViewState={{
           latitude: viewport.lat,
