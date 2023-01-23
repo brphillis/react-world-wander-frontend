@@ -1,4 +1,4 @@
-import Map, { Popup } from "react-map-gl";
+import ReactMapGL, { Popup } from "react-map-gl";
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
@@ -129,7 +129,7 @@ function App() {
 
   return (
     <div className="App">
-      <Map
+      <ReactMapGL
         ref={mapRef}
         style={
           currentUser || currentUser === "guest" ? controlFalse : controlTrue
@@ -386,7 +386,7 @@ function App() {
             />
           </TitleBar>
         )}
-      </Map>
+      </ReactMapGL>
     </div>
   );
 }
