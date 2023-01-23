@@ -90,32 +90,33 @@ export default function AdminPanel({
                 <th>Go</th>
                 <th>Del</th>
               </tr>
-              {flaggedReviews.map((e, i) => {
-                return (
-                  <tr key={e._id}>
-                    <td>{format(e.createdAt, "en_US")}</td>
-                    <td>{e.title}</td>
-                    <td>{e.reason}</td>
-                    <td>{e.desc}</td>
-                    <td>{e.reviewCreator}</td>
-                    <td>{e.reportedBy}</td>
-                    <td>
-                      <BsArrowRightCircle
-                        onClick={() => handleOpenReview(e.pinId, e.reviewId)}
-                        className="apInfoIcon"
-                      />
-                    </td>
-                    <td>
-                      <MdTaskAlt
-                        className="apTrashIcon"
-                        onClick={() => {
-                          completeTask(e._id);
-                        }}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
+              {flaggedReviews.length > 0 &&
+                flaggedReviews.map((e, i) => {
+                  return (
+                    <tr key={e._id}>
+                      <td>{format(e.createdAt, "en_US")}</td>
+                      <td>{e.title}</td>
+                      <td>{e.reason}</td>
+                      <td>{e.desc}</td>
+                      <td>{e.reviewCreator}</td>
+                      <td>{e.reportedBy}</td>
+                      <td>
+                        <BsArrowRightCircle
+                          onClick={() => handleOpenReview(e.pinId, e.reviewId)}
+                          className="apInfoIcon"
+                        />
+                      </td>
+                      <td>
+                        <MdTaskAlt
+                          className="apTrashIcon"
+                          onClick={() => {
+                            completeTask(e._id);
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>

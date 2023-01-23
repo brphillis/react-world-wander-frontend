@@ -163,25 +163,26 @@ export default function NewsFeed({
               <div className="reviewViewerDesc">{e.desc}</div>
 
               <div className="reviewImagesContainer">
-                {e.pictures.map((elem, index) => {
-                  if (index < 3) {
-                    return (
-                      <img
-                        key={index + 12}
-                        alt={`${e.size + e.name}`}
-                        className="reviewImage"
-                        src={elem.base64}
-                        onClick={() => {
-                          handleSetImageGalleryPics(e.pictures);
-                          setActiveWindows((activeWindows) => [
-                            ...activeWindows,
-                            "ImageGallery",
-                          ]);
-                        }}
-                      />
-                    );
-                  } else return null;
-                })}
+                {e.pictures.length > 0 &&
+                  e.pictures.map((elem, index) => {
+                    if (index < 3) {
+                      return (
+                        <img
+                          key={index + 12}
+                          alt={`${e.size + e.name}`}
+                          className="reviewImage"
+                          src={elem.base64}
+                          onClick={() => {
+                            handleSetImageGalleryPics(e.pictures);
+                            setActiveWindows((activeWindows) => [
+                              ...activeWindows,
+                              "ImageGallery",
+                            ]);
+                          }}
+                        />
+                      );
+                    } else return null;
+                  })}
               </div>
 
               <LikeButton
