@@ -1,4 +1,5 @@
 import Map, { Popup } from "react-map-gl";
+import MapboxWorker from "mapbox-gl/dist/mapbox-gl-csp-worker";
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 
@@ -19,8 +20,8 @@ import TitleBar from "./components/titleBar/TitleBar";
 import ReportReviewForm from "./components/reportReviewForm/ReportReviewForm";
 
 function App() {
+  Map.workerClass = MapboxWorker;
   const myStorage = window.localStorage;
-
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [pins, setPins] = useState([]);
