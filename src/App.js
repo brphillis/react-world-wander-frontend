@@ -22,7 +22,7 @@ function App() {
   const myStorage = window.localStorage;
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  const [pins, setPins] = useState([]);
+  const [pins, setPins] = useState(null);
   const [currentPins, setCurrentPins] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [currentPlaceId, setCurrentPlaceId] = useState(null);

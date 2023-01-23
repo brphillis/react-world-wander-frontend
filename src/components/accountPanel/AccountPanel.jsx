@@ -37,12 +37,12 @@ export default function AccountPanel({
   const [showOthersPins, setShowOthersPins] = useState(true);
   const accountPanelRef = useRef();
   const arrowBtnRef = useRef();
-  const [myPins, setMyPins] = useState(
-    pins.filter((p) => p.username === currentUser.username)
-  );
-  const [othersPins, setOthersPins] = useState(
-    pins.filter((p) => p.username !== currentUser.username)
-  );
+  // const [myPins, setMyPins] = useState(
+  //   pins.filter((p) => p.username === currentUser.username)
+  // );
+  // const [othersPins, setOthersPins] = useState(
+  //   pins.filter((p) => p.username !== currentUser.username)
+  // );
 
   const handleExpandTray = () => {
     if (accountPanelRef.current.style.width === "130px") {
@@ -54,10 +54,10 @@ export default function AccountPanel({
     }
   };
 
-  useEffect(() => {
-    setMyPins(pins.filter((p) => p.username === currentUser.username));
-    setOthersPins(pins.filter((p) => p.username !== currentUser.username));
-  }, [currentUser.username, pins, displayOptionsPanel]);
+  // useEffect(() => {
+  //   setMyPins(pins.filter((p) => p.username === currentUser.username));
+  //   setOthersPins(pins.filter((p) => p.username !== currentUser.username));
+  // }, [currentUser.username, pins, displayOptionsPanel]);
 
   const refreshToken = async () => {
     try {
@@ -185,28 +185,28 @@ export default function AccountPanel({
   };
 
   //Handles currently selected pins
-  useEffect(() => {
-    if (showMyPins && showOthersPins) {
-      setCurrentPins(pins);
-    }
-    if (!showMyPins && !showOthersPins) {
-      setCurrentPins([]);
-    }
-    if (showMyPins && !showOthersPins) {
-      setCurrentPins(myPins);
-    }
-    if (!showMyPins && showOthersPins) {
-      setCurrentPins(othersPins);
-    }
-  }, [
-    showMyPins,
-    showOthersPins,
-    myPins,
-    othersPins,
-    pins,
-    setCurrentPins,
-    displayOptionsPanel,
-  ]);
+  // useEffect(() => {
+  //   if (showMyPins && showOthersPins) {
+  //     setCurrentPins(pins);
+  //   }
+  //   if (!showMyPins && !showOthersPins) {
+  //     setCurrentPins([]);
+  //   }
+  //   if (showMyPins && !showOthersPins) {
+  //     setCurrentPins(myPins);
+  //   }
+  //   if (!showMyPins && showOthersPins) {
+  //     setCurrentPins(othersPins);
+  //   }
+  // }, [
+  //   showMyPins,
+  //   showOthersPins,
+  //   myPins,
+  //   othersPins,
+  //   pins,
+  //   setCurrentPins,
+  //   displayOptionsPanel,
+  // ]);
 
   const handleShowMyPins = function () {
     if (showMyPins) {
