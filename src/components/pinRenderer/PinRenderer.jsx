@@ -32,11 +32,10 @@ export default function PinRenderer({
     if (activeWindows.length === 0) {
       getPins();
     }
-    console.log(pins);
   }, [activeWindows]);
 
   useEffect(() => {
-    console.log(pins);
+    console.log("PINS", pins);
   }, [pins]);
 
   const handleMarkerClick = (id) => {
