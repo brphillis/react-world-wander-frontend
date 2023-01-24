@@ -31,7 +31,7 @@ export default function ImageGallery({
       const currentid = { id: currentPlace._id };
       try {
         const res = await axios.post(
-          "http://localhost:8800/api/pins/getAllPinImages",
+          `${process.env.REACT_APP_CONNECT}/api/pins/getAllPinImages`,
           currentid
         );
         setImageGalleryPics(res.data);
@@ -116,7 +116,7 @@ export default function ImageGallery({
         )}
 
         {imageGalleryPics.length > 0 && (
-          <img id="mainImage" src={imageGalleryPics[currentPicNumber].base64} />
+          <img id="mainImage" src={imageGalleryPics[currentPicNumber]} />
         )}
       </div>
 
@@ -128,7 +128,7 @@ export default function ImageGallery({
                 ? "galleryThumbnail enlargen"
                 : "galleryThumbnail"
             }
-            src={imageGalleryPics[currentThumbnails.first].base64}
+            src={imageGalleryPics[currentThumbnails.first]}
             onClick={() => goToPicture(currentThumbnails.first)}
           />
           {imageGalleryPics.length > 1 && (
@@ -138,7 +138,7 @@ export default function ImageGallery({
                   ? "galleryThumbnail enlargen"
                   : "galleryThumbnail"
               }
-              src={imageGalleryPics[currentThumbnails.second].base64}
+              src={imageGalleryPics[currentThumbnails.second]}
               onClick={() => goToPicture(currentThumbnails.second)}
             />
           )}
@@ -149,7 +149,7 @@ export default function ImageGallery({
                   ? "galleryThumbnail enlargen"
                   : "galleryThumbnail"
               }
-              src={imageGalleryPics[currentThumbnails.third].base64}
+              src={imageGalleryPics[currentThumbnails.third]}
               onClick={() => goToPicture(currentThumbnails.third)}
             />
           )}
@@ -160,7 +160,7 @@ export default function ImageGallery({
                   ? "galleryThumbnail enlargen"
                   : "galleryThumbnail"
               }
-              src={imageGalleryPics[currentThumbnails.fourth].base64}
+              src={imageGalleryPics[currentThumbnails.fourth]}
               onClick={() => goToPicture(currentThumbnails.fourth)}
             />
           )}
@@ -173,7 +173,7 @@ export default function ImageGallery({
                     ? "galleryThumbnail enlargen"
                     : "galleryThumbnail"
                 }
-                src={imageGalleryPics[currentThumbnails.fifth].base64}
+                src={imageGalleryPics[currentThumbnails.fifth]}
                 onClick={() => goToPicture(currentThumbnails.fifth)}
               />
               {imageGalleryPics.length > 5 && (
@@ -183,7 +183,7 @@ export default function ImageGallery({
                       ? "galleryThumbnail enlargen"
                       : "galleryThumbnail"
                   }
-                  src={imageGalleryPics[currentThumbnails.sixth].base64}
+                  src={imageGalleryPics[currentThumbnails.sixth]}
                   onClick={() => goToPicture(currentThumbnails.sixth)}
                 />
               )}
@@ -197,7 +197,9 @@ export default function ImageGallery({
         <MdClose
           id="galleryBtn"
           onClick={() => {
-            setActiveWindows(activeWindows.filter((e) => e !== "ImageGallery"));
+            setActiveWindows(
+              activeWindows.filter((e) => e !== "Image Gallery")
+            );
             setImageGalleryPics([]);
           }}
         />

@@ -28,7 +28,7 @@ export default function AdminPanel({
         const task = { id: id };
         try {
           axios.put(
-            "http://localhost:8800/api/flaggedreviews/deleteFlaggedReview",
+            `${process.env.REACT_APP_CONNECT}/api/flaggedreviews/deleteFlaggedReview`,
             task
           );
         } catch (err) {
@@ -41,7 +41,9 @@ export default function AdminPanel({
   useEffect(() => {
     const getFlaggedReviews = async () => {
       try {
-        const res = await axios.get("http://localhost:8800/api/flaggedreviews");
+        const res = await axios.get(
+          `${process.env.REACT_APP_CONNECT}/api/flaggedreviews`
+        );
         setFlaggedReviews(res.data);
       } catch (err) {
         console.log(err);
@@ -59,7 +61,7 @@ export default function AdminPanel({
 
     try {
       const res = await axios.post(
-        "http://localhost:8800/api/pins/getReview",
+        `${process.env.REACT_APP_CONNECT}/api/pins/getReview`,
         reqReview
       );
 

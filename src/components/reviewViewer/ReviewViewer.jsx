@@ -21,6 +21,8 @@ export default function ReviewViewer({
   loading,
   setLoading,
   setReviewToReport,
+  pins,
+  setPins,
 }) {
   return (
     <div id={width < 600 ? "reviewViewerMobile" : "reviewViewer"}>
@@ -49,6 +51,8 @@ export default function ReviewViewer({
           setLoading={setLoading}
           setReviewToReport={setReviewToReport}
           sortedBy={sortedBy}
+          pins={pins}
+          setPins={setPins}
         />
       </div>
     </div>

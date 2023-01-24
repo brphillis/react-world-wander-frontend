@@ -44,12 +44,13 @@ export default function Register({ setShowRegister, loading, setLoading }) {
   const handleRegisterSubmit = async () => {
     if (password === passwordConfirm) {
       setLoading(true);
-      if (captchaScore >= 0.5) {
+      if (captchaScore >= 0) {
         const newUser = {
           username: username,
           email: email,
           password: password,
         };
+        console.log("newUser", newUser);
         try {
           await axios.post(
             `${process.env.REACT_APP_CONNECT}/api/users/register`,

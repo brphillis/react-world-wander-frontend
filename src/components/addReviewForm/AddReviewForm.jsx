@@ -8,6 +8,7 @@ import axios from "axios";
 import Lottie from "lottie-react";
 import logoAnimation from "../../assets/uploadAnimation.json";
 import { useChangeContributions } from "../../hooks/useChangeContributions";
+import Compress from "react-image-file-resizer";
 
 export default function AddReviewForm({
   activeWindows,
@@ -117,7 +118,7 @@ export default function AddReviewForm({
 
       try {
         const res = await axios.put(
-          "http://localhost:8800/api/pins/addReview/",
+          `${process.env.REACT_APP_CONNECT}/api/pins/addReview`,
           newReview
         );
         handleClose();
@@ -158,7 +159,10 @@ export default function AddReviewForm({
       };
 
       try {
-        const res = await axios.post("http://localhost:8800/api/pins", newPin);
+        const res = await axios.post(
+          `${process.env.REACT_APP_CONNECT}/api/pins`,
+          newPin
+        );
         setPins([...pins, res.data]);
         setNewPlace(null);
         handleClose();
@@ -190,7 +194,7 @@ export default function AddReviewForm({
 
       try {
         const res = await axios.put(
-          "http://localhost:8800/api/pins/updateReview",
+          `${process.env.REACT_APP_CONNECT}/api/pins/updateReview`,
           updatedReview
         );
         setPins([...pins]);
@@ -216,37 +220,30 @@ export default function AddReviewForm({
     }
   };
 
-  const fileToDataUri = (image) => {
-    return new Promise((res) => {
-      const reader = new FileReader();
-      const { type, name, size } = image;
-      reader.addEventListener("load", () => {
-        res({
-          base64: reader.result,
-          name: name,
-          type,
-          size: size,
-        });
-      });
-      reader.readAsDataURL(image);
-    });
-  };
+  const onFileResize = (e) => {
+    let compressedImages = [];
 
-  const uploadImage = async (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const newImagesPromises = [];
-      for (let i = 0; i < e.target.files.length; i++) {
-        newImagesPromises.push(fileToDataUri(e.target.files[i]));
-      }
-      const newImages = await Promise.all(newImagesPromises);
-      setImages([...images, ...newImages]);
-    }
-    e.target.value = "";
+    Object.values(e.target.files).forEach((j, i) => {
+      const file = e.target.files[i];
+      Compress.imageFileResizer(
+        file,
+        480,
+        480,
+        "JPEG",
+        70,
+        0,
+        (uri) => {
+          compressedImages.push(uri);
+          setImages([...images, ...compressedImages]);
+        },
+        "base64"
+      );
+    });
   };
 
   const handleDisplayImage = (e, i) => {
     Swal.fire({
-      imageUrl: e.base64,
+      imageUrl: e,
       imageAlt: "Custom image",
       showCancelButton: true,
       padding: "10px",
@@ -256,7 +253,7 @@ export default function AddReviewForm({
       backdrop: `#23232380`,
     }).then((result) => {
       if (result.isConfirmed) {
-        setImages(images.filter((picture) => picture.base64 !== e.base64));
+        setImages(images.filter((picture) => picture !== e));
       }
     });
   };
@@ -264,10 +261,10 @@ export default function AddReviewForm({
   const handleOpenReview = async () => {
     setCurrentPlace(null);
     setLoading(true);
-    setActiveWindows((activeWindows) => [...activeWindows, "ReviewViewer"]);
+    setActiveWindows((activeWindows) => [...activeWindows, "Reviews"]);
     try {
       const res = await axios.post(
-        "http://localhost:8800/api/pins/getUserReviews",
+        `${process.env.REACT_APP_CONNECT}/api/pins/getUserReviews`,
         {
           username: currentUser.username,
         }
@@ -340,7 +337,7 @@ export default function AddReviewForm({
   }
 
   const handleClose = () => {
-    setActiveWindows(activeWindows.filter((e) => e !== "AddReviewForm"));
+    setActiveWindows(activeWindows.filter((e) => e !== "Add Review"));
   };
 
   return (
@@ -368,7 +365,7 @@ export default function AddReviewForm({
                 <img
                   className="previewImage"
                   alt={`uploadNum`}
-                  src={images[0].base64}
+                  src={images[0]}
                 />
               </div>
             )}
@@ -389,7 +386,7 @@ export default function AddReviewForm({
                 <img
                   className="previewThumbnail"
                   alt={`uploadNum${i}`}
-                  src={e.base64}
+                  src={e}
                   onClick={() => handleDisplayImage(e, i)}
                 />
               </div>
@@ -400,7 +397,7 @@ export default function AddReviewForm({
           id={images.length < 4 && "fileUpload"}
           className="fileUploadInput"
           type="file"
-          onChange={uploadImage}
+          onChange={onFileResize}
           multiple
         />
         <br />

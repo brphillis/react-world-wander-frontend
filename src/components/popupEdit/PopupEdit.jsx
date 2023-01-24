@@ -12,6 +12,8 @@ export default function PopupEdit({
   setReviewToEdit,
   setReviewToReport,
   setCurrentPlaceId,
+  pins,
+  setPins,
 }) {
   const popupEditRef = useRef();
 
@@ -52,8 +54,8 @@ export default function PopupEdit({
         `${process.env.REACT_APP_CONNECT}/api/pins/deleteReview`,
         reviewToDelete
       );
-      setActiveWindows([]);
       setCurrentPlaceId(null);
+      setActiveWindows([]);
       Swal.fire({
         title: "Your Review Has Been Deleted!",
         text: "   ",
@@ -90,7 +92,7 @@ export default function PopupEdit({
               setReviewToEdit(currentReview);
               setActiveWindows((activeWindows) => [
                 ...activeWindows,
-                "AddReviewForm",
+                "Add Review",
               ]);
             }}
           />
@@ -105,7 +107,7 @@ export default function PopupEdit({
             setReviewToReport(currentReview);
             setActiveWindows((activeWindows) => [
               ...activeWindows,
-              "ReportReviewForm",
+              "Report Review",
             ]);
           }}
         />

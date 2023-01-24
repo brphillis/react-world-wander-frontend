@@ -72,7 +72,7 @@
 .profilePicture {
   z-index: 2;
   position: absolute;
-  object-fit: fill;
+  object-fit: stretch;
   top: -40px;
   left: -50px;
   height: 150px;
@@ -125,6 +125,13 @@ figcaption {
   text-align: center;
 }
 
+@media (max-width: 900px) {
+  .optionsPanel {
+    left: 55% !important;
+    top: 400px !important;
+  }
+}
+
 .optionsPanel > hr {
   border-top: 1px dotted #c3b6d1;
   width: 80%;
@@ -156,6 +163,13 @@ figcaption {
   background-color: white;
   z-index: 1;
   text-align: center;
+}
+
+@media (max-width: 900px) {
+  .profilePictureUpload {
+    left: 55% !important;
+    top: 400px !important;
+  }
 }
 
 .fileUploadInput {

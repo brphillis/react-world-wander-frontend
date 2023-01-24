@@ -29,7 +29,7 @@ export default function LikeButton({
 
       try {
         let res = await axios.put(
-          "http://localhost:8800/api/pins/addLike",
+          `${process.env.REACT_APP_CONNECT}/api/pins/addLike`,
           likeId
         );
         currentLikeList = res.data.review[index].likes;
@@ -45,7 +45,7 @@ export default function LikeButton({
           return res.data;
         } else {
           res = await axios.put(
-            "http://localhost:8800/api/pins/deleteLike",
+            `${process.env.REACT_APP_CONNECT}/api/pins/deleteLike`,
             likeId
           );
 

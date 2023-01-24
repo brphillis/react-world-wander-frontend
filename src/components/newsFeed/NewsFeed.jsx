@@ -24,6 +24,8 @@ export default function NewsFeed({
   setLoading,
   setReviewToReport,
   sortedBy,
+  pins,
+  setPins,
 }) {
   const [firstFetched, setFirstFetched] = useState(0);
   const [lastFetched, setlastFetched] = useState(10);
@@ -65,7 +67,6 @@ export default function NewsFeed({
 
   useEffect(() => {
     if (currentPlaceId && loading) {
-      console.log("getting");
       const getLimitedReviews = async () => {
         const currentid = {
           id: currentPlaceId,
@@ -171,12 +172,12 @@ export default function NewsFeed({
                           key={index + 12}
                           alt={`${e.size + e.name}`}
                           className="reviewImage"
-                          src={elem.base64}
+                          src={elem}
                           onClick={() => {
                             handleSetImageGalleryPics(e.pictures);
                             setActiveWindows((activeWindows) => [
                               ...activeWindows,
-                              "ImageGallery",
+                              "Image Gallery",
                             ]);
                           }}
                         />
@@ -204,6 +205,8 @@ export default function NewsFeed({
                 setReviewToEdit={setReviewToEdit}
                 currentPlace={currentPlace}
                 setReviewToReport={setReviewToReport}
+                pins={pins}
+                setPins={setPins}
               />
 
               <div className="rvTimeAgo">{format(e.createdAt, "en_US")}</div>

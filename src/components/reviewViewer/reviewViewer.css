@@ -106,6 +106,13 @@
   top: 3px;
 }
 
+@media (max-width: 480px) {
+  .reviewStarsContainer {
+    position: relative;
+    left: -36vw;
+  }
+}
+
 .reviewStars {
   color: #a06cd5;
   margin: 2px;

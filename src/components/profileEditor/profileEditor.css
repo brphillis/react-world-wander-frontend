@@ -3,18 +3,33 @@
   display: block;
   margin: 0 auto;
   width: 600px;
-  height: max-content;
-  max-width: 98vw;
+  max-width: 95vw;
   max-height: 97vh;
-  padding: 0px 10px 20px 10px;
+  overflow-y: scroll;
+  padding: 0px 10px 0 10px;
   border: 1px dotted #a06cd5;
   border-radius: 10px;
   background-color: white;
-  overflow-y: scroll;
 }
 
 #profileEditor::-webkit-scrollbar {
   display: none;
+}
+
+.profileEditorDivider {
+  background-color: #e5dded;
+  height: 20px;
+  margin-left: -50px;
+  width: 150%;
+  margin-top: -10px;
+}
+
+.profileEditorDivider2 {
+  background-color: #e5dded;
+  height: 20px;
+  margin-left: -50px;
+  width: 150%;
+  margin-top: 40px;
 }
 
 .profileEditorContent {
@@ -53,7 +68,7 @@
 
 #contributionsCount {
   position: absolute;
-  left: 8vw;
+  left: 7vw;
   top: 150px;
   display: flex;
   color: white;
@@ -87,7 +102,7 @@
 
 #likesCount {
   position: absolute;
-  right: 8vw;
+  right: 7vw;
   top: 150px;
   display: flex;
   color: white;
@@ -130,7 +145,7 @@
 
 .profileEditorAboutMe {
   width: 100%;
-  margin-top: 50px;
+  margin-top: 40px;
   margin-left: 20px;
   margin-bottom: 5px;
   align-self: flex-start;
@@ -224,7 +239,7 @@
 
 .profileEditorVisited {
   position: relative;
-  margin-top: 20px;
+  margin-top: 40px;
   margin-left: 20px;
   margin-bottom: 5px;
   align-self: flex-start;

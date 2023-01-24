@@ -28,6 +28,8 @@ export default function ProfileEditor({
   setLoading,
   setReviewToReport,
   sortedBy,
+  pins,
+  setPins,
 }) {
   const [currentProfile, setCurrentProfile] = useState(undefined);
   const [edtingAboutMe, setEditingAboutMe] = useState(false);
@@ -182,7 +184,7 @@ export default function ProfileEditor({
             toVisit: toVisitTags,
           };
           await axios.put(
-            "http://localhost:8800/api/users/updateToVisit",
+            `${process.env.REACT_APP_CONNECT}/api/users/updateToVisit`,
             newTagsInfo
           );
           getProfile(currentUser.username);
@@ -210,7 +212,7 @@ export default function ProfileEditor({
         aboutMe: aboutMeRef.current.value,
       };
       await axios.put(
-        "http://localhost:8800/api/users/updateAboutMe",
+        `${process.env.REACT_APP_CONNECT}/api/users/updateAboutMe`,
         aboutMeInfo
       );
       getProfile(currentUser.username);
@@ -262,6 +264,8 @@ export default function ProfileEditor({
               </div>
             </figure>
 
+            <div className="profileEditorDivider"></div>
+
             <div className="profileEditorAboutMe">
               <h3>
                 About Me
@@ -276,6 +280,8 @@ export default function ProfileEditor({
               </h3>
 
               {!edtingAboutMe && <p>{currentProfile.aboutMe}</p>}
+
+              <div className="profileEditorDivider2"></div>
 
               {edtingAboutMe && (
                 <form onSubmit={handleSubmit(changeAboutMe)}>
@@ -353,6 +359,8 @@ export default function ProfileEditor({
               )}
             </div>
 
+            <br></br>
+
             <div className="profileEditorToVisit">
               <h3>
                 I Want to Visit
@@ -388,7 +396,7 @@ export default function ProfileEditor({
               )}
             </div>
 
-            <br />
+            <div className="profileEditorDivider2"></div>
 
             <div className="profileEditorToVisit">
               <h3>Recent Activity</h3>
@@ -409,6 +417,8 @@ export default function ProfileEditor({
               setLoading={setLoading}
               setReviewToReport={setReviewToReport}
               sortedBy={sortedBy}
+              pins={pins}
+              setPins={setPins}
             ></NewsFeed>
           </>
         )}

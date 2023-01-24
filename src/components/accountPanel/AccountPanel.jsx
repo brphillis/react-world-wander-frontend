@@ -1,4 +1,5 @@
 import "./accountPanel.css";
+import Compress from "react-image-file-resizer";
 import { useRef } from "react";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
@@ -61,9 +62,12 @@ export default function AccountPanel({
 
   const refreshToken = async () => {
     try {
-      const res = await axios.post("http://localhost:8800/api/users/refresh/", {
-        token: currentUser.refreshToken,
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_CONNECT}/api/users/refresh/`,
+        {
+          token: currentUser.refreshToken,
+        }
+      );
       setCurrentUser({
         ...currentUser,
         accessToken: res.data.accessToken,
@@ -134,15 +138,22 @@ export default function AccountPanel({
     }
   };
 
-  //Profile Picture Upload and Set
-  const convert2base64 = async (e) => {
-    const file = await e.target.files[0];
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setImage(reader.result.toString());
-    };
-    reader.readAsDataURL(file);
+  const onFileResize = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      Compress.imageFileResizer(
+        file,
+        150,
+        150,
+        "JPEG",
+        70,
+        0,
+        (uri) => {
+          setImage(uri);
+        },
+        "base64"
+      );
+    }
   };
 
   const handleChangeProfilePicture = async (e) => {
@@ -254,7 +265,7 @@ export default function AccountPanel({
             onClick={() =>
               setActiveWindows((activeWindows) => [
                 ...activeWindows,
-                "ProfileEditor",
+                "Profile Editor",
               ])
             }
           ></BsFillPersonLinesFill>
@@ -373,7 +384,7 @@ export default function AccountPanel({
               id="fileUpload"
               className="fileUploadInput"
               type="file"
-              onChange={(e) => convert2base64(e)}
+              onChange={onFileResize}
             />
             <button className="btnPrimary" type="submit">
               Submit

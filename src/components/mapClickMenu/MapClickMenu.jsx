@@ -17,7 +17,7 @@ export default function MapClickMenu({ activeWindows, setActiveWindows }) {
           onClick={() =>
             setActiveWindows((activeWindows) => [
               ...activeWindows,
-              "AddReviewForm",
+              "Add Review",
             ])
           }
         >

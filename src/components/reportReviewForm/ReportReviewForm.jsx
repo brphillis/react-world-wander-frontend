@@ -15,7 +15,7 @@ export default function ReportReviewForm({
   const reportDescRef = useRef();
 
   const handleClose = () => {
-    setActiveWindows(activeWindows.filter((e) => e !== "ReportReviewForm"));
+    setActiveWindows(activeWindows.filter((e) => e !== "Report Review"));
   };
 
   const handleSubmit = async () => {

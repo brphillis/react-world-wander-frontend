@@ -85,7 +85,8 @@ form {
 }
 
 .grecaptcha-badge {
-  visibility: hidden;
+  transform: scale(0.7);
+  left: 95.5%;
 }
 
 .mapboxgl-popup-close-button {

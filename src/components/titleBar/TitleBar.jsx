@@ -16,7 +16,7 @@ export default function TitleBar({
   setSortedBy,
 }) {
   const handleCloseWindow = () => {
-    setActiveWindows(activeWindows.filter((e) => e !== children.type.name));
+    setActiveWindows(activeWindows.filter((e) => e !== title));
   };
 
   const dragControls = useDragControls();
@@ -39,6 +39,7 @@ export default function TitleBar({
   return (
     <motion.div
       className="motionWindow"
+      initial={{ top: 0 }}
       drag
       dragControls={dragControls}
       dragListener={false}
@@ -53,14 +54,21 @@ export default function TitleBar({
       >
         {isList && (
           <>
-            <MdSort onClick={handleSort} className="sortButton" />
+            <MdSort
+              onClick={() => {
+                handleSort();
+              }}
+              className="sortButton"
+            />
             <div className="sortText">{sortedBy}</div>
           </>
         )}
 
         <RiCloseCircleFill
           className="xCloseButtonWhite"
-          onClick={handleCloseWindow}
+          onClick={() => {
+            handleCloseWindow();
+          }}
         />
         <p>{title}</p>
       </div>

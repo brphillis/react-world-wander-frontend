@@ -171,7 +171,7 @@ function App() {
 
         {/* Admin Panel */}
 
-        {activeWindows.includes("AdminPanel") && (
+        {activeWindows.includes("Admin Panel") && (
           <TitleBar
             isList={false}
             title={"Admin Panel"}
@@ -191,15 +191,17 @@ function App() {
           </TitleBar>
         )}
 
-        <RiAdminFill
-          className="adminButton"
-          onClick={() => {
-            setActiveWindows((activeWindows) => [
-              ...activeWindows,
-              "AdminPanel",
-            ]);
-          }}
-        />
+        {currentUser?.username === "BrockPhillis" && (
+          <RiAdminFill
+            className="adminButton"
+            onClick={() => {
+              setActiveWindows((activeWindows) => [
+                ...activeWindows,
+                "AdminPanel",
+              ]);
+            }}
+          />
+        )}
 
         {/* Profile Panel */}
         {currentUser && (
@@ -250,7 +252,7 @@ function App() {
         )}
 
         {/* Add a Review Form */}
-        {activeWindows.includes("AddReviewForm") && (
+        {activeWindows.includes("Add Review") && (
           <TitleBar
             isList={false}
             title={"Add Review"}
@@ -286,8 +288,8 @@ function App() {
         )}
 
         {/* View Reviews */}
-        {activeWindows.includes("ReviewViewer") &&
-          !activeWindows.includes("ProfileEditor") && (
+        {activeWindows.includes("Reviews") &&
+          !activeWindows.includes("Profile Editor") && (
             <TitleBar
               isList={true}
               title={"Reviews"}
@@ -314,12 +316,14 @@ function App() {
                 loading={loading}
                 setLoading={setLoading}
                 setReviewToReport={setReviewToReport}
+                pins={pins}
+                setPins={setPins}
               />
             </TitleBar>
           )}
 
         {/* Report Review Form */}
-        {activeWindows.includes("ReportReviewForm") && (
+        {activeWindows.includes("Report Review") && (
           <TitleBar
             isList={true}
             title={"Report Review"}
@@ -342,7 +346,7 @@ function App() {
         )}
 
         {/* Image Gallery */}
-        {activeWindows.includes("ImageGallery") && (
+        {activeWindows.includes("Image Gallery") && (
           <ImageGallery
             activeWindows={activeWindows}
             setActiveWindows={setActiveWindows}
@@ -354,10 +358,10 @@ function App() {
         )}
 
         {/* Profile Editor */}
-        {activeWindows.includes("ProfileEditor") && (
+        {activeWindows.includes("Profile Editor") && (
           <TitleBar
             isList={false}
-            title={"Edit Profile"}
+            title={"Profile Editor"}
             activeWindows={activeWindows}
             setActiveWindows={setActiveWindows}
             setLoading={setLoading}
@@ -380,6 +384,8 @@ function App() {
               setLoading={setLoading}
               setReviewToReport={setReviewToReport}
               sortedBy={sortedBy}
+              pins={pins}
+              setPins={setPins}
             />
           </TitleBar>
         )}
